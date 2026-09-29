@@ -1,89 +1,40 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
-    <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
-      <div className="">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
-          {/* Brand - Left side */}
+    <footer className="w-full bg-primary px-6 pb-6 pt-14 text-primary-foreground">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="mb-14 grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div>
-            <img 
-              src="/Linea_Jewelry_Inc-2.svg" 
-              alt="Linea Jewelry Inc." 
-              className="mb-4 h-6 w-auto"
-            />
-            <p className="text-sm font-light text-black/70 leading-relaxed max-w-md mb-6">
-              Minimalist jewelry crafted for the modern individual
+            <p className="font-display text-4xl font-extrabold uppercase text-accent">Sanjivani.</p>
+            <p className="mb-6 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
+              Plant-powered daily nutrition, rooted in tradition and made for modern life.
             </p>
-            
-            {/* Contact Information */}
-            <div className="space-y-2 text-sm font-light text-black/70">
-              <div>
-                <p className="font-normal text-black mb-1">Visit Us</p>
-                <p>123 Madison Avenue</p>
-                <p>New York, NY 10016</p>
-              </div>
-              <div>
-                <p className="font-normal text-black mb-1 mt-3">Contact</p>
-                <p>+1 (212) 555-0123</p>
-                <p>hello@lineajewelry.com</p>
-              </div>
+            <div className="space-y-4 text-sm text-primary-foreground/70">
+              <div><p className="mb-1 font-bold text-primary-foreground">Need help?</p><p>Monday–Saturday · 9am–6pm IST</p></div>
+              <div><p className="mb-1 font-bold text-primary-foreground">Contact</p><p>care@sanjivani.example</p></div>
             </div>
           </div>
-
-          {/* Link lists - Right side */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Shop */}
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
-              <h4 className="text-sm font-normal mb-4">Shop</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">New In</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Rings</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Earrings</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Bracelets</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Necklaces</a></li>
-              </ul>
+              <h4 className="mb-4 text-sm font-bold text-accent">Shop</h4>
+              <ul className="space-y-2">{["Daily Vitality", "Gut Glow", "Daily Greens", "Calm Cacao"].map((item) => <li key={item}><a href="#shop" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
             </div>
-
-            {/* Support */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Support</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Size Guide</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Care Instructions</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Returns</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Shipping</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Contact</a></li>
-              </ul>
+              <h4 className="mb-4 text-sm font-bold text-accent">Help</h4>
+              <ul className="space-y-2">{["How to use", "Ingredients", "Delivery", "Returns", "Contact"].map((item) => <li key={item}><a href="#" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
             </div>
-
-            {/* Connect */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Connect</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Pinterest</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
-              </ul>
+              <h4 className="mb-4 text-sm font-bold text-accent">Follow</h4>
+              <ul className="space-y-2">{["Instagram", "YouTube", "Newsletter"].map((item) => <li key={item}><a href="#" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom section - edge to edge separator */}
-      <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2024 Linea. All rights reserved. Template made by{" "}
-            <a href="https://www.liljeros.co" target="_blank" rel="noopener noreferrer" className="hover:text-black/70 transition-colors underline">
-              Rickard Liljeros
-            </a>
-          </p>
-          <div className="flex space-x-6">
-            <a href="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">
-              Privacy Policy
-            </a>
-            <a href="/terms-of-service" className="text-sm font-light text-black hover:text-black/70 transition-colors">
-              Terms of Service
-            </a>
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-primary-foreground/15 pt-5 md:flex-row">
+          <p className="text-sm text-primary-foreground/60">© 2026 Sanjivani. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link to="/privacy-policy" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Privacy</Link>
+            <Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms</Link>
           </div>
         </div>
       </div>
