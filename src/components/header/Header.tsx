@@ -3,8 +3,8 @@ import Navigation from "./Navigation";
 
 const Header = () => {
   return (
-    <header className="w-full sticky top-0 z-50">
-      {/* <StatusBar /> */}
+    <header className="sticky top-0 z-50 w-full">
+      <StatusBar />
       <Navigation />
     </header>
   );
