@@ -1,0 +1,4 @@
+- [ ] Add four Sanjivani product catalogue pages with image galleries, product information, and clearly disclosed sample reviews.
+- [ ] Set all catalogue prices to ₹699 and connect homepage/footer/navigation links to the product pages.
+- [ ] Replace remaining jewelry legal copy with Sanjivani supplement storefront policies.
+- [ ] Verify the product pages and key storefront paths in the live preview; resolve build or runtime errors.
