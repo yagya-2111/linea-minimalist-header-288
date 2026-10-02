@@ -10,23 +10,20 @@ const Footer = () => {
             <p className="mb-6 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
               Plant-powered daily nutrition, rooted in tradition and made for modern life.
             </p>
-            <div className="space-y-4 text-sm text-primary-foreground/70">
-              <div><p className="mb-1 font-bold text-primary-foreground">Need help?</p><p>Monday–Saturday · 9am–6pm IST</p></div>
-              <div><p className="mb-1 font-bold text-primary-foreground">Contact</p><p>care@sanjivani.example</p></div>
-            </div>
+            <p className="text-sm text-primary-foreground/70">This storefront is a product catalogue preview; online orders are not enabled.</p>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Shop</h4>
-              <ul className="space-y-2">{["Daily Vitality", "Gut Glow", "Daily Greens", "Calm Cacao"].map((item) => <li key={item}><a href="#shop" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
+              <ul className="space-y-2">{[{ name: "Daily Vitality", slug: "daily-vitality" }, { name: "Gut Glow", slug: "gut-glow" }, { name: "Daily Greens", slug: "daily-greens" }, { name: "Calm Cacao", slug: "calm-cacao" }].map((item) => <li key={item.slug}><Link to={`/products/${item.slug}`} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.name}</Link></li>)}</ul>
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Help</h4>
-              <ul className="space-y-2">{["How to use", "Ingredients", "Delivery", "Returns", "Contact"].map((item) => <li key={item}><a href="#" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
+              <ul className="space-y-2">{[{ label: "Ingredients", href: "/#ingredients" }, { label: "Why Sanjivani", href: "/#why" }, { label: "Product guidance", href: "/#shop" }].map((item) => <li key={item.label}><Link to={item.href} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.label}</Link></li>)}</ul>
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Follow</h4>
-              <ul className="space-y-2">{["Instagram", "YouTube", "Newsletter"].map((item) => <li key={item}><a href="#" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item}</a></li>)}</ul>
+              <ul className="space-y-2"><li><Link to="/#newsletter" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Newsletter</Link></li></ul>
             </div>
           </div>
         </div>

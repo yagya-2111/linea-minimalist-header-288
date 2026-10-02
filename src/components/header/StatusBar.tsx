@@ -4,9 +4,9 @@ const StatusBar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const usps = [
-    "Free delivery across India on orders over ₹999",
+    "Sanjivani product catalogue preview",
     "Plant-powered daily nutrition",
-    "Simple rituals, thoughtful ingredients"
+    "Online ordering is not enabled yet"
   ];
 
   useEffect(() => {
