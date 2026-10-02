@@ -181,6 +181,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
+      reloadSequence.current += 1;
       setUser(session?.user?.email ? { id: session.user.id, email: session.user.email } : null);
       setProfile(null);
       setOrders([]);
