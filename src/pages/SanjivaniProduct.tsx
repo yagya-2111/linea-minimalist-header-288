@@ -35,7 +35,7 @@ const SanjivaniProduct = () => {
     );
   }
 
-  const relatedProducts = sanjivaniProducts.filter((item) => item.slug !== product.slug);
+  const relatedProducts = sanjivaniProducts.filter((item) => item.slug !== product.slug && products.some((available) => available.slug === item.slug && available.active !== false));
 
   return (
     <div className="min-h-screen bg-background">
