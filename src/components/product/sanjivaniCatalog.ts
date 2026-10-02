@@ -37,18 +37,25 @@ export interface SanjivaniProduct {
   reviews: ProductReview[];
 }
 
-const sampleReviews: ProductReview[] = [
-  { name: "Aanya R.", rating: 5, title: "A lovely morning ritual", text: "The flavour is bright and easy to work into my breakfast routine." },
-  { name: "Rohan M.", rating: 4, title: "Simple and thoughtful", text: "I like the familiar ingredient blend and the straightforward preparation." },
-  { name: "Meera S.", rating: 5, title: "Enjoyable taste", text: "A pleasant everyday drink, especially when mixed into a smoothie." },
-  { name: "Kabir P.", rating: 4, title: "Fits my routine", text: "The serving is convenient and the flavour feels nicely balanced." },
-  { name: "Ira D.", rating: 5, title: "A new favourite", text: "I enjoy the botanical notes and the easy-to-mix powder." },
-  { name: "Devika N.", rating: 5, title: "Well considered", text: "The ingredient combination feels familiar, and it tastes good chilled." },
-  { name: "Arjun T.", rating: 4, title: "Good everyday option", text: "A convenient addition to my kitchen shelf and morning routine." },
-  { name: "Nisha K.", rating: 5, title: "Bright and delicious", text: "I enjoy the flavour with water or blended into a fruit smoothie." },
-  { name: "Samar B.", rating: 4, title: "Easy to prepare", text: "No complicated routine—just mix, stir, and enjoy." },
-  { name: "Tara V.", rating: 5, title: "Thoughtful blend", text: "A tasty way to enjoy these familiar ingredients in one drink." },
-];
+const sampleReviewers = ["Aanya R.", "Rohan M.", "Meera S.", "Kabir P.", "Ira D.", "Devika N.", "Arjun T.", "Nisha K.", "Samar B.", "Tara V."];
+const sampleReviewTitles = ["A lovely little ritual", "Easy to make", "A flavour I enjoy", "Fits into my day", "A thoughtful blend", "Nicely balanced", "Simple and convenient", "Good in a smoothie", "Pleasant and easy", "A nice everyday option"];
+const createSampleReviews = (flavour: string, preparation: string): ProductReview[] => sampleReviewers.map((name, index) => ({
+  name,
+  rating: index === 1 || index === 3 || index === 6 || index === 8 ? 4 : 5,
+  title: sampleReviewTitles[index],
+  text: [
+    `I like the ${flavour} notes and how easy it is to prepare.`,
+    `The ${preparation} suggestion makes this simple to fit into my routine.`,
+    `A pleasant ${flavour} drink that I enjoy making at home.`,
+    `The flavour feels balanced, and I appreciate the straightforward preparation.`,
+    `I have been enjoying this as an easy addition to my usual drink routine.`,
+    `The ${flavour} notes come through nicely when mixed as directed.`,
+    `A convenient format and an enjoyable taste for a simple daily ritual.`,
+    `I like having another easy way to enjoy a ${flavour} drink.`,
+    `It is quick to prepare and works well with the suggested ${preparation}.`,
+    `An enjoyable blend with a flavour that suits my preferences.`,
+  ][index],
+}));
 
 const createGallery = (name: string, images: [string, string, string, string]) => [
   { src: images[0], alt: `Sanjivani ${name} product packaging, front view` },
@@ -74,7 +81,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
     ],
     highlights: ["Familiar botanical ingredients", "Bright, gently warming flavour", "Easy to mix into water or smoothies"],
     gallery: createGallery("Daily Vitality", [vitalityFront, vitalitySide, vitalityLifestyle, vitalityAngle]),
-    reviews: sampleReviews,
+    reviews: createSampleReviews("bright amla and warming ginger", "water or a smoothie"),
   },
   {
     slug: "gut-glow",
@@ -92,7 +99,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
     ],
     highlights: ["Citrus-forward flavour", "A simple water-mix ritual", "Made with familiar pantry botanicals"],
     gallery: createGallery("Gut Glow", [gutFront, gutSide, gutLifestyle, gutAngle]),
-    reviews: sampleReviews,
+    reviews: createSampleReviews("zesty citrus and ginger", "cool water"),
   },
   {
     slug: "daily-greens",
@@ -110,7 +117,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
     ],
     highlights: ["Fresh mint finish", "Amla and leafy botanical notes", "Easy to add to a smoothie"],
     gallery: createGallery("Daily Greens", [greensFront, greensSide, greensLifestyle, greensAngle]),
-    reviews: sampleReviews,
+    reviews: createSampleReviews("fresh mint and leafy greens", "a smoothie"),
   },
   {
     slug: "calm-cacao",
@@ -128,7 +135,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
     ],
     highlights: ["Rich cacao flavour", "A warming cinnamon finish", "Enjoy warm or blended into a drink"],
     gallery: createGallery("Calm Cacao", [cacaoFront, cacaoSide, cacaoLifestyle, cacaoAngle]),
-    reviews: sampleReviews,
+    reviews: createSampleReviews("rich cacao and warming cinnamon", "a warm drink"),
   },
 ];
 
