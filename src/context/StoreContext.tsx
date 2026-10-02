@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { sanjivaniProducts, type SanjivaniProduct } from "@/components/product/sanjivaniCatalog";
 
@@ -104,8 +104,8 @@ function parseCart(raw: string | null): CartLine[] {
   }
 }
 
-function readStoredCart(): CartLine[] {
-  try { return parseCart(window.localStorage.getItem(CART_KEY)); } catch { return []; }
+function readStoredCart(scope: string): CartLine[] {
+  try { return parseCart(window.localStorage.getItem(`${CART_KEY}:${scope}`)); } catch { return []; }
 }
 
 function mapProducts(rows: ProductRow[]): SanjivaniProduct[] {
@@ -124,12 +124,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [authLoading, setAuthLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
   const [orders, setOrders] = useState<StoreOrder[]>([]);
-  const [cart, setCart] = useState<CartLine[]>(readStoredCart);
+  const [cart, setCart] = useState<CartLine[]>([]);
+  const [loadedCartScope, setLoadedCartScope] = useState<string | null>(null);
   const [products, setProducts] = useState(sanjivaniProducts);
   const [productPrices, setProductPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
+  const cartScope = authLoading ? null : user ? `user:${user.id}` : "guest";
+  const activeCart = loadedCartScope === cartScope ? cart : [];
+  const reloadSequence = useRef(0);
 
   const reloadStoreData = useCallback(async () => {
+    const sequence = ++reloadSequence.current;
     const productResult = await supabase.from("products").select("slug,name,description,price_paise,active").order("slug");
     if (!productResult.error && productResult.data) {
       const rows = productResult.data as ProductRow[];
@@ -140,6 +145,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!settingsResult.error && settingsResult.data) setPaymentSettings(settingsResult.data as PaymentSettings);
 
     const { data: authData } = await supabase.auth.getUser();
+    if (sequence !== reloadSequence.current) return;
     const authUser = authData.user;
     if (!authUser?.email) {
       setUser(null); setProfile(null); setIsAdmin(false); setOrders([]); setProfileLoading(false);
@@ -147,28 +153,40 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     setUser({ id: authUser.id, email: authUser.email });
     setProfileLoading(true);
-    const [profileResult, roleResult, orderResult] = await Promise.all([
+    const [profileResult, roleResult] = await Promise.all([
       supabase.from("profiles").select("*").eq("user_id", authUser.id).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", authUser.id).eq("role", "admin").maybeSingle(),
-      supabase.from("orders").select("*").order("created_at", { ascending: false }),
     ]);
+    if (sequence !== reloadSequence.current) return;
+    const isStoreAdmin = roleResult.data?.role === "admin";
+    const orderRequest = supabase.from("orders").select("*");
+    const scopedOrderRequest = isStoreAdmin ? orderRequest : orderRequest.eq("user_id", authUser.id);
+    const orderResult = await scopedOrderRequest.order("created_at", { ascending: false });
+    if (sequence !== reloadSequence.current) return;
     setProfile(profileResult.data as StoreProfile | null);
-    setIsAdmin(roleResult.data?.role === "admin");
+    setIsAdmin(isStoreAdmin);
     setOrders((orderResult.data ?? []) as StoreOrder[]);
     setProfileLoading(false);
   }, []);
 
   useEffect(() => {
     let active = true;
-    void supabase.auth.getSession().then(() => {
+    void supabase.auth.getSession().then(({ data }) => {
       if (active) {
+        const sessionUser = data.session?.user;
+        setUser(sessionUser?.email ? { id: sessionUser.id, email: sessionUser.email } : null);
         setAuthLoading(false);
         void reloadStoreData();
       }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
+      reloadSequence.current += 1;
       setUser(session?.user?.email ? { id: session.user.id, email: session.user.email } : null);
+      setProfile(null);
+      setOrders([]);
+      setIsAdmin(false);
+      setProfileLoading(Boolean(session?.user));
       setAuthLoading(false);
       window.setTimeout(() => { if (active) void reloadStoreData(); }, 0);
     });
@@ -176,8 +194,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [reloadStoreData]);
 
   useEffect(() => {
-    try { window.localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch { /* Storage may be unavailable in private browsing. */ }
-  }, [cart]);
+    if (!cartScope || loadedCartScope === cartScope) return;
+    setCart(readStoredCart(cartScope));
+    setLoadedCartScope(cartScope);
+  }, [cartScope, loadedCartScope]);
+
+  useEffect(() => {
+    if (!cartScope || loadedCartScope !== cartScope) return;
+    try { window.localStorage.setItem(`${CART_KEY}:${cartScope}`, JSON.stringify(cart)); } catch { /* Storage may be unavailable in private browsing. */ }
+  }, [cart, cartScope, loadedCartScope]);
 
   const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
@@ -215,28 +240,32 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    setUser(null); setProfile(null); setIsAdmin(false); setOrders([]);
+    setUser(null); setProfile(null); setIsAdmin(false); setOrders([]); setProfileLoading(false);
   }, []);
 
   const addToCart = useCallback((slug: string, quantity = 1) => setCart((current) => {
-    const existing = current.find((line) => line.slug === slug);
-    if (existing) return current.map((line) => line.slug === slug ? { ...line, quantity: Math.min(20, line.quantity + quantity) } : line);
-    return [...current, { slug, quantity: Math.min(20, quantity) }].slice(0, 20);
-  }), []);
+    const scoped = loadedCartScope === cartScope ? current : [];
+    const existing = scoped.find((line) => line.slug === slug);
+    if (existing) return scoped.map((line) => line.slug === slug ? { ...line, quantity: Math.min(20, line.quantity + quantity) } : line);
+    return [...scoped, { slug, quantity: Math.min(20, quantity) }].slice(0, 20);
+  }), [cartScope, loadedCartScope]);
 
-  const setQuantity = useCallback((slug: string, quantity: number) => setCart((current) => quantity <= 0 ? current.filter((line) => line.slug !== slug) : current.map((line) => line.slug === slug ? { ...line, quantity: Math.min(20, quantity) } : line)), []);
+  const setQuantity = useCallback((slug: string, quantity: number) => setCart((current) => {
+    const scoped = loadedCartScope === cartScope ? current : [];
+    return quantity <= 0 ? scoped.filter((line) => line.slug !== slug) : scoped.map((line) => line.slug === slug ? { ...line, quantity: Math.min(20, quantity) } : line);
+  }), [cartScope, loadedCartScope]);
   const clearCart = useCallback(() => setCart([]), []);
 
   const submitOrder = useCallback(async (proof: File) => {
     if (!user || !profile) throw new Error("Complete your account details before checkout.");
-    if (!cart.length) throw new Error("Your bag is empty.");
+    if (!activeCart.length) throw new Error("Your bag is empty.");
     if (!paymentSettings || !paymentSettings.checkout_enabled || paymentSettings.shipping_paise == null || (!paymentSettings.upi_id.trim() && !paymentSettings.account_number.trim())) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
     if (!proof.type.startsWith("image/") || proof.size > 5 * 1024 * 1024) throw new Error("Upload a payment screenshot as an image, up to 5 MB.");
-    const ids = cart.map((line) => line.slug);
+    const ids = activeCart.map((line) => line.slug);
     const { data: currentRows, error: productError } = await supabase.from("products").select("slug,name,price_paise,active").in("slug", ids);
     if (productError || !currentRows) throw new Error("We could not confirm current product prices. Please try again.");
     const productBySlug = new Map((currentRows as Pick<ProductRow, "slug" | "name" | "price_paise" | "active">[]).map((row) => [row.slug, row]));
-    const items = cart.map((line) => {
+    const items = activeCart.map((line) => {
       const row = productBySlug.get(line.slug);
       if (!row?.active) throw new Error("A product in your bag is no longer available.");
       return { slug: row.slug, name: row.name, quantity: line.quantity, price_paise: row.price_paise };
@@ -261,7 +290,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     clearCart();
     await reloadStoreData();
     return id;
-  }, [cart, clearCart, paymentSettings, profile, reloadStoreData, user]);
+  }, [activeCart, clearCart, paymentSettings, profile, reloadStoreData, user]);
 
   const updateOrder = useCallback(async (id: string, update: Partial<Pick<StoreOrder, "payment_status" | "status" | "tracking_number" | "admin_note">>) => {
     if (!isAdmin) throw new Error("Administrator access is required.");
@@ -291,7 +320,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return data.signedUrl;
   }, [user]);
 
-  const value = useMemo(() => ({ user, profile, isAdmin, authLoading, profileLoading, orders, cart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl }), [user, profile, isAdmin, authLoading, profileLoading, orders, cart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl]);
+  const value = useMemo(() => ({ user, profile, isAdmin, authLoading, profileLoading, orders, cart: activeCart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl }), [user, profile, isAdmin, authLoading, profileLoading, orders, activeCart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl]);
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
 
