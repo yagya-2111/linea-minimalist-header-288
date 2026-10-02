@@ -98,6 +98,36 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          name: string
+          price_paise: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          name: string
+          price_paise: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          name?: string
+          price_paise?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address_line1: string
@@ -175,6 +205,7 @@ export type Database = {
           ifsc: string
           payee_name: string
           qr_image_path: string
+          shipping_paise: number
           singleton: boolean
           updated_at: string
           upi_id: string
@@ -186,6 +217,7 @@ export type Database = {
           ifsc?: string
           payee_name?: string
           qr_image_path?: string
+          shipping_paise?: number
           singleton?: boolean
           updated_at?: string
           upi_id?: string
@@ -197,6 +229,7 @@ export type Database = {
           ifsc?: string
           payee_name?: string
           qr_image_path?: string
+          shipping_paise?: number
           singleton?: boolean
           updated_at?: string
           upi_id?: string
