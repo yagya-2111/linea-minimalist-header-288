@@ -49,9 +49,9 @@ const SanjivaniLanding = () => {
               </Button>
             </div>
             <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-primary-foreground/70">
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Vegetarian</span>
-              <span className="flex items-center gap-2"><Check className="text-accent" /> No artificial colours</span>
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Made in India</span>
+              <span className="flex items-center gap-2"><Check className="text-accent" /> Ingredient-led blends</span>
+              <span className="flex items-center gap-2"><Check className="text-accent" /> Simple drink rituals</span>
+              <span className="flex items-center gap-2"><Check className="text-accent" /> Botanical inspiration</span>
             </div>
           </div>
 
@@ -74,7 +74,7 @@ const SanjivaniLanding = () => {
           <span>Rooted in tradition</span><span className="hidden text-accent md:block">✦</span>
           <span>Made for modern life</span><span className="hidden text-accent md:block">✦</span>
           <span>Ingredients you recognise</span><span className="hidden text-accent md:block">✦</span>
-          <span>Delivered across India</span>
+          <span>Explore all four blends</span>
         </div>
       </section>
 

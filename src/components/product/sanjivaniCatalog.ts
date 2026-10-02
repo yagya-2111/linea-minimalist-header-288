@@ -71,7 +71,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
     tagline: "A bright botanical blend for your everyday ritual.",
     ingredients: "Amla · Ginger · Tulsi",
     image: vitalityFront,
-    label: "Bestseller",
+    label: "Botanical blend",
     description: "A lively, plant-led powder bringing together familiar Indian botanicals and a bright, warming flavour. Made to be an easy addition to a daily drink or smoothie.",
     ritual: "Stir a serving into a glass of water, or blend into your favourite morning smoothie. Follow the directions printed on the product pack.",
     ingredientsList: [
