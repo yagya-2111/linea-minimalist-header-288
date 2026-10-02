@@ -14,7 +14,11 @@ const benefits = [
 
 const SanjivaniLanding = () => {
   const { products, productPrices, addToCart } = useStore();
-  const availableProducts = products.filter((item) => item.active !== false).map((item) => ({ ...sanjivaniProducts.find((catalogueItem) => catalogueItem.slug === item.slug)!, ...item }));
+  const availableProducts = products.flatMap((item) => {
+    if (item.active === false) return [];
+    const catalogueItem = sanjivaniProducts.find((entry) => entry.slug === item.slug);
+    return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
+  });
 
   return (
     <main>
@@ -30,7 +34,7 @@ const SanjivaniLanding = () => {
               <span className="mt-2 block text-accent">every day.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-primary-foreground/75 sm:text-xl">
-              Modern supplements inspired by India’s rich botanical traditions. Clear ingredients, bold flavours, simple rituals.
+              Botanical nutritional serums inspired by India’s rich traditions. Clear ingredients, bold flavours, simple rituals.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-14 rounded-sm bg-accent px-7 text-base font-bold text-accent-foreground hover:bg-accent/90">
@@ -42,7 +46,7 @@ const SanjivaniLanding = () => {
             </div>
             <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-primary-foreground/70">
               <span className="flex items-center gap-2"><Check className="text-accent" /> Ingredient-led blends</span>
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Simple drink rituals</span>
+              <span className="flex items-center gap-2"><Check className="text-accent" /> Simple serum rituals</span>
               <span className="flex items-center gap-2"><Check className="text-accent" /> Botanical inspiration</span>
             </div>
           </div>

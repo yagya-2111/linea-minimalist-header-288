@@ -12,13 +12,14 @@ const links = [
 ];
 
 const Navigation = () => {
-  const { cart } = useStore();
+  const { cart, products, productPrices } = useStore();
   const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const filteredProducts = sanjivaniProducts.filter((product) =>
-    `${product.name} ${product.ingredients} ${product.tagline}`.toLowerCase().includes(searchTerm.trim().toLowerCase()),
+    products.some((available) => available.slug === product.slug && available.active !== false) &&
+    `${products.find((available) => available.slug === product.slug)?.name ?? product.name} ${product.ingredients} ${product.tagline}`.toLowerCase().includes(searchTerm.trim().toLowerCase()),
   );
 
   return (
@@ -65,8 +66,8 @@ const Navigation = () => {
             <div className="mx-auto mt-4 max-w-2xl divide-y divide-border">
               {filteredProducts.length ? filteredProducts.map((product) => (
                 <Link key={product.slug} to={`/products/${product.slug}`} onClick={() => { setSearchOpen(false); setSearchTerm(""); }} className="flex items-center justify-between gap-4 py-3 hover:text-accent-strong">
-                  <span><span className="block font-bold">{product.name}</span><span className="text-sm text-muted-foreground">{product.ingredients}</span></span>
-                  <span className="shrink-0 font-bold">₹699</span>
+                  <span><span className="block font-bold">{products.find((available) => available.slug === product.slug)?.name ?? product.name}</span><span className="text-sm text-muted-foreground">{product.ingredients}</span></span>
+                  <span className="shrink-0 font-bold">₹{Math.round((productPrices[product.slug] ?? 69900) / 100).toLocaleString("en-IN")}</span>
                 </Link>
               )) : <p className="py-4 text-sm text-muted-foreground">No blends found. Try a product or ingredient name.</p>}
             </div>
