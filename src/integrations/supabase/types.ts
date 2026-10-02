@@ -14,16 +14,225 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          admin_note: string | null
+          alternate_phone: string | null
+          city: string
+          country: string
+          created_at: string
+          customer_name: string
+          email: string
+          id: string
+          items: Json
+          landmark: string | null
+          payment_method: string
+          payment_status: string
+          phone: string
+          postal_code: string
+          proof_path: string
+          shipping_paise: number
+          state: string
+          status: string
+          subtotal_paise: number
+          total_paise: number
+          tracking_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          admin_note?: string | null
+          alternate_phone?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          customer_name: string
+          email: string
+          id: string
+          items: Json
+          landmark?: string | null
+          payment_method?: string
+          payment_status?: string
+          phone: string
+          postal_code: string
+          proof_path: string
+          shipping_paise?: number
+          state: string
+          status?: string
+          subtotal_paise: number
+          total_paise: number
+          tracking_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          admin_note?: string | null
+          alternate_phone?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          customer_name?: string
+          email?: string
+          id?: string
+          items?: Json
+          landmark?: string | null
+          payment_method?: string
+          payment_status?: string
+          phone?: string
+          postal_code?: string
+          proof_path?: string
+          shipping_paise?: number
+          state?: string
+          status?: string
+          subtotal_paise?: number
+          total_paise?: number
+          tracking_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          alternate_phone: string | null
+          city: string
+          country: string
+          created_at: string
+          email: string
+          full_name: string
+          landmark: string | null
+          phone: string
+          postal_code: string
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          alternate_phone?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          email: string
+          full_name: string
+          landmark?: string | null
+          phone: string
+          postal_code: string
+          state: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          alternate_phone?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          landmark?: string | null
+          phone?: string
+          postal_code?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      store_admin_config: {
+        Row: {
+          admin_email: string
+          created_at: string
+          singleton: boolean
+        }
+        Insert: {
+          admin_email: string
+          created_at?: string
+          singleton?: boolean
+        }
+        Update: {
+          admin_email?: string
+          created_at?: string
+          singleton?: boolean
+        }
+        Relationships: []
+      }
+      store_payment_settings: {
+        Row: {
+          account_name: string
+          account_number: string
+          bank_name: string
+          ifsc: string
+          payee_name: string
+          qr_image_path: string
+          singleton: boolean
+          updated_at: string
+          upi_id: string
+        }
+        Insert: {
+          account_name?: string
+          account_number?: string
+          bank_name?: string
+          ifsc?: string
+          payee_name?: string
+          qr_image_path?: string
+          singleton?: boolean
+          updated_at?: string
+          upi_id?: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          bank_name?: string
+          ifsc?: string
+          payee_name?: string
+          qr_image_path?: string
+          singleton?: boolean
+          updated_at?: string
+          upi_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +359,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "customer"],
+    },
   },
 } as const
