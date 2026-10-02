@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import heroImage from "@/assets/sanjivani-hero.jpg";
 import gutGlowImage from "@/assets/sanjivani-gut-glow.jpg";
 import dailyGreensImage from "@/assets/sanjivani-daily-greens.jpg";
-import calmCacaoImage from "@/assets/sanjivani-calm-cacao.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 
 const benefits = [
