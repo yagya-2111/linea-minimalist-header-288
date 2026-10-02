@@ -1,19 +1,23 @@
-import vitalityFront from "@/assets/sanjivani-hero.jpg";
-import vitalitySide from "@/assets/sanjivani-vitality-side.jpg";
-import vitalityLifestyle from "@/assets/sanjivani-vitality-lifestyle.jpg";
-import vitalityAngle from "@/assets/sanjivani-vitality-angle.jpg";
-import gutFront from "@/assets/sanjivani-gut-glow.jpg";
-import gutSide from "@/assets/sanjivani-gut-side.jpg";
-import gutLifestyle from "@/assets/sanjivani-gut-lifestyle.jpg";
-import gutAngle from "@/assets/sanjivani-gut-angle.jpg";
-import greensFront from "@/assets/sanjivani-daily-greens.jpg";
-import greensSide from "@/assets/sanjivani-greens-side.jpg";
-import greensLifestyle from "@/assets/sanjivani-greens-lifestyle.jpg";
-import greensAngle from "@/assets/sanjivani-greens-angle.jpg";
-import cacaoFront from "@/assets/sanjivani-calm-cacao.jpg";
-import cacaoSide from "@/assets/sanjivani-cacao-side.jpg";
-import cacaoLifestyle from "@/assets/sanjivani-cacao-lifestyle.jpg";
-import cacaoAngle from "@/assets/sanjivani-cacao-angle.jpg";
+import vitalityFront from "@/assets/sanjivani-daily-vitality-serum.jpg";
+import vitalitySide from "@/assets/sanjivani-daily-vitality-1.jpg";
+import vitalityLifestyle from "@/assets/sanjivani-daily-vitality-2.jpg";
+import vitalityAngle from "@/assets/sanjivani-daily-vitality-3.jpg";
+import vitalityDetail from "@/assets/sanjivani-daily-vitality-4.jpg";
+import gutFront from "@/assets/sanjivani-gut-glow-serum.jpg";
+import gutSide from "@/assets/sanjivani-gut-glow-1.jpg";
+import gutLifestyle from "@/assets/sanjivani-gut-glow-2.jpg";
+import gutAngle from "@/assets/sanjivani-gut-glow-3.jpg";
+import gutDetail from "@/assets/sanjivani-gut-glow-4.jpg";
+import greensFront from "@/assets/sanjivani-daily-greens-serum.jpg";
+import greensSide from "@/assets/sanjivani-daily-greens-1.jpg";
+import greensLifestyle from "@/assets/sanjivani-daily-greens-2.jpg";
+import greensAngle from "@/assets/sanjivani-daily-greens-3.jpg";
+import greensDetail from "@/assets/sanjivani-daily-greens-4.jpg";
+import cacaoFront from "@/assets/sanjivani-calm-cacao-serum.jpg";
+import cacaoSide from "@/assets/sanjivani-calm-cacao-1.jpg";
+import cacaoLifestyle from "@/assets/sanjivani-calm-cacao-2.jpg";
+import cacaoAngle from "@/assets/sanjivani-calm-cacao-3.jpg";
+import cacaoDetail from "@/assets/sanjivani-calm-cacao-4.jpg";
 
 export interface ProductReview {
   name: string;
@@ -35,6 +39,7 @@ export interface SanjivaniProduct {
   highlights: string[];
   gallery: { src: string; alt: string }[];
   reviews: ProductReview[];
+  active?: boolean;
 }
 
 const sampleReviewers = ["Aanya R.", "Rohan M.", "Meera S.", "Kabir P.", "Ira D.", "Devika N.", "Arjun T.", "Nisha K.", "Samar B.", "Tara V."];
@@ -57,7 +62,7 @@ const createSampleReviews = (flavour: string, preparation: string): ProductRevie
   ][index],
 }));
 
-const createGallery = (name: string, images: [string, string, string, string]) => [
+const createGallery = (name: string, images: [string, string, string, string, string]) => [
   { src: images[0], alt: `Sanjivani ${name} product packaging, front view` },
   { src: images[1], alt: `Sanjivani ${name} product packaging, alternate view` },
   { src: images[2], alt: `Sanjivani ${name} with its botanical ingredients` },
@@ -80,7 +85,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
       { name: "Tulsi", note: "An aromatic herb with a fresh finish." },
     ],
     highlights: ["Familiar botanical ingredients", "Bright, gently warming flavour", "Easy to mix into water or smoothies"],
-    gallery: createGallery("Daily Vitality", [vitalityFront, vitalitySide, vitalityLifestyle, vitalityAngle]),
+    gallery: createGallery("Daily Vitality", [vitalityFront, vitalitySide, vitalityLifestyle, vitalityAngle, vitalityDetail]),
     reviews: createSampleReviews("bright amla and warming ginger", "water or a smoothie"),
   },
   {
@@ -98,7 +103,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
       { name: "Fibre", note: "A considered part of this botanical blend." },
     ],
     highlights: ["Citrus-forward flavour", "A simple water-mix ritual", "Made with familiar pantry botanicals"],
-    gallery: createGallery("Gut Glow", [gutFront, gutSide, gutLifestyle, gutAngle]),
+    gallery: createGallery("Gut Glow", [gutFront, gutSide, gutLifestyle, gutAngle, gutDetail]),
     reviews: createSampleReviews("zesty citrus and ginger", "cool water"),
   },
   {
@@ -116,7 +121,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
       { name: "Mint", note: "A cool, fresh finish." },
     ],
     highlights: ["Fresh mint finish", "Amla and leafy botanical notes", "Easy to add to a smoothie"],
-    gallery: createGallery("Daily Greens", [greensFront, greensSide, greensLifestyle, greensAngle]),
+    gallery: createGallery("Daily Greens", [greensFront, greensSide, greensLifestyle, greensAngle, greensDetail]),
     reviews: createSampleReviews("fresh mint and leafy greens", "a smoothie"),
   },
   {
@@ -134,7 +139,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
       { name: "Ashwagandha", note: "A botanical ingredient in the blend." },
     ],
     highlights: ["Rich cacao flavour", "A warming cinnamon finish", "Enjoy warm or blended into a drink"],
-    gallery: createGallery("Calm Cacao", [cacaoFront, cacaoSide, cacaoLifestyle, cacaoAngle]),
+    gallery: createGallery("Calm Cacao", [cacaoFront, cacaoSide, cacaoLifestyle, cacaoAngle, cacaoDetail]),
     reviews: createSampleReviews("rich cacao and warming cinnamon", "a warm drink"),
   },
 ];
