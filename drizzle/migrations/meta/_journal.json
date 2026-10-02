@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790944363948,
+      "tag": "0000_protect_checkout_and_enable_store_management",
+      "breakpoints": true
+    }
+  ]
+}
