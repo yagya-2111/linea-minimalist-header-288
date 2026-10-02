@@ -1,4 +1,8 @@
-- [x] Add four Sanjivani product catalogue pages with image galleries, product information, and clearly disclosed sample reviews.
-- [x] Set all catalogue prices to ₹699 and connect homepage/footer/navigation links to the product pages.
-- [x] Replace remaining jewelry legal copy with Sanjivani supplement storefront policies.
-- [x] Verify the product pages and key storefront paths in the live preview; resolve build or runtime errors.
+- [x] Rebuild the Sanjivani catalogue as four serum product pages with five product images each and ₹699 pricing.
+- [x] Add account signup/sign-in, saved delivery details, shopping bag, online transfer proof checkout, order history, and admin payment/delivery management.
+- [x] Keep payment settings customer-provided; block orders until real payment instructions and delivery fee are configured.
+- [x] Protect order creation, payment review, delivery steps, admin assignment, customer profiles, and private proof access in the database.
+- [x] Replace preview-only legal copy and remove fictional customer reviews.
+- [x] Verify live serum page, bag interactions, route refresh, checkout access guard, and mobile layout.
+- [ ] Create the first store-owner account with the configured administrator email, then configure real payment details and delivery fee before opening checkout.
+- [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
