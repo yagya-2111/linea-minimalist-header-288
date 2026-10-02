@@ -171,8 +171,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    void supabase.auth.getSession().then(() => {
+    void supabase.auth.getSession().then(({ data }) => {
       if (active) {
+        const sessionUser = data.session?.user;
+        setUser(sessionUser?.email ? { id: sessionUser.id, email: sessionUser.email } : null);
         setAuthLoading(false);
         void reloadStoreData();
       }
