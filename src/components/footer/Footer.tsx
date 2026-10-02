@@ -10,7 +10,7 @@ const Footer = () => {
             <p className="mb-6 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
               Plant-powered daily nutrition, rooted in tradition and made for modern life.
             </p>
-            <p className="text-sm text-primary-foreground/70">This storefront is a product catalogue preview; online orders are not enabled.</p>
+            <p className="text-sm text-primary-foreground/70">Thoughtful botanical blends for everyday wellness.</p>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
@@ -19,11 +19,11 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Help</h4>
-              <ul className="space-y-2">{[{ label: "Ingredients", href: "/#ingredients" }, { label: "Why Sanjivani", href: "/#why" }, { label: "Product guidance", href: "/#shop" }].map((item) => <li key={item.label}><Link to={item.href} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.label}</Link></li>)}</ul>
+              <ul className="space-y-2">{[{ label: "Ingredients", href: "/#ingredients" }, { label: "Why Sanjivani", href: "/#why" }, { label: "My account", href: "/account" }, { label: "My bag", href: "/bag" }].map((item) => <li key={item.label}><Link to={item.href} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.label}</Link></li>)}</ul>
             </div>
             <div>
-              <h4 className="mb-4 text-sm font-bold text-accent">Follow</h4>
-              <ul className="space-y-2"><li><Link to="/#newsletter" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Newsletter</Link></li></ul>
+              <h4 className="mb-4 text-sm font-bold text-accent">Your orders</h4>
+              <ul className="space-y-2"><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
             </div>
           </div>
         </div>

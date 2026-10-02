@@ -4,9 +4,9 @@ const StatusBar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const usps = [
-    "Sanjivani product catalogue preview",
-    "Plant-powered daily nutrition",
-    "Online ordering is not enabled yet"
+    "Botanical wellness, made for your everyday",
+    "Four thoughtfully selected serum blends",
+    "Secure UPI and bank transfer checkout"
   ];
 
   useEffect(() => {

@@ -9,6 +9,11 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import SanjivaniProduct from "./pages/SanjivaniProduct";
+import Account from "./pages/Account";
+import ShoppingBag from "./pages/ShoppingBag";
+import Checkout from "./pages/Checkout";
+import Admin from "./pages/Admin";
+import { StoreProvider } from "./context/StoreContext";
 
 const queryClient = new QueryClient();
 
@@ -18,15 +23,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/products/:slug" element={<SanjivaniProduct />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <StoreProvider>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/products/:slug" element={<SanjivaniProduct />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/bag" element={<ShoppingBag />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </StoreProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

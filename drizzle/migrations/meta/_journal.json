@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790944363948,
+      "tag": "0000_protect_checkout_and_enable_store_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790944430482,
+      "tag": "0001_allow_authenticated_checkout_submission",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790944483663,
+      "tag": "0002_complete_order_security_rules",
+      "breakpoints": true
+    }
+  ]
+}

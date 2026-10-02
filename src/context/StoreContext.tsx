@@ -54,6 +54,7 @@ type PaymentSettings = {
   ifsc: string;
   qr_image_path: string;
   shipping_paise: number | null;
+  checkout_enabled: boolean;
 };
 
 type CartLine = { slug: string; quantity: number };
@@ -108,11 +109,11 @@ function readStoredCart(): CartLine[] {
 }
 
 function mapProducts(rows: ProductRow[]): SanjivaniProduct[] {
-  const visible = new Map(rows.filter((row) => row.active).map((row) => [row.slug, row]));
-  return sanjivaniProducts.filter((item) => visible.has(item.slug)).map((item) => {
+  const visible = new Map(rows.map((row) => [row.slug, row]));
+  return sanjivaniProducts.flatMap((item) => {
     const row = visible.get(item.slug);
     if (!row) return item;
-    return { ...item, name: row.name, description: row.description || item.description };
+    return [{ ...item, name: row.name, description: row.description || item.description, active: row.active }];
   });
 }
 
@@ -135,7 +136,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setProducts(mapProducts(rows));
       setProductPrices(Object.fromEntries(rows.filter((row) => row.active).map((row) => [row.slug, row.price_paise])));
     }
-    const settingsResult = await supabase.from("store_payment_settings").select("upi_id,payee_name,bank_name,account_name,account_number,ifsc,qr_image_path,shipping_paise").eq("singleton", true).maybeSingle();
+    const settingsResult = await supabase.from("store_payment_settings").select("upi_id,payee_name,bank_name,account_name,account_number,ifsc,qr_image_path,shipping_paise,checkout_enabled").eq("singleton", true).maybeSingle();
     if (!settingsResult.error && settingsResult.data) setPaymentSettings(settingsResult.data as PaymentSettings);
 
     const { data: authData } = await supabase.auth.getUser();
@@ -189,9 +190,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signUp({ email: normalizedEmail, password, options: { emailRedirectTo: window.location.origin, data: { full_name: details.full_name } } });
     if (error) {
       const message = error.message.toLowerCase();
-      if (message.includes("already registered") || message.includes("already been registered") || message.includes("user already exists")) throw new Error("This email is already registered. Sign in instead.");
+      if (message.includes("already registered") || message.includes("already been registered") || message.includes("user already exists") || data.user?.identities?.length === 0) throw new Error("This email is already registered. Sign in instead.");
       throw error;
     }
+    if (data.user?.identities?.length === 0) throw new Error("This email is already registered. Sign in instead.");
     if (!data.user || !data.session) throw new Error("Your account could not be signed in. Please try again.");
     const { error: profileError } = await supabase.from("profiles").insert({ ...details, user_id: data.user.id, email: normalizedEmail });
     if (profileError) {
@@ -228,7 +230,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const submitOrder = useCallback(async (proof: File) => {
     if (!user || !profile) throw new Error("Complete your account details before checkout.");
     if (!cart.length) throw new Error("Your bag is empty.");
-    if (!paymentSettings || !paymentSettings.shipping_paise || !paymentSettings.upi_id && !paymentSettings.account_number) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
+    if (!paymentSettings || !paymentSettings.checkout_enabled || paymentSettings.shipping_paise == null || (!paymentSettings.upi_id.trim() && !paymentSettings.account_number.trim())) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
     if (!proof.type.startsWith("image/") || proof.size > 5 * 1024 * 1024) throw new Error("Upload a payment screenshot as an image, up to 5 MB.");
     const ids = cart.map((line) => line.slug);
     const { data: currentRows, error: productError } = await supabase.from("products").select("slug,name,price_paise,active").in("slug", ids);

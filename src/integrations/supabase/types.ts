@@ -202,6 +202,7 @@ export type Database = {
           account_name: string
           account_number: string
           bank_name: string
+          checkout_enabled: boolean
           ifsc: string
           payee_name: string
           qr_image_path: string
@@ -214,6 +215,7 @@ export type Database = {
           account_name?: string
           account_number?: string
           bank_name?: string
+          checkout_enabled?: boolean
           ifsc?: string
           payee_name?: string
           qr_image_path?: string
@@ -226,6 +228,7 @@ export type Database = {
           account_name?: string
           account_number?: string
           bank_name?: string
+          checkout_enabled?: boolean
           ifsc?: string
           payee_name?: string
           qr_image_path?: string
