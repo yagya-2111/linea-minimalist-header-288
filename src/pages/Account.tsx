@@ -17,6 +17,8 @@ const titles: Record<StoreOrder["status"], string> = { ordered: "Ordered", packe
 const Account = () => {
   const { user, profile, isAdmin, authLoading, profileLoading, orders, signIn, signUp, signOut, saveProfile } = useStore();
   const [params] = useSearchParams();
+  const nextPath = params.get("next");
+  const safeNextPath = nextPath?.startsWith("/") && !nextPath.startsWith("//") ? nextPath : null;
   const [mode, setMode] = useState<"signin" | "signup">(params.get("create") === "1" ? "signup" : "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +44,7 @@ const Account = () => {
   };
 
   if (authLoading || profileLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-5xl px-5 py-20"><p className="text-muted-foreground">Loading your account…</p></main><Footer /></div>;
+  if (user && safeNextPath) return <Navigate to={safeNextPath} replace />;
   if (!user) return (
     <div className="min-h-screen bg-background"><Header /><main className="mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:py-20">
       <section className="flex flex-col justify-center"><p className="text-xs font-extrabold uppercase text-accent-strong">Your Sanjivani account</p><h1 className="mt-4 font-display text-4xl font-extrabold sm:text-5xl">{mode === "signin" ? "Welcome back." : "Make it yours."}</h1><p className="mt-4 max-w-md leading-relaxed text-muted-foreground">{mode === "signin" ? "Sign in to see your orders and delivery progress." : "One account for your order history and delivery details."}</p><Link to="/#shop" className="mt-8 inline-flex items-center gap-2 font-bold">Explore the serums <ArrowRight className="h-4 w-4" /></Link></section>

@@ -14,7 +14,11 @@ const benefits = [
 
 const SanjivaniLanding = () => {
   const { products, productPrices, addToCart } = useStore();
-  const availableProducts = products.filter((item) => item.active !== false).map((item) => ({ ...sanjivaniProducts.find((catalogueItem) => catalogueItem.slug === item.slug)!, ...item }));
+  const availableProducts = products.flatMap((item) => {
+    if (item.active === false) return [];
+    const catalogueItem = sanjivaniProducts.find((entry) => entry.slug === item.slug);
+    return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
+  });
 
   return (
     <main>

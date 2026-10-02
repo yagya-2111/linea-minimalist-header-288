@@ -13,12 +13,17 @@ const SanjivaniProduct = () => {
   const { products, productPrices, addToCart } = useStore();
   const product = findSanjivaniProduct(slug);
   const storeProduct = products.find((item) => item.slug === slug);
+  const productName = storeProduct?.name ?? product?.name;
+  const productDescription = storeProduct?.description || product?.description;
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
-    document.title = product ? `${product.name} | Sanjivani` : "Sanjivani Product Catalogue";
+    document.title = productName ? `${productName} | Sanjivani` : "Sanjivani Product Catalogue";
+  }, [productName]);
+
+  useEffect(() => {
     setActiveImage(0);
-  }, [product]);
+  }, [slug]);
 
   if (!product) {
     return (
@@ -59,7 +64,7 @@ const SanjivaniProduct = () => {
 
             <section className="lg:sticky lg:top-28 lg:h-fit">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">{product.label} · Sanjivani</p>
-              <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">{product.name}</h1>
+              <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">{productName}</h1>
               <p className="mt-3 text-lg text-muted-foreground">{product.tagline}</p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <span className="text-sm font-semibold text-muted-foreground">Botanical nutritional serum</span>
@@ -71,7 +76,7 @@ const SanjivaniProduct = () => {
                 </div>
                 <span className="text-sm font-bold text-muted-foreground">{product.ingredients}</span>
               </div>
-              <p className="mt-6 text-base leading-relaxed text-muted-foreground">{product.description}</p>
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground">{productDescription}</p>
               <div className="mt-7 space-y-3">
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
@@ -85,8 +90,8 @@ const SanjivaniProduct = () => {
           <div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-16 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:px-12 lg:py-24">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">A closer look</p>
-              <h2 className="mt-4 font-display text-4xl font-extrabold">A simple blend, thoughtfully chosen.</h2>
-              <p className="mt-5 text-base leading-relaxed text-muted-foreground">{product.description}</p>
+              <h2 className="mt-4 font-display text-4xl font-extrabold">A serum, thoughtfully chosen.</h2>
+              <p className="mt-5 text-base leading-relaxed text-muted-foreground">{productDescription}</p>
               <h3 className="mt-9 font-display text-2xl font-bold">Ingredients at a glance</h3>
               <div className="mt-4 divide-y divide-border border-y border-border">
                 {product.ingredientsList.map((ingredient, index) => (
@@ -103,7 +108,7 @@ const SanjivaniProduct = () => {
               <p className="mt-4 leading-relaxed text-muted-foreground">{product.ritual}</p>
               <div className="mt-8 border-l-4 border-accent bg-background p-5">
                 <p className="font-bold">Please read before use</p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">This catalogue copy is illustrative, not a substitute for the actual product label or professional health advice. Check the ingredient list and directions on the pack before use.</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Check the product label for the complete ingredient list, serving directions, and important usage information before use.</p>
               </div>
             </div>
           </div>
