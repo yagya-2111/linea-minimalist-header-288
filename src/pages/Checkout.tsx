@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useStore, formatPrice } from "@/context/StoreContext";
 
 const Checkout = () => {
-  const { user, profile, authLoading, cart, products, productPrices, paymentSettings, submitOrder, getProofUrl } = useStore();
+  const { user, profile, authLoading, profileLoading, cart, products, productPrices, paymentSettings, submitOrder, getProofUrl } = useStore();
   const navigate = useNavigate();
   const [proof, setProof] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -52,7 +52,7 @@ const Checkout = () => {
     finally { setBusy(false); }
   };
 
-  if (authLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-6xl px-5 py-20 text-muted-foreground">Loading checkout…</main><Footer /></div>;
+  if (authLoading || profileLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-6xl px-5 py-20 text-muted-foreground">Loading checkout…</main><Footer /></div>;
   if (!user) return <Navigate to="/account?next=%2Fcheckout" replace />;
   if (!profile) return <Navigate to="/account" replace />;
   if (!lines.length) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-3xl px-5 py-20"><h1 className="font-display text-4xl font-extrabold">Your bag is empty</h1><Button asChild className="mt-6"><Link to="/#shop">Explore serums</Link></Button></main><Footer /></div>;
