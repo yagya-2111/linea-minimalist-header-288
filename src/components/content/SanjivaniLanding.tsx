@@ -60,10 +60,10 @@ const SanjivaniLanding = () => {
             <img src={heroImage} alt="Sanjivani Daily Vitality supplement box and jar with amla and ginger" width={1536} height={1152} className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-primary/20 lg:to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-primary-foreground sm:bottom-8 sm:left-8 sm:right-8">
-              <div className="bg-primary/85 p-4 backdrop-blur-sm">
+              <Link to="/products/daily-vitality" className="bg-primary/85 p-4 backdrop-blur-sm">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Start here</p>
                 <p className="mt-1 font-display text-2xl font-bold">Daily Vitality</p>
-              </div>
+              </Link>
               <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">₹699</div>
             </div>
           </div>

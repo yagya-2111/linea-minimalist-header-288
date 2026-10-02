@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,11 @@ const SanjivaniProduct = () => {
   const { slug } = useParams();
   const product = findSanjivaniProduct(slug);
   const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    document.title = product ? `${product.name} | Sanjivani` : "Sanjivani Product Catalogue";
+    setActiveImage(0);
+  }, [product]);
 
   if (!product) {
     return (
@@ -42,9 +47,9 @@ const SanjivaniProduct = () => {
               </div>
               <div className="mt-3 grid grid-cols-4 gap-3">
                 {product.gallery.map((image, index) => (
-                  <button key={image.src} type="button" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`aspect-square overflow-hidden border-2 transition-colors ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
+                  <Button key={image.src} type="button" variant="ghost" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`h-auto w-full rounded-none border-2 p-0 transition-colors hover:bg-transparent ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
                     <img src={image.src} alt={image.alt} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover" />
-                  </button>
+                  </Button>
                 ))}
               </div>
             </section>
