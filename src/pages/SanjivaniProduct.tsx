@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import { useStore, formatPrice } from "@/context/StoreContext";
+import { toast } from "sonner";
 
 const SanjivaniProduct = () => {
   const { slug } = useParams();
+  const { products, productPrices, addToCart } = useStore();
   const product = findSanjivaniProduct(slug);
+  const storeProduct = products.find((item) => item.slug === slug);
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
@@ -31,7 +35,6 @@ const SanjivaniProduct = () => {
     );
   }
 
-  const ratingAverage = product.reviews.reduce((total, review) => total + review.rating, 0) / product.reviews.length;
   const relatedProducts = sanjivaniProducts.filter((item) => item.slug !== product.slug);
 
   return (
@@ -59,16 +62,12 @@ const SanjivaniProduct = () => {
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">{product.name}</h1>
               <p className="mt-3 text-lg text-muted-foreground">{product.tagline}</p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-1 text-accent-strong" aria-label={`${ratingAverage.toFixed(1)} out of 5, sample reviews`}>
-                  {[1, 2, 3, 4, 5].map((star) => <Star key={star} className="h-4 w-4 fill-current" />)}
-                </div>
-                <span className="text-sm font-bold">{ratingAverage.toFixed(1)} / 5</span>
-                <a href="#reviews" className="text-sm text-muted-foreground underline underline-offset-4">{product.reviews.length} sample reviews</a>
+                <span className="text-sm font-semibold text-muted-foreground">Botanical nutritional serum</span>
               </div>
               <div className="mt-7 flex items-end justify-between border-y border-border py-5">
                 <div>
-                  <p className="text-3xl font-extrabold">₹699</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Displayed price · Indian rupees</p>
+                  <p className="text-3xl font-extrabold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Price in Indian rupees</p>
                 </div>
                 <span className="text-sm font-bold text-muted-foreground">{product.ingredients}</span>
               </div>
@@ -76,10 +75,8 @@ const SanjivaniProduct = () => {
               <div className="mt-7 space-y-3">
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
-              <Button asChild size="lg" className="mt-8 h-14 w-full rounded-sm bg-primary font-bold text-primary-foreground hover:bg-primary/90">
-                <a href="#product-details">Explore the blend <ArrowRight /></a>
-              </Button>
-              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">Catalogue preview only. Online ordering and payment are not enabled.</p>
+              {storeProduct?.active !== false ? <Button size="lg" className="mt-8 h-14 w-full rounded-sm bg-primary font-bold text-primary-foreground hover:bg-primary/90" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`); }}><ShoppingBag /> Add to bag</Button> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This serum is currently unavailable.</p>}
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">For ingredients, serving size, and directions, refer to the product label.</p>
             </section>
           </div>
         </div>
@@ -109,36 +106,6 @@ const SanjivaniProduct = () => {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">This catalogue copy is illustrative, not a substitute for the actual product label or professional health advice. Check the ingredient list and directions on the pack before use.</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section id="reviews" className="mx-auto max-w-[1440px] px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
-          <div className="flex flex-col justify-between gap-5 border-b border-border pb-8 md:flex-row md:items-end">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Community notes</p>
-              <h2 className="mt-3 font-display text-4xl font-extrabold">Reviews for {product.name}</h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="font-display text-4xl font-extrabold">{ratingAverage.toFixed(1)}</span>
-              <div><div className="flex gap-1 text-accent-strong">{[1, 2, 3, 4, 5].map((star) => <Star key={star} className="h-4 w-4 fill-current" />)}</div><p className="mt-1 text-xs text-muted-foreground">Illustrative sample ratings</p></div>
-            </div>
-          </div>
-          <div className="border-b border-accent-strong/30 bg-accent/30 px-4 py-3 text-sm font-semibold text-foreground">
-            These 10 reviews and ratings are fictional examples for the site preview, not customer feedback or verified purchases.
-          </div>
-          <div className="grid gap-x-10 md:grid-cols-2">
-            {product.reviews.map((review) => (
-              <article key={review.name} className="border-b border-border py-6">
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-display text-xl font-bold">{review.title}</h3>
-                  <div className="flex shrink-0 gap-0.5 text-accent-strong" aria-label={`${review.rating} out of 5 stars`}>
-                    {[1, 2, 3, 4, 5].map((star) => <Star key={star} className={`h-4 w-4 ${star <= review.rating ? "fill-current" : ""}`} />)}
-                  </div>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">“{review.text}”</p>
-                <p className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{review.name} · fictional sample</p>
-              </article>
-            ))}
           </div>
         </section>
 

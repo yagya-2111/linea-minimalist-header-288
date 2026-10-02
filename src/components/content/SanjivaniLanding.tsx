@@ -1,12 +1,10 @@
-import { useState } from "react";
-import { ArrowRight, Check, Leaf, ShieldCheck, Sparkles, Star, Sun } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowRight, Check, Leaf, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/sanjivani-hero.jpg";
-import gutGlowImage from "@/assets/sanjivani-gut-glow.jpg";
-import dailyGreensImage from "@/assets/sanjivani-daily-greens.jpg";
+import heroImage from "@/assets/sanjivani-daily-vitality-serum.jpg";
+import dailyGreensImage from "@/assets/sanjivani-daily-greens-serum.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import { useStore, formatPrice } from "@/context/StoreContext";
 
 const benefits = [
   { icon: Leaf, title: "Plant-led formulas", copy: "Thoughtful blends made with familiar herbs, fruits and botanicals." },
@@ -15,14 +13,8 @@ const benefits = [
 ];
 
 const SanjivaniLanding = () => {
-  const [email, setEmail] = useState("");
-
-  const joinNewsletter = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!email.trim()) return;
-    toast.success("Thanks for your interest", { description: "Newsletter sign-up is a preview only; your email was not saved." });
-    setEmail("");
-  };
+  const { products, productPrices, addToCart } = useStore();
+  const availableProducts = sanjivaniProducts.filter((catalogueItem) => products.some((item) => item.slug === catalogueItem.slug && item.active !== false));
 
   return (
     <main>
@@ -56,14 +48,14 @@ const SanjivaniLanding = () => {
           </div>
 
           <div className="relative min-h-[440px] overflow-hidden lg:min-h-full">
-            <img src={heroImage} alt="Sanjivani Daily Vitality supplement box and jar with amla and ginger" width={1536} height={1152} className="absolute inset-0 h-full w-full object-cover" />
+            <img src={heroImage} alt="Sanjivani Daily Vitality botanical serum bottle with amla and ginger" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-primary/20 lg:to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-primary-foreground sm:bottom-8 sm:left-8 sm:right-8">
-              <Link to="/products/daily-vitality" className="bg-primary/85 p-4 backdrop-blur-sm">
+            <Link to="/products/daily-vitality" className="bg-primary/85 p-4 backdrop-blur-sm">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Start here</p>
                 <p className="mt-1 font-display text-2xl font-bold">Daily Vitality</p>
               </Link>
-              <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">₹699</div>
+              <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">{formatPrice(productPrices["daily-vitality"] ?? 69900)}</div>
             </div>
           </div>
         </div>
@@ -87,10 +79,10 @@ const SanjivaniLanding = () => {
           <a href="#shop" className="inline-flex items-center gap-2 text-sm font-bold underline decoration-accent decoration-2 underline-offset-8">Shop all blends <ArrowRight className="h-4 w-4" /></a>
         </div>
         <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {sanjivaniProducts.map((product) => (
+            {availableProducts.map((product) => (
             <article key={product.slug} className="group">
               <div className="relative aspect-square overflow-hidden bg-muted">
-                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} supplement`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
+                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
                 <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
@@ -98,9 +90,9 @@ const SanjivaniLanding = () => {
                   <h3 className="font-display text-xl font-bold"><Link to={`/products/${product.slug}`} className="hover:text-accent-strong">{product.name}</Link></h3>
                   <p className="mt-1 text-sm text-muted-foreground">{product.ingredients}</p>
                 </div>
-                <p className="font-bold">₹699</p>
+                <p className="font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
               </div>
-              <Button asChild variant="outline" className="mt-4 w-full rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background"><Link to={`/products/${product.slug}`}>Explore blend <ArrowRight /></Link></Button>
+              <div className="mt-4 grid grid-cols-2 gap-2"><Button asChild variant="outline" className="rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background"><Link to={`/products/${product.slug}`}>Details <ArrowRight /></Link></Button><Button className="rounded-sm font-bold" onClick={() => addToCart(product.slug)}><ShoppingBag /> Add to bag</Button></div>
             </article>
           ))}
         </div>
@@ -148,33 +140,7 @@ const SanjivaniLanding = () => {
         </div>
       </section>
 
-      <section className="bg-accent px-6 py-20 text-accent-foreground lg:py-24">
-        <div className="mx-auto max-w-5xl text-center">
-          <div className="mb-5 flex justify-center gap-1" aria-label="Five star review">
-            {[0, 1, 2, 3, 4].map((item) => <Star key={item} className="h-5 w-5 fill-current" />)}
-          </div>
-          <blockquote className="font-display text-3xl font-extrabold leading-tight sm:text-5xl">“It finally feels like a daily wellness ritual I can actually keep.”</blockquote>
-            <p className="mt-6 text-sm font-bold uppercase tracking-[0.14em]">Illustrative sample quote · not customer feedback</p>
-        </div>
-      </section>
-
-      <section id="newsletter" className="mx-auto max-w-[1440px] px-6 py-20 lg:px-8 lg:py-28">
-        <div className="grid overflow-hidden bg-secondary lg:grid-cols-[1fr_0.8fr]">
-          <div className="px-6 py-12 sm:px-12 lg:px-16 lg:py-16">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">The good stuff, occasionally</p>
-            <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">A little more good in your inbox.</h2>
-            <p className="mt-4 max-w-xl text-muted-foreground">Get thoughtful wellness notes, new blends and offers. Sign-up is a preview only; your email will not be saved.</p>
-            <form onSubmit={joinNewsletter} className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" className="h-14 min-w-0 flex-1 border border-input bg-background px-4 text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring" />
-              <Button type="submit" className="h-14 rounded-sm px-7 font-bold">Join the circle <ArrowRight /></Button>
-            </form>
-          </div>
-          <div className="relative hidden overflow-hidden lg:block">
-            <img src={gutGlowImage} alt="Sanjivani Gut Glow supplement" width={1024} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-          </div>
-        </div>
-      </section>
+      <section className="bg-accent px-6 py-16 text-accent-foreground lg:py-20"><div className="mx-auto flex max-w-5xl flex-col items-center gap-5 text-center"><h2 className="font-display text-3xl font-extrabold sm:text-5xl">Find your daily ritual.</h2><Button asChild size="lg" variant="secondary"><a href="#shop">Explore the serums <ArrowRight /></a></Button></div></section>
     </main>
   );
 };
