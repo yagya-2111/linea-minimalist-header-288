@@ -1,7 +1,10 @@
 # Project Architecture
 
-- The homepage uses a single `SanjivaniLanding` composition to keep the branded supplement story and catalog visually cohesive.
-- Product imagery is imported from local generated assets so the storefront remains reliable without external image dependencies.
-- Product details share one slug-driven catalogue page backed by a single product data source, keeping prices, benefits, galleries, and review disclosures consistent.
-- Keep product-specific copy and image galleries in the shared Sanjivani catalogue data; mark all preview review content as fictional so product pages stay consistent and transparent.
-- Storefront legal pages describe the catalogue preview and must not imply checkout, customer data collection, or business details that have not been provided.
+- The homepage uses a single `SanjivaniLanding` composition so the brand story and live catalogue remain cohesive.
+- Product imagery is imported from local generated assets so storefront media does not depend on external image hosts.
+- Product details use one slug-driven page and shared catalogue data for product copy and image galleries; database prices and availability are authoritative.
+- Authentication and commerce state are shared through `StoreProvider`, while each account, bag, checkout, and admin workflow has its own page.
+- Store permissions live in the separate `user_roles` table and are enforced by database row policies and validation triggers; never treat client state as authorization.
+- Payment proofs and the store QR image stay in private storage with owner/admin access policies.
+- Product reviews must be genuine and verified before being displayed; never create fictional customer statements or ratings.
+- Storefront policies describe the active account, order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
