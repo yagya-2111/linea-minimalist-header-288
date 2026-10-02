@@ -4,5 +4,6 @@
 - [x] Protect order creation, payment review, delivery steps, admin assignment, customer profiles, and private proof access in the database.
 - [x] Replace preview-only legal copy and remove fictional customer reviews.
 - [x] Verify live serum page, bag interactions, route refresh, checkout access guard, and mobile layout.
+- [ ] Add checkout address confirmation before payment, show clearly marked non-payable demo QR/UPI/bank details, and keep order submission disabled until real payment instructions are configured.
 - [ ] Create the first store-owner account with the configured administrator email, then configure real payment details and delivery fee before opening checkout.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
