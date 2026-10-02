@@ -4,9 +4,9 @@ import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-  { label: "Shop", href: "#shop" },
-  { label: "Ingredients", href: "#ingredients" },
-  { label: "Why Sanjivani", href: "#why" },
+  { label: "Shop", href: "/#shop" },
+  { label: "Ingredients", href: "/#ingredients" },
+  { label: "Why Sanjivani", href: "/#why" },
 ];
 
 const Navigation = () => {
@@ -26,7 +26,7 @@ const Navigation = () => {
 
         <div className="hidden items-center gap-8 lg:flex">
           {links.map((link) => (
-            <a key={link.label} href={link.href} className="text-sm font-bold text-nav-foreground transition-colors hover:text-nav-hover">{link.label}</a>
+            <Link key={link.label} to={link.href} className="text-sm font-bold text-nav-foreground transition-colors hover:text-nav-hover">{link.label}</Link>
           ))}
         </div>
 
@@ -41,7 +41,7 @@ const Navigation = () => {
       {menuOpen && (
         <div className="absolute left-0 right-0 top-full z-50 border-b border-border bg-background p-6 lg:hidden">
           <div className="flex flex-col gap-5">
-            {links.map((link) => <a key={link.label} href={link.href} onClick={() => setMenuOpen(false)} className="font-display text-2xl font-bold">{link.label}</a>)}
+            {links.map((link) => <Link key={link.label} to={link.href} onClick={() => setMenuOpen(false)} className="font-display text-2xl font-bold">{link.label}</Link>)}
           </div>
         </div>
       )}
