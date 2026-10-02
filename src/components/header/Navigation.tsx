@@ -7,8 +7,10 @@ import { useStore } from "@/context/StoreContext";
 
 const links = [
   { label: "Shop", href: "/#shop" },
+  { label: "Find your ritual", href: "/#find-your-ritual" },
   { label: "Ingredients", href: "/#ingredients" },
   { label: "Why Sanjivani", href: "/#why" },
+  { label: "FAQs", href: "/#questions" },
 ];
 
 const Navigation = () => {
