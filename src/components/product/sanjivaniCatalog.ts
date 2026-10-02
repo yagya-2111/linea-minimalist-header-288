@@ -19,13 +19,6 @@ import cacaoLifestyle from "@/assets/sanjivani-calm-cacao-2.jpg";
 import cacaoAngle from "@/assets/sanjivani-calm-cacao-3.jpg";
 import cacaoDetail from "@/assets/sanjivani-calm-cacao-4.jpg";
 
-export interface ProductReview {
-  name: string;
-  rating: number;
-  title: string;
-  text: string;
-}
-
 export interface SanjivaniProduct {
   slug: string;
   name: string;
@@ -38,109 +31,85 @@ export interface SanjivaniProduct {
   ingredientsList: { name: string; note: string }[];
   highlights: string[];
   gallery: { src: string; alt: string }[];
-  reviews: ProductReview[];
   active?: boolean;
 }
 
-const sampleReviewers = ["Aanya R.", "Rohan M.", "Meera S.", "Kabir P.", "Ira D.", "Devika N.", "Arjun T.", "Nisha K.", "Samar B.", "Tara V."];
-const sampleReviewTitles = ["A lovely little ritual", "Easy to make", "A flavour I enjoy", "Fits into my day", "A thoughtful blend", "Nicely balanced", "Simple and convenient", "Good in a smoothie", "Pleasant and easy", "A nice everyday option"];
-const createSampleReviews = (flavour: string, preparation: string): ProductReview[] => sampleReviewers.map((name, index) => ({
-  name,
-  rating: index === 1 || index === 3 || index === 6 || index === 8 ? 4 : 5,
-  title: sampleReviewTitles[index],
-  text: [
-    `I like the ${flavour} notes and how easy it is to prepare.`,
-    `The ${preparation} suggestion makes this simple to fit into my routine.`,
-    `A pleasant ${flavour} drink that I enjoy making at home.`,
-    `The flavour feels balanced, and I appreciate the straightforward preparation.`,
-    `I have been enjoying this as an easy addition to my usual drink routine.`,
-    `The ${flavour} notes come through nicely when mixed as directed.`,
-    `A convenient format and an enjoyable taste for a simple daily ritual.`,
-    `I like having another easy way to enjoy a ${flavour} drink.`,
-    `It is quick to prepare and works well with the suggested ${preparation}.`,
-    `An enjoyable blend with a flavour that suits my preferences.`,
-  ][index],
-}));
-
 const createGallery = (name: string, images: [string, string, string, string, string]) => [
-  { src: images[0], alt: `Sanjivani ${name} product packaging, front view` },
-  { src: images[1], alt: `Sanjivani ${name} product packaging, alternate view` },
+  { src: images[0], alt: `Sanjivani ${name} serum bottle, front view` },
+  { src: images[1], alt: `Sanjivani ${name} serum bottle, alternate view` },
   { src: images[2], alt: `Sanjivani ${name} with its botanical ingredients` },
-  { src: images[3], alt: `Sanjivani ${name} carton and jar, studio view` },
+  { src: images[3], alt: `Sanjivani ${name} dropper serum, studio view` },
+  { src: images[4], alt: `Sanjivani ${name} serum bottle detail` },
 ];
 
 export const sanjivaniProducts: SanjivaniProduct[] = [
   {
     slug: "daily-vitality",
     name: "Daily Vitality",
-    tagline: "A bright botanical blend for your everyday ritual.",
+    tagline: "A bright botanical serum for your everyday ritual.",
     ingredients: "Amla · Ginger · Tulsi",
     image: vitalityFront,
     label: "Botanical blend",
-    description: "A lively, plant-led powder bringing together familiar Indian botanicals and a bright, warming flavour. Made to be an easy addition to a daily drink or smoothie.",
-    ritual: "Stir a serving into a glass of water, or blend into your favourite morning smoothie. Follow the directions printed on the product pack.",
+    description: "A lively, plant-led nutritional serum bringing together familiar Indian botanicals and a bright, warming flavour. A simple addition to your daily wellness ritual.",
+    ritual: "Use the serving and preparation directions printed on the product pack. Follow the label carefully.",
     ingredientsList: [
       { name: "Amla", note: "A tart, fruity botanical note." },
       { name: "Ginger", note: "A familiar, warming flavour." },
       { name: "Tulsi", note: "An aromatic herb with a fresh finish." },
     ],
-    highlights: ["Familiar botanical ingredients", "Bright, gently warming flavour", "Easy to mix into water or smoothies"],
+    highlights: ["Familiar botanical ingredients", "Bright, gently warming flavour", "Dropper-bottle serum format"],
     gallery: createGallery("Daily Vitality", [vitalityFront, vitalitySide, vitalityLifestyle, vitalityAngle, vitalityDetail]),
-    reviews: createSampleReviews("bright amla and warming ginger", "water or a smoothie"),
   },
   {
     slug: "gut-glow",
     name: "Gut Glow",
-    tagline: "A zesty citrus and ginger blend for a refreshing daily drink.",
+    tagline: "A zesty citrus and ginger serum for your daily ritual.",
     ingredients: "Citrus · Ginger · Fibre",
     image: gutFront,
     label: "Citrus ritual",
-    description: "A bright-tasting blend of citrus, ginger and fibre, created for an uncomplicated drink ritual. Mix it with water for a refreshing citrus-forward sip.",
-    ritual: "Stir a serving into cool or room-temperature water until smooth. Follow the directions printed on the product pack.",
+    description: "A bright-tasting nutritional serum with citrus, ginger and fibre, created for an uncomplicated daily wellness ritual.",
+    ritual: "Use the serving and preparation directions printed on the product pack. Follow the label carefully.",
     ingredientsList: [
       { name: "Citrus", note: "Adds a bright, tangy flavour." },
       { name: "Ginger", note: "Brings a gentle, warming note." },
       { name: "Fibre", note: "A considered part of this botanical blend." },
     ],
-    highlights: ["Citrus-forward flavour", "A simple water-mix ritual", "Made with familiar pantry botanicals"],
+    highlights: ["Citrus-forward flavour", "A simple daily ritual", "Dropper-bottle serum format"],
     gallery: createGallery("Gut Glow", [gutFront, gutSide, gutLifestyle, gutAngle, gutDetail]),
-    reviews: createSampleReviews("zesty citrus and ginger", "cool water"),
   },
   {
     slug: "daily-greens",
     name: "Daily Greens",
-    tagline: "A fresh, garden-inspired greens blend for everyday sipping.",
+    tagline: "A fresh, garden-inspired greens serum for every day.",
     ingredients: "Moringa · Amla · Mint",
     image: greensFront,
     label: "Everyday greens",
-    description: "A green, botanical blend pairing moringa and amla with a cooling hint of mint. Designed for easy mixing into water or a smoothie.",
-    ritual: "Shake or stir a serving into water, or add to a smoothie. Follow the directions printed on the product pack.",
+    description: "A green, botanical nutritional serum pairing moringa and amla with a cooling hint of mint, designed for an easy wellness ritual.",
+    ritual: "Use the serving and preparation directions printed on the product pack. Follow the label carefully.",
     ingredientsList: [
       { name: "Moringa", note: "A leafy, earthy botanical note." },
       { name: "Amla", note: "A tart fruit note to balance the greens." },
       { name: "Mint", note: "A cool, fresh finish." },
     ],
-    highlights: ["Fresh mint finish", "Amla and leafy botanical notes", "Easy to add to a smoothie"],
+    highlights: ["Fresh mint finish", "Amla and leafy botanical notes", "Dropper-bottle serum format"],
     gallery: createGallery("Daily Greens", [greensFront, greensSide, greensLifestyle, greensAngle, greensDetail]),
-    reviews: createSampleReviews("fresh mint and leafy greens", "a smoothie"),
   },
   {
     slug: "calm-cacao",
     name: "Calm Cacao",
-    tagline: "A cosy cacao, cinnamon and botanical evening blend.",
+    tagline: "A cosy cacao, cinnamon and botanical evening serum.",
     ingredients: "Cacao · Ashwagandha · Cinnamon",
     image: cacaoFront,
     label: "Evening ritual",
-    description: "A rich cacao drink blend with warming cinnamon and a botanical touch. Made for a comforting, unhurried drink whenever it suits your routine.",
-    ritual: "Whisk a serving into warm milk or your preferred plant-based drink. Follow the directions printed on the product pack.",
+    description: "A rich, plant-led nutritional serum with warming cinnamon and a botanical touch, made for an unhurried wellness ritual.",
+    ritual: "Use the serving and preparation directions printed on the product pack. Follow the label carefully.",
     ingredientsList: [
       { name: "Cacao", note: "A rich, chocolatey base." },
       { name: "Cinnamon", note: "A familiar warming spice." },
       { name: "Ashwagandha", note: "A botanical ingredient in the blend." },
     ],
-    highlights: ["Rich cacao flavour", "A warming cinnamon finish", "Enjoy warm or blended into a drink"],
+    highlights: ["Rich cacao flavour", "A warming cinnamon finish", "Dropper-bottle serum format"],
     gallery: createGallery("Calm Cacao", [cacaoFront, cacaoSide, cacaoLifestyle, cacaoAngle, cacaoDetail]),
-    reviews: createSampleReviews("rich cacao and warming cinnamon", "a warm drink"),
   },
 ];
 
