@@ -1,5 +1,7 @@
-import { ArrowRight, Check, Leaf, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, BadgeCheck, Check, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/sanjivani-daily-vitality-serum.jpg";
 import dailyGreensImage from "@/assets/sanjivani-daily-greens-serum.jpg";
@@ -12,26 +14,41 @@ const benefits = [
   { icon: Sun, title: "Made for every day", copy: "Easy rituals designed to fit naturally into your routine." },
 ];
 
+const ritualChoices = [
+  { slug: "daily-vitality", label: "Bright & lively", note: "Amla, ginger and tulsi" },
+  { slug: "daily-greens", label: "Fresh & green", note: "Moringa, amla and mint" },
+  { slug: "gut-glow", label: "Zesty & bright", note: "Citrus, ginger and fibre" },
+  { slug: "calm-cacao", label: "Warm & cosy", note: "Cacao, cinnamon and botanicals" },
+];
+
+const shoppingSteps = [
+  { icon: Leaf, title: "Choose your blend", copy: "Explore the four Sanjivani botanical serums." },
+  { icon: CreditCard, title: "Confirm and pay online", copy: "Add delivery details, then follow the payment instructions at checkout." },
+  { icon: PackageCheck, title: "Follow your order", copy: "Sign in to see payment review and delivery progress in your account." },
+];
+
 const SanjivaniLanding = () => {
   const { products, productPrices, addToCart } = useStore();
+  const [selectedRitual, setSelectedRitual] = useState(ritualChoices[0].slug);
   const availableProducts = products.flatMap((item) => {
     if (item.active === false) return [];
     const catalogueItem = sanjivaniProducts.find((entry) => entry.slug === item.slug);
     return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
   });
+  const selectedProduct = availableProducts.find((product) => product.slug === selectedRitual);
 
   return (
     <main>
       <section className="px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-24">
-        <div className="relative mx-auto grid min-h-[calc(100vh-7.5rem)] max-w-[1440px] overflow-hidden rounded-lg bg-primary text-primary-foreground lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="relative z-10 flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-16 lg:py-20 xl:px-24">
+        <div className="relative mx-auto grid min-h-[min(760px,calc(100vh-7.5rem))] max-w-[1440px] overflow-hidden rounded-lg bg-primary text-primary-foreground lg:grid-cols-[1.02fr_0.98fr]">
+          <div className="relative z-10 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 lg:py-16 xl:px-24">
             <div className="mb-7 flex items-center gap-4 text-accent">
               <span className="h-px w-12 bg-accent" />
               <span className="text-xs font-bold uppercase tracking-[0.2em]">Plant-powered daily nutrition</span>
             </div>
-            <h1 className="max-w-3xl font-display text-6xl font-extrabold leading-[0.94] sm:text-7xl lg:text-[5.8rem]">
+            <h1 className="max-w-3xl font-display text-5xl font-extrabold leading-[0.98] sm:text-7xl lg:text-[5.25rem]">
               Feel good,
-              <span className="mt-2 block text-accent">every day.</span>
+              <span className="block text-accent">every day.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-primary-foreground/75 sm:text-xl">
               Botanical nutritional serums inspired by India’s rich traditions. Clear ingredients, bold flavours, simple rituals.
@@ -61,6 +78,40 @@ const SanjivaniLanding = () => {
               </Link>
               <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">{formatPrice(productPrices["daily-vitality"] ?? 69900)}</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="find-your-ritual" className="border-y border-border bg-secondary px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">A simple place to start</p>
+            <h2 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">Find a flavour for your ritual.</h2>
+            <p className="mt-4 max-w-lg leading-relaxed text-muted-foreground">Choose the taste that sounds right to you. Explore its ingredients and product details before you decide.</p>
+          </div>
+          <div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Choose a serum flavour">
+              {ritualChoices.map((choice) => (
+                <Button key={choice.slug} type="button" variant={selectedRitual === choice.slug ? "default" : "outline"} aria-pressed={selectedRitual === choice.slug} onClick={() => setSelectedRitual(choice.slug)} className="h-auto min-h-16 whitespace-normal rounded-sm px-3 py-3 text-center text-sm font-bold">
+                  {choice.label}
+                </Button>
+              ))}
+            </div>
+            {selectedProduct && (
+              <div className="mt-4 grid gap-4 border-t border-border pt-5 sm:grid-cols-[88px_1fr_auto] sm:items-center">
+                <Link to={`/products/${selectedProduct.slug}`} aria-label={`Explore ${selectedProduct.name}`} className="aspect-square overflow-hidden bg-background">
+                  <img src={selectedProduct.image} alt={`${selectedProduct.name} botanical serum`} width={256} height={256} loading="lazy" className="h-full w-full object-cover" />
+                </Link>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-accent-strong">{ritualChoices.find((choice) => choice.slug === selectedProduct.slug)?.note}</p>
+                  <Link to={`/products/${selectedProduct.slug}`} className="mt-1 block font-display text-2xl font-bold hover:text-accent-strong">{selectedProduct.name}</Link>
+                  <p className="mt-1 text-sm text-muted-foreground">{selectedProduct.tagline}</p>
+                </div>
+                <Button asChild variant="outline" className="rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background">
+                  <Link to={`/products/${selectedProduct.slug}`}>Explore blend <ArrowRight /></Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -142,6 +193,53 @@ const SanjivaniLanding = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="border-y border-border bg-background px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mx-auto max-w-[1280px]">
+          <div className="max-w-2xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">From browsing to delivery</p>
+            <h2 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">A clear way to shop.</h2>
+          </div>
+          <div className="mt-10 grid gap-px bg-border md:grid-cols-3">
+            {shoppingSteps.map(({ icon: Icon, title, copy }, index) => (
+              <article key={title} className="bg-background p-7 sm:p-9">
+                <div className="flex items-center justify-between">
+                  <Icon className="h-7 w-7 text-accent-strong" />
+                  <span className="font-display text-2xl font-bold text-accent-strong">0{index + 1}</span>
+                </div>
+                <h3 className="mt-8 font-display text-2xl font-bold">{title}</h3>
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-[1280px] gap-10 px-6 py-16 lg:grid-cols-[0.72fr_1.28fr] lg:px-8 lg:py-24">
+        <div>
+          <BadgeCheck className="h-8 w-8 text-accent-strong" />
+          <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Good to know</p>
+          <h2 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">Your questions, answered.</h2>
+        </div>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="product-guidance">
+            <AccordionTrigger className="text-left font-display text-lg font-bold">Where can I find serving directions?</AccordionTrigger>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Follow the serving and preparation directions printed on the product pack. Product pages also remind you to follow the label carefully.</AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="payment-methods">
+            <AccordionTrigger className="text-left font-display text-lg font-bold">Can I place a cash-on-delivery order?</AccordionTrigger>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Orders are online-payment only. Checkout shows the available payment instructions before you submit an order.</AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="order-tracking">
+            <AccordionTrigger className="text-left font-display text-lg font-bold">Where can I see my order updates?</AccordionTrigger>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Sign in and open your account to view your order history, payment review, and delivery progress.</AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="payment-review">
+            <AccordionTrigger className="text-left font-display text-lg font-bold">What happens after I place an order?</AccordionTrigger>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Your order and payment proof are available for store review. You can check the latest payment and delivery status in your account.</AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
 
       <section className="bg-accent px-6 py-16 text-accent-foreground lg:py-20"><div className="mx-auto flex max-w-5xl flex-col items-center gap-5 text-center"><h2 className="font-display text-3xl font-extrabold sm:text-5xl">Find your daily ritual.</h2><Button asChild size="lg" variant="secondary"><a href="#shop">Explore the serums <ArrowRight /></a></Button></div></section>
