@@ -4,6 +4,6 @@
 - [x] Protect order creation, payment review, delivery steps, admin assignment, customer profiles, and private proof access in the database.
 - [x] Replace preview-only legal copy and remove fictional customer reviews.
 - [x] Verify live serum page, bag interactions, route refresh, checkout access guard, and mobile layout.
-- [x] Add checkout address confirmation before payment, show clearly marked non-payable demo QR, and configure owner-provided UPI/bank transfers with screenshot submission and admin order review.
+- [x] Add checkout address confirmation before payment, show clearly marked non-payable demo QR, configure Yagya-provided UPI/bank transfers, and retain submitted order details and private screenshots for admin review.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
