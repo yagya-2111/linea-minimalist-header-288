@@ -24,7 +24,7 @@ const Checkout = () => {
   const subtotal = lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
   const shipping = paymentSettings?.shipping_paise ?? 0;
   const qrPath = paymentSettings?.qr_image_path;
-  const hasPaymentDetails = Boolean(paymentSettings?.checkout_enabled && (paymentSettings.upi_id || paymentSettings.account_number));
+  const hasPaymentDetails = Boolean(paymentSettings?.checkout_enabled && paymentSettings.shipping_paise != null && (paymentSettings.upi_id.trim() || paymentSettings.account_number.trim()));
 
   useEffect(() => {
     if (!qrPath) { setQrUrl(null); return; }
