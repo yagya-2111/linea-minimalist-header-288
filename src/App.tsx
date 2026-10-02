@@ -16,6 +16,7 @@ import CustomerCare from "./pages/about/CustomerCare";
 import StoreLocator from "./pages/about/StoreLocator";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import SanjivaniProduct from "./pages/SanjivaniProduct";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/category/:category" element={<Category />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/products/:slug" element={<SanjivaniProduct />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/about/our-story" element={<OurStory />} />
           <Route path="/about/sustainability" element={<Sustainability />} />

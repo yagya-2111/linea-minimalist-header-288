@@ -2,41 +2,12 @@ import { useState } from "react";
 import { ArrowRight, Check, Leaf, ShieldCheck, Sparkles, Star, Sun } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/sanjivani-hero.jpg";
 import gutGlowImage from "@/assets/sanjivani-gut-glow.jpg";
 import dailyGreensImage from "@/assets/sanjivani-daily-greens.jpg";
 import calmCacaoImage from "@/assets/sanjivani-calm-cacao.jpg";
-
-const products = [
-  {
-    name: "Daily Vitality",
-    detail: "Amla · Ginger · Tulsi",
-    price: "₹1,299",
-    image: heroImage,
-    label: "Bestseller",
-  },
-  {
-    name: "Gut Glow",
-    detail: "Citrus · Ginger · Fibre",
-    price: "₹1,099",
-    image: gutGlowImage,
-    label: "Daily digestion",
-  },
-  {
-    name: "Daily Greens",
-    detail: "Moringa · Amla · Mint",
-    price: "₹1,199",
-    image: dailyGreensImage,
-    label: "Everyday greens",
-  },
-  {
-    name: "Calm Cacao",
-    detail: "Cacao · Ashwagandha · Cinnamon",
-    price: "₹1,249",
-    image: calmCacaoImage,
-    label: "Evening ritual",
-  },
-];
+import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 
 const benefits = [
   { icon: Leaf, title: "Plant-led formulas", copy: "Thoughtful blends made with familiar herbs, fruits and botanicals." },
@@ -47,14 +18,10 @@ const benefits = [
 const SanjivaniLanding = () => {
   const [email, setEmail] = useState("");
 
-  const addToBag = (name: string) => {
-    toast.success(`${name} added to your bag`);
-  };
-
   const joinNewsletter = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email.trim()) return;
-    toast.success("Welcome to the Sanjivani circle");
+    toast.success("Thanks for your interest", { description: "Newsletter sign-up is a preview only; your email was not saved." });
     setEmail("");
   };
 
@@ -97,7 +64,7 @@ const SanjivaniLanding = () => {
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Start here</p>
                 <p className="mt-1 font-display text-2xl font-bold">Daily Vitality</p>
               </div>
-              <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">₹1,299</div>
+              <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">₹699</div>
             </div>
           </div>
         </div>
@@ -121,20 +88,20 @@ const SanjivaniLanding = () => {
           <a href="#shop" className="inline-flex items-center gap-2 text-sm font-bold underline decoration-accent decoration-2 underline-offset-8">Shop all blends <ArrowRight className="h-4 w-4" /></a>
         </div>
         <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product) => (
-            <article key={product.name} className="group">
+          {sanjivaniProducts.map((product) => (
+            <article key={product.slug} className="group">
               <div className="relative aspect-square overflow-hidden bg-muted">
-                <img src={product.image} alt={`Sanjivani ${product.name} supplement`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} supplement`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
                 <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-display text-xl font-bold">{product.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{product.detail}</p>
+                  <h3 className="font-display text-xl font-bold"><Link to={`/products/${product.slug}`} className="hover:text-accent-strong">{product.name}</Link></h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{product.ingredients}</p>
                 </div>
-                <p className="font-bold">{product.price}</p>
+                <p className="font-bold">₹699</p>
               </div>
-              <Button onClick={() => addToBag(product.name)} variant="outline" className="mt-4 w-full rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background">Add to bag</Button>
+              <Button asChild variant="outline" className="mt-4 w-full rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background"><Link to={`/products/${product.slug}`}>Explore blend <ArrowRight /></Link></Button>
             </article>
           ))}
         </div>
@@ -188,16 +155,16 @@ const SanjivaniLanding = () => {
             {[0, 1, 2, 3, 4].map((item) => <Star key={item} className="h-5 w-5 fill-current" />)}
           </div>
           <blockquote className="font-display text-3xl font-extrabold leading-tight sm:text-5xl">“It finally feels like a daily wellness ritual I can actually keep.”</blockquote>
-          <p className="mt-6 text-sm font-bold uppercase tracking-[0.14em]">Aarushi · Verified customer</p>
+            <p className="mt-6 text-sm font-bold uppercase tracking-[0.14em]">Illustrative sample quote · not customer feedback</p>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1440px] px-6 py-20 lg:px-8 lg:py-28">
+      <section id="newsletter" className="mx-auto max-w-[1440px] px-6 py-20 lg:px-8 lg:py-28">
         <div className="grid overflow-hidden bg-secondary lg:grid-cols-[1fr_0.8fr]">
           <div className="px-6 py-12 sm:px-12 lg:px-16 lg:py-16">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">The good stuff, occasionally</p>
-            <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">Save 10% on your first daily ritual.</h2>
-            <p className="mt-4 max-w-xl text-muted-foreground">Join for thoughtful wellness notes, new blends and offers.</p>
+            <h2 className="mt-4 max-w-2xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">A little more good in your inbox.</h2>
+            <p className="mt-4 max-w-xl text-muted-foreground">Get thoughtful wellness notes, new blends and offers. Sign-up is a preview only; your email will not be saved.</p>
             <form onSubmit={joinNewsletter} className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
               <label htmlFor="email" className="sr-only">Email address</label>
               <input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" className="h-14 min-w-0 flex-1 border border-input bg-background px-4 text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring" />
