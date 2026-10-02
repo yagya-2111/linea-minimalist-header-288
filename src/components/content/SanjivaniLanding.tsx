@@ -216,7 +216,7 @@ const SanjivaniLanding = () => {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[1280px] gap-10 px-6 py-16 lg:grid-cols-[0.72fr_1.28fr] lg:px-8 lg:py-24">
+      <section id="questions" className="mx-auto grid max-w-[1280px] gap-10 px-6 py-16 lg:grid-cols-[0.72fr_1.28fr] lg:px-8 lg:py-24">
         <div>
           <BadgeCheck className="h-8 w-8 text-accent-strong" />
           <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Good to know</p>
