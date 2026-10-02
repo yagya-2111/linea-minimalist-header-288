@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import { useStore } from "@/context/StoreContext";
 
 const links = [
   { label: "Shop", href: "/#shop" },
@@ -11,6 +12,8 @@ const links = [
 ];
 
 const Navigation = () => {
+  const { cart } = useStore();
+  const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +40,9 @@ const Navigation = () => {
 
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" onClick={() => setSearchOpen((open) => !open)} aria-label="Search"><Search /></Button>
-          <Button asChild variant="outline" className="ml-2 hidden rounded-sm font-bold sm:inline-flex"><Link to="/#shop">Shop blends</Link></Button>
+          <Button asChild variant="ghost" size="icon" aria-label="Your account"><Link to="/account"><UserRound /></Link></Button>
+          <Button asChild variant="ghost" size="icon" aria-label={`Shopping bag, ${cartCount} items`} className="relative"><Link to="/bag"><ShoppingBag />{cartCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-extrabold text-accent-foreground">{cartCount}</span>}</Link></Button>
+          <Button asChild variant="outline" className="ml-2 hidden rounded-sm font-bold sm:inline-flex"><Link to="/#shop">Shop serums</Link></Button>
         </div>
       </div>
 

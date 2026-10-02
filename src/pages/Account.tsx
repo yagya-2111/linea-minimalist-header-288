@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Check, Clock3, PackageCheck, ShieldCheck, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +22,10 @@ const Account = () => {
   const [password, setPassword] = useState("");
   const [details, setDetails] = useState<CustomerFields>(emptyCustomer);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (profile) setDetails({ ...profile, alternate_phone: profile.alternate_phone ?? "", address_line2: profile.address_line2 ?? "", landmark: profile.landmark ?? "" });
+  }, [profile]);
 
   const formError = (error: unknown) => toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.");
   const handleAuth = async (event: React.FormEvent<HTMLFormElement>) => {
