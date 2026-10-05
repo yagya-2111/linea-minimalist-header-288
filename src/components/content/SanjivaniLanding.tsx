@@ -37,6 +37,7 @@ const SanjivaniLanding = () => {
     return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
   });
   const selectedProduct = availableProducts.find((product) => product.slug === selectedRitual);
+  const startingPrice = availableProducts.length ? Math.min(...availableProducts.map((product) => productPrices[product.slug] ?? 69900)) : 69900;
 
   return (
     <main>
@@ -44,7 +45,7 @@ const SanjivaniLanding = () => {
         <img src={heroImage} alt="Sanjivani Daily Vitality botanical serum with amla and ginger" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover object-[66%_center] sm:object-center" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/10 sm:to-transparent" />
         <div className="relative mx-auto flex min-h-[570px] max-w-[1440px] flex-col justify-center px-6 py-14 sm:min-h-[620px] sm:px-10 lg:px-16">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-accent">Four botanical serums · From {formatPrice(Math.min(...Object.values(productPrices).filter((price) => price > 0), 69900))}</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-accent">Botanical serums · From {formatPrice(startingPrice)}</p>
           <h1 className="mt-5 max-w-2xl font-display text-5xl font-extrabold leading-tight sm:text-7xl">Sanjivani.<span className="mt-1 block text-accent">Your daily ritual, bottled.</span></h1>
           <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-primary-foreground/90 sm:text-lg">Explore four distinct botanical serum blends. Pick the flavour that fits your day and shop directly.</p>
           <div className="mt-8 flex flex-wrap gap-3">
