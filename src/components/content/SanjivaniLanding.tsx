@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, BadgeCheck, Check, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
+import { ArrowRight, BadgeCheck, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
@@ -64,7 +64,7 @@ const SanjivaniLanding = () => {
           <p className="text-sm font-semibold text-muted-foreground">Four blends. One straightforward price.</p>
         </div>
         <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {availableProducts.map((product) => (
+          {availableProducts.map((product) => (
             <article key={product.slug} className="group">
               <div className="relative aspect-square overflow-hidden bg-muted">
                 <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
