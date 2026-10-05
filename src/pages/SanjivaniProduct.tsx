@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import Serum3DViewer from "@/components/product/Serum3DViewer";
 import { useStore, formatPrice } from "@/context/StoreContext";
 import { toast } from "sonner";
 
@@ -16,6 +17,7 @@ const SanjivaniProduct = () => {
   const productName = storeProduct?.name ?? product?.name;
   const productDescription = storeProduct?.description || product?.description;
   const [activeImage, setActiveImage] = useState(0);
+  const [view3D, setView3D] = useState(false);
 
   useEffect(() => {
     document.title = productName ? `${productName} | Sanjivani` : "Sanjivani Product Catalogue";
@@ -23,6 +25,7 @@ const SanjivaniProduct = () => {
 
   useEffect(() => {
     setActiveImage(0);
+    setView3D(false);
   }, [slug]);
 
   if (!product) {
@@ -50,17 +53,21 @@ const SanjivaniProduct = () => {
           <Link to="/#shop" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="h-4 w-4" /> All blends</Link>
           <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <section aria-label={`${product.name} product images`}>
+              <div className="mb-3 flex items-center gap-2" role="group" aria-label="Product view">
+                <Button type="button" size="sm" variant={!view3D ? "default" : "outline"} aria-pressed={!view3D} onClick={() => setView3D(false)} className="rounded-sm font-bold">Photos</Button>
+                <Button type="button" size="sm" variant={view3D ? "default" : "outline"} aria-pressed={view3D} onClick={() => setView3D(true)} className="rounded-sm font-bold">3D view</Button>
+              </div>
               <div className="group relative aspect-square overflow-hidden bg-muted">
-                <img key={product.gallery[activeImage].src} src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="product-gallery-image h-full w-full object-cover" />
-                <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+                {view3D ? <Serum3DViewer slug={product.slug} className="h-full w-full" /> : <img key={product.gallery[activeImage].src} src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="product-gallery-image h-full w-full object-cover" />}
+                {!view3D && <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
                   <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Previous product image" onClick={() => setActiveImage((index) => (index + product.gallery.length - 1) % product.gallery.length)}><ChevronLeft /></Button>
                   <span className="bg-background/95 px-3 py-2 text-xs font-bold tabular-nums text-foreground">{activeImage + 1} / {product.gallery.length}</span>
                   <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Next product image" onClick={() => setActiveImage((index) => (index + 1) % product.gallery.length)}><ChevronRight /></Button>
-                </div>
+                </div>}
               </div>
               <div className="mt-3 grid grid-cols-4 gap-3">
                 {product.gallery.map((image, index) => (
-                  <Button key={image.src} type="button" variant="ghost" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`aspect-square h-auto w-full overflow-hidden rounded-none border-2 p-0 transition-colors hover:bg-transparent ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
+                  <Button key={image.src} type="button" variant="ghost" onClick={() => { setActiveImage(index); setView3D(false); }} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={!view3D && activeImage === index} className={`aspect-square h-auto w-full overflow-hidden rounded-none border-2 p-0 transition-colors hover:bg-transparent ${!view3D && activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
                     <img src={image.src} alt={image.alt} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover" />
                   </Button>
                 ))}

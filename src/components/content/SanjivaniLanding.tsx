@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import heroImage from "@/assets/sanjivani-daily-vitality-serum.jpg";
 import dailyGreensImage from "@/assets/sanjivani-daily-greens-serum.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import Serum3DViewer from "@/components/product/Serum3DViewer";
 import { useStore, formatPrice } from "@/context/StoreContext";
 
 const benefits = [
@@ -85,6 +86,22 @@ const SanjivaniLanding = () => {
           ))}
         </div>
       </section>
+
+      {availableProducts.length > 0 && <section className="border-y border-border bg-secondary px-4 py-14 sm:px-6 lg:px-8 lg:py-20" aria-label="Explore Sanjivani bottles in 3D">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+            <div><p className="text-xs font-bold uppercase text-accent-strong">The collection, up close</p><h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">Meet your next ritual.</h2></div>
+            <p className="max-w-sm text-sm text-muted-foreground">Explore the bottles from every side. Actual product details are on each serum page.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {availableProducts.map((product) => <article key={product.slug} className="min-w-0">
+              <Serum3DViewer slug={product.slug} className="aspect-[4/5] w-full" />
+              <div className="mt-4 flex items-center justify-between gap-2"><Link to={`/products/${product.slug}`} className="font-display text-lg font-bold hover:text-accent-strong">{product.name}</Link><span className="shrink-0 font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</span></div>
+              <Button asChild className="mt-3 w-full rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button>
+            </article>)}
+          </div>
+        </div>
+      </section>}
 
       <section id="find-your-ritual" className="border-y border-border bg-secondary px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
