@@ -34,6 +34,13 @@
     --accent: 42 80% 68%;
     --accent-foreground: 20 51% 19%;
     --accent-strong: 10 74% 54%;
+    --serum-label: 42 55% 96%;
+    --serum-glass: 27 70% 23%;
+    --serum-cap: 20 20% 12%;
+    --serum-vitality: 34 73% 39%;
+    --serum-gut: 24 79% 48%;
+    --serum-greens: 110 38% 29%;
+    --serum-cacao: 20 50% 31%;
     
     --border: 25 28% 77%;
     --input: 25 28% 72%;
@@ -95,6 +102,13 @@
     
     --accent: 0 0% 15%;
     --accent-foreground: 0 0% 98%;
+    --serum-label: 42 32% 88%;
+    --serum-glass: 27 70% 23%;
+    --serum-cap: 20 20% 12%;
+    --serum-vitality: 34 73% 39%;
+    --serum-gut: 24 79% 48%;
+    --serum-greens: 110 38% 29%;
+    --serum-cacao: 20 50% 31%;
     
     --border: 0 0% 20%;
     --input: 0 0% 20%;

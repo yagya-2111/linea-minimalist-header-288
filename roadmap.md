@@ -9,5 +9,6 @@
 - [x] Refresh the storefront with a selectable serum ritual finder, shopping-flow overview, linked FAQs, and a more balanced first-screen layout.
 - [x] Bring products directly below the opening image, show prominent price and dual Add to bag / Buy now actions, and let Buy now purchase one serum without changing the customer's saved bag.
 - [x] Add a contextual mobile purchase bar throughout the store and lightweight dimensional product-image motion with accessible gallery navigation.
+- [x] Add interactive 3D serum bottle previews to the collection and each product page while keeping real product photos visible and purchase actions immediate.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
