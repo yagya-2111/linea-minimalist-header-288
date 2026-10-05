@@ -9,8 +9,9 @@ const MobileBuyBar = () => {
   const { pathname } = useLocation();
   const { products, productPrices, cart, addToCart } = useStore();
   const slug = pathname.startsWith("/products/") ? pathname.split("/")[2] : "daily-vitality";
-  const product = sanjivaniProducts.find((item) => item.slug === slug && products.some((available) => available.slug === slug && available.active !== false))
-    ?? sanjivaniProducts.find((item) => products.some((available) => available.slug === item.slug && available.active !== false));
+  const product = pathname.startsWith("/products/")
+    ? sanjivaniProducts.find((item) => item.slug === slug && products.some((available) => available.slug === slug && available.active !== false))
+    : sanjivaniProducts.find((item) => products.some((available) => available.slug === item.slug && available.active !== false));
   const bagCount = cart.reduce((total, line) => total + line.quantity, 0);
 
   if (pathname === "/checkout") return <aside aria-label="Mobile checkout bar" className="mobile-buy-bar">

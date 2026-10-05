@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
@@ -50,12 +50,17 @@ const SanjivaniProduct = () => {
           <Link to="/#shop" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="h-4 w-4" /> All blends</Link>
           <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <section aria-label={`${product.name} product images`}>
-              <div className="aspect-square overflow-hidden bg-muted">
-                <img src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="h-full w-full object-cover" />
+              <div className="group relative aspect-square overflow-hidden bg-muted">
+                <img key={product.gallery[activeImage].src} src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="product-gallery-image h-full w-full object-cover" />
+                <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+                  <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Previous product image" onClick={() => setActiveImage((index) => (index + product.gallery.length - 1) % product.gallery.length)}><ChevronLeft /></Button>
+                  <span className="bg-background/95 px-3 py-2 text-xs font-bold tabular-nums text-foreground">{activeImage + 1} / {product.gallery.length}</span>
+                  <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Next product image" onClick={() => setActiveImage((index) => (index + 1) % product.gallery.length)}><ChevronRight /></Button>
+                </div>
               </div>
               <div className="mt-3 grid grid-cols-4 gap-3">
                 {product.gallery.map((image, index) => (
-                  <Button key={image.src} type="button" variant="ghost" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`h-auto w-full rounded-none border-2 p-0 transition-colors hover:bg-transparent ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
+                  <Button key={image.src} type="button" variant="ghost" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`aspect-square h-auto w-full overflow-hidden rounded-none border-2 p-0 transition-colors hover:bg-transparent ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
                     <img src={image.src} alt={image.alt} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover" />
                   </Button>
                 ))}

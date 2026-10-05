@@ -66,9 +66,9 @@ const SanjivaniLanding = () => {
         </div>
         <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {availableProducts.map((product) => (
-            <article key={product.slug} className="group">
+            <article key={product.slug} className="product-card group">
               <div className="relative aspect-square overflow-hidden bg-muted">
-                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
+                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="product-card-image h-full w-full object-cover" /></Link>
                 <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
