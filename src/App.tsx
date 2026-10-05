@@ -14,6 +14,7 @@ import ShoppingBag from "./pages/ShoppingBag";
 import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import { StoreProvider } from "./context/StoreContext";
+import MobileBuyBar from "./components/MobileBuyBar";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,7 @@ const App = () => (
       <BrowserRouter>
         <StoreProvider>
           <ScrollToTop />
-          <Routes>
+          <div className="pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:pb-0"><Routes>
             <Route path="/" element={<Index />} />
             <Route path="/products/:slug" element={<SanjivaniProduct />} />
             <Route path="/account" element={<Account />} />
@@ -35,7 +36,8 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
+          </Routes></div>
+          <MobileBuyBar />
         </StoreProvider>
       </BrowserRouter>
     </TooltipProvider>
