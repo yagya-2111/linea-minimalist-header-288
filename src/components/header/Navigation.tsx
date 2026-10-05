@@ -7,7 +7,7 @@ import { useStore } from "@/context/StoreContext";
 
 const links = [
   { label: "Shop", href: "/#shop" },
-  { label: "Find your ritual", href: "/#find-your-ritual" },
+  { label: "Find your blend", href: "/#find-your-ritual" },
   { label: "Ingredients", href: "/#ingredients" },
   { label: "Why Sanjivani", href: "/#why" },
   { label: "FAQs", href: "/#questions" },
@@ -45,7 +45,7 @@ const Navigation = () => {
           <Button variant="ghost" size="icon" onClick={() => setSearchOpen((open) => !open)} aria-label="Search"><Search /></Button>
           <Button asChild variant="ghost" size="icon" aria-label="Your account"><Link to="/account"><UserRound /></Link></Button>
           <Button asChild variant="ghost" size="icon" aria-label={`Shopping bag, ${cartCount} items`} className="relative"><Link to="/bag"><ShoppingBag />{cartCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center bg-accent px-1 text-[10px] font-extrabold text-accent-foreground">{cartCount}</span>}</Link></Button>
-          <Button asChild variant="outline" className="ml-2 hidden rounded-sm font-bold sm:inline-flex"><Link to="/#shop">Shop serums</Link></Button>
+          <Button asChild className="ml-2 hidden rounded-sm font-bold sm:inline-flex"><Link to="/#shop">Shop serums <ShoppingBag className="ml-1 h-4 w-4" /></Link></Button>
         </div>
       </div>
 

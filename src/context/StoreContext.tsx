@@ -80,7 +80,7 @@ type StoreContextValue = {
   setQuantity: (slug: string, quantity: number) => void;
   clearCart: () => void;
   reloadStoreData: () => Promise<void>;
-  submitOrder: (proof: File) => Promise<string>;
+  submitOrder: (proof: File, buySlug?: string) => Promise<string>;
   updateOrder: (id: string, update: Partial<Pick<StoreOrder, "payment_status" | "status" | "tracking_number" | "admin_note">>) => Promise<void>;
   updatePaymentSettings: (settings: PaymentSettings) => Promise<void>;
   updateProduct: (slug: string, update: Pick<ProductRow, "name" | "description" | "price_paise" | "active">) => Promise<void>;
@@ -256,16 +256,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }), [cartScope, loadedCartScope]);
   const clearCart = useCallback(() => setCart([]), []);
 
-  const submitOrder = useCallback(async (proof: File) => {
+  const submitOrder = useCallback(async (proof: File, buySlug?: string) => {
     if (!user || !profile) throw new Error("Complete your account details before checkout.");
-    if (!activeCart.length) throw new Error("Your bag is empty.");
+    const purchaseLines = buySlug ? [{ slug: buySlug, quantity: 1 }] : activeCart;
+    if (!purchaseLines.length) throw new Error("Your bag is empty.");
+    if (buySlug && !sanjivaniProducts.some((item) => item.slug === buySlug)) throw new Error("This serum is unavailable.");
     if (!paymentSettings || !paymentSettings.checkout_enabled || paymentSettings.shipping_paise == null || (!paymentSettings.upi_id.trim() && !paymentSettings.account_number.trim())) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
     if (!proof.type.startsWith("image/") || proof.size > 5 * 1024 * 1024) throw new Error("Upload a payment screenshot as an image, up to 5 MB.");
-    const ids = activeCart.map((line) => line.slug);
+    const ids = purchaseLines.map((line) => line.slug);
     const { data: currentRows, error: productError } = await supabase.from("products").select("slug,name,price_paise,active").in("slug", ids);
     if (productError || !currentRows) throw new Error("We could not confirm current product prices. Please try again.");
     const productBySlug = new Map((currentRows as Pick<ProductRow, "slug" | "name" | "price_paise" | "active">[]).map((row) => [row.slug, row]));
-    const items = activeCart.map((line) => {
+    const items = purchaseLines.map((line) => {
       const row = productBySlug.get(line.slug);
       if (!row?.active) throw new Error("A product in your bag is no longer available.");
       return { slug: row.slug, name: row.name, quantity: line.quantity, price_paise: row.price_paise };
@@ -287,7 +289,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       await supabase.storage.from("payment-proofs").remove([proofPath]);
       throw orderError;
     }
-    clearCart();
+    if (!buySlug) clearCart();
     await reloadStoreData();
     return id;
   }, [activeCart, clearCart, paymentSettings, profile, reloadStoreData, user]);

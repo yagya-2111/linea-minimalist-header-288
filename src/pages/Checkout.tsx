@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Check, CreditCard, LockKeyhole, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 import Header from "@/components/header/Header";
@@ -12,6 +12,8 @@ import demoPaymentQr from "@/assets/sanjivani-demo-payment-qr.svg";
 const Checkout = () => {
   const { user, profile, authLoading, profileLoading, cart, products, productPrices, paymentSettings, submitOrder, getProofUrl } = useStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const buySlug = searchParams.get("buy") ?? undefined;
   const [proof, setProof] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
@@ -19,11 +21,11 @@ const Checkout = () => {
   const [paymentStep, setPaymentStep] = useState(false);
   const [detailsConfirmed, setDetailsConfirmed] = useState(false);
 
-  const lines = useMemo(() => cart.flatMap((line) => {
+  const lines = useMemo(() => (buySlug ? [{ slug: buySlug, quantity: 1 }] : cart).flatMap((line) => {
     const product = products.find((item) => item.slug === line.slug);
     const price = productPrices[line.slug];
-    return product && price !== undefined ? [{ ...line, product, price }] : [];
-  }), [cart, productPrices, products]);
+    return product && product.active !== false && price !== undefined ? [{ ...line, product, price }] : [];
+  }), [buySlug, cart, productPrices, products]);
   const subtotal = lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
   const shipping = paymentSettings?.shipping_paise ?? 0;
   const qrPath = paymentSettings?.qr_image_path;
@@ -50,7 +52,7 @@ const Checkout = () => {
     if (!proof) { toast.error("Add your payment screenshot to continue."); return; }
     setBusy(true);
     try {
-      const orderId = await submitOrder(proof);
+      const orderId = await submitOrder(proof, buySlug);
       toast.success("Your order is under review");
       navigate(`/account?order=${encodeURIComponent(orderId)}`);
     } catch (error) { toast.error(error instanceof Error ? error.message : "We could not submit your order."); }
@@ -58,11 +60,11 @@ const Checkout = () => {
   };
 
   if (authLoading || profileLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-6xl px-5 py-20 text-muted-foreground">Loading checkout…</main><Footer /></div>;
-  if (!user) return <Navigate to="/account?next=%2Fcheckout" replace />;
+  if (!user) return <Navigate to={`/account?next=${encodeURIComponent(`/checkout${buySlug ? `?buy=${encodeURIComponent(buySlug)}` : ""}`)}`} replace />;
   if (!profile) return <Navigate to="/account" replace />;
-  if (!lines.length) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-3xl px-5 py-20"><h1 className="font-display text-4xl font-extrabold">Your bag is empty</h1><Button asChild className="mt-6"><Link to="/#shop">Explore serums</Link></Button></main><Footer /></div>;
+  if (!lines.length) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-3xl px-5 py-20"><h1 className="font-display text-4xl font-extrabold">{buySlug ? "This serum is unavailable" : "Your bag is empty"}</h1><Button asChild className="mt-6"><Link to="/#shop">Explore serums</Link></Button></main><Footer /></div>;
 
-  return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:py-16"><Link to="/bag" className="inline-flex items-center gap-2 text-sm font-bold"><ArrowLeft className="h-4 w-4" /> Back to your bag</Link><h1 className="mt-6 font-display text-4xl font-extrabold sm:text-5xl">Checkout</h1><p className="mt-2 text-muted-foreground">Confirm delivery details, then pay online. Cash on delivery is not available.</p>
+  return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:py-16"><Link to={buySlug ? `/products/${buySlug}` : "/bag"} className="inline-flex items-center gap-2 text-sm font-bold"><ArrowLeft className="h-4 w-4" /> {buySlug ? "Back to serum" : "Back to your bag"}</Link><h1 className="mt-6 font-display text-4xl font-extrabold sm:text-5xl">Checkout</h1><p className="mt-2 text-muted-foreground">Confirm delivery details, then pay online. Cash on delivery is not available.</p>
     {!hasPaymentDetails ? <section className="mt-9 border-y border-border py-10"><h2 className="font-display text-2xl font-bold">Checkout is temporarily unavailable</h2><p className="mt-2 max-w-xl text-muted-foreground">Payment instructions and delivery fee are not configured yet. Please check back later.</p><Button asChild variant="outline" className="mt-6"><Link to="/bag">Return to bag</Link></Button></section> : <form onSubmit={handleSubmit} className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]"><div className="space-y-8">
       <section className="border-y border-border py-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs font-bold uppercase text-muted-foreground">Step 1 · Confirm delivery</p><h2 className="mt-2 font-display text-xl font-extrabold">{profile.full_name}</h2></div><Button asChild variant="outline" size="sm"><Link to="/account">Edit details</Link></Button></div><p className="mt-3 text-sm">{user.email}</p><p className="mt-1 text-sm text-muted-foreground">{profile.phone}{profile.alternate_phone ? ` · ${profile.alternate_phone}` : ""}<br />{profile.address_line1}{profile.address_line2 ? `, ${profile.address_line2}` : ""}{profile.landmark ? `, ${profile.landmark}` : ""}<br />{profile.city}, {profile.state} {profile.postal_code}, {profile.country}</p><label className="mt-5 flex cursor-pointer items-start gap-3 border-t border-border pt-5 text-sm"><input type="checkbox" checked={detailsConfirmed} onChange={(event) => setDetailsConfirmed(event.target.checked)} className="mt-0.5 h-4 w-4 accent-primary" /><span><strong>My name, contact number, and delivery address are correct.</strong><span className="mt-1 block text-muted-foreground">The store uses these details to deliver your order.</span></span></label>{!paymentStep && <Button type="button" disabled={!detailsConfirmed} onClick={() => setPaymentStep(true)} className="mt-5 h-12 w-full font-bold"><CreditCard className="mr-2 h-4 w-4" />Continue to payment</Button>}</section>
       {paymentStep && <section className="border-y border-border py-6"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center bg-secondary"><CreditCard className="h-4 w-4" /></span><div><p className="text-xs font-bold uppercase text-muted-foreground">Step 2 · Payment</p><h2 className="font-display text-2xl font-extrabold">Pay by UPI or bank transfer</h2><p className="text-sm text-muted-foreground">Pay the exact order total shown on the right.</p></div></div>

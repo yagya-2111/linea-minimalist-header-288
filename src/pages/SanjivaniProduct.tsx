@@ -80,7 +80,7 @@ const SanjivaniProduct = () => {
               <div className="mt-7 space-y-3">
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
-              {storeProduct?.active !== false ? <Button size="lg" className="mt-8 h-14 w-full rounded-sm bg-primary font-bold text-primary-foreground hover:bg-primary/90" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`); }}><ShoppingBag /> Add to bag</Button> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This serum is currently unavailable.</p>}
+              {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This serum is currently unavailable.</p>}
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">For ingredients, serving size, and directions, refer to the product label.</p>
             </section>
           </div>

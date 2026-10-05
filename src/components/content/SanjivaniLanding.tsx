@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ArrowRight, BadgeCheck, Check, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
+import { ArrowRight, BadgeCheck, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import heroImage from "@/assets/sanjivani-daily-vitality-serum.jpg";
 import dailyGreensImage from "@/assets/sanjivani-daily-greens-serum.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
@@ -36,57 +37,60 @@ const SanjivaniLanding = () => {
     return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
   });
   const selectedProduct = availableProducts.find((product) => product.slug === selectedRitual);
+  const startingPrice = availableProducts.length ? Math.min(...availableProducts.map((product) => productPrices[product.slug] ?? 69900)) : 69900;
 
   return (
     <main>
-      <section className="px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-24">
-        <div className="relative mx-auto grid min-h-[min(760px,calc(100vh-7.5rem))] max-w-[1440px] overflow-hidden rounded-lg bg-primary text-primary-foreground lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="relative z-10 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 lg:py-16 xl:px-24">
-            <div className="mb-7 flex items-center gap-4 text-accent">
-              <span className="h-px w-12 bg-accent" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em]">Plant-powered daily nutrition</span>
-            </div>
-            <h1 className="max-w-3xl font-display text-5xl font-extrabold leading-[0.98] sm:text-7xl lg:text-[5.25rem]">
-              Feel good,
-              <span className="block text-accent">every day.</span>
-            </h1>
-            <p className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-primary-foreground/75 sm:text-xl">
-              Botanical nutritional serums inspired by India’s rich traditions. Clear ingredients, bold flavours, simple rituals.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="h-14 rounded-sm bg-accent px-7 text-base font-bold text-accent-foreground hover:bg-accent/90">
-                <a href="#shop">Shop bestsellers <ArrowRight /></a>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="h-14 rounded-sm border-primary-foreground/30 bg-transparent px-7 text-base font-bold text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-                <a href="#ingredients">Explore ingredients</a>
-              </Button>
-            </div>
-            <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-primary-foreground/70">
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Ingredient-led blends</span>
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Simple serum rituals</span>
-              <span className="flex items-center gap-2"><Check className="text-accent" /> Botanical inspiration</span>
-            </div>
+      <section className="relative min-h-[570px] overflow-hidden bg-primary text-primary-foreground sm:min-h-[620px]" aria-label="Shop Sanjivani serums">
+        <img src={heroImage} alt="Sanjivani Daily Vitality botanical serum with amla and ginger" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover object-[66%_center] sm:object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/10 sm:to-transparent" />
+        <div className="relative mx-auto flex min-h-[570px] max-w-[1440px] flex-col justify-center px-6 py-14 sm:min-h-[620px] sm:px-10 lg:px-16">
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-accent">Botanical serums · From {formatPrice(startingPrice)}</p>
+          <h1 className="mt-5 max-w-2xl font-display text-5xl font-extrabold leading-tight sm:text-7xl">Sanjivani.<span className="mt-1 block text-accent">Your daily ritual, bottled.</span></h1>
+          <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-primary-foreground/90 sm:text-lg">Explore four distinct botanical serum blends. Pick the flavour that fits your day and shop directly.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="h-14 rounded-sm bg-accent px-7 text-base font-extrabold text-accent-foreground hover:bg-accent/90"><a href="#shop">Shop the serums <ArrowRight className="h-5 w-5" /></a></Button>
+            {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-14 rounded-sm border-primary-foreground bg-transparent px-6 font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"><Link to="/checkout?buy=daily-vitality">Buy Daily Vitality</Link></Button>}
           </div>
-
-          <div className="relative min-h-[440px] overflow-hidden lg:min-h-full">
-            <img src={heroImage} alt="Sanjivani Daily Vitality botanical serum bottle with amla and ginger" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-primary/20 lg:to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-primary-foreground sm:bottom-8 sm:left-8 sm:right-8">
-            <Link to="/products/daily-vitality" className="bg-primary/85 p-4 backdrop-blur-sm">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Start here</p>
-                <p className="mt-1 font-display text-2xl font-bold">Daily Vitality</p>
-              </Link>
-              <div className="bg-accent px-4 py-3 font-bold text-accent-foreground">{formatPrice(productPrices["daily-vitality"] ?? 69900)}</div>
-            </div>
-          </div>
+          <p className="mt-8 text-sm font-semibold text-primary-foreground/80">Online payment only · Order updates in your account</p>
         </div>
       </section>
 
-      <section id="find-your-ritual" className="border-y border-border bg-secondary px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <section id="shop" className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Shop botanical serums</p>
+            <h2 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">Choose your Sanjivani serum.</h2>
+          </div>
+          <p className="text-sm font-semibold text-muted-foreground">Find the blend for your routine.</p>
+        </div>
+        <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {availableProducts.map((product) => (
+            <article key={product.slug} className="group">
+              <div className="relative aspect-square overflow-hidden bg-muted">
+                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
+                <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
+              </div>
+              <div className="mt-4 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="font-display text-xl font-bold"><Link to={`/products/${product.slug}`} className="hover:text-accent-strong">{product.name}</Link></h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{product.ingredients}</p>
+                </div>
+                <p className="font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
+              </div>
+              <p className="mt-2 line-clamp-2 min-h-10 text-sm text-muted-foreground">{product.tagline}</p>
+              <div className="mt-4 grid grid-cols-2 gap-2"><Button variant="outline" className="rounded-sm border-primary px-2 font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild className="rounded-sm px-2 font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div>
+              <Link to={`/products/${product.slug}`} className="mt-3 inline-block text-sm font-semibold underline underline-offset-4">View ingredients & details</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="find-your-ritual" className="border-y border-border bg-secondary px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">A simple place to start</p>
-            <h2 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">Find a flavour for your ritual.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Not sure which one?</p>
+            <h2 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">Find your blend.</h2>
             <p className="mt-4 max-w-lg leading-relaxed text-muted-foreground">Choose the taste that sounds right to you. Explore its ingredients and product details before you decide.</p>
           </div>
           <div>
@@ -108,48 +112,11 @@ const SanjivaniLanding = () => {
                   <p className="mt-1 text-sm text-muted-foreground">{selectedProduct.tagline}</p>
                 </div>
                 <Button asChild variant="outline" className="rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background">
-                  <Link to={`/products/${selectedProduct.slug}`}>Explore blend <ArrowRight /></Link>
+                  <Link to={`/products/${selectedProduct.slug}`}>View serum <ArrowRight /></Link>
                 </Button>
               </div>
             )}
           </div>
-        </div>
-      </section>
-
-      <section className="border-y border-border bg-secondary py-6" aria-label="Brand promises">
-        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-center gap-x-12 gap-y-4 px-6 text-sm font-bold uppercase tracking-[0.14em] text-secondary-foreground md:justify-between">
-          <span>Rooted in tradition</span><span className="hidden text-accent md:block">✦</span>
-          <span>Made for modern life</span><span className="hidden text-accent md:block">✦</span>
-          <span>Ingredients you recognise</span><span className="hidden text-accent md:block">✦</span>
-          <span>Explore all four blends</span>
-        </div>
-      </section>
-
-      <section id="shop" className="mx-auto max-w-[1440px] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">Find your daily ritual</p>
-            <h2 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">Meet the Sanjivani family.</h2>
-          </div>
-          <a href="#shop" className="inline-flex items-center gap-2 text-sm font-bold underline decoration-accent decoration-2 underline-offset-8">Shop all blends <ArrowRight className="h-4 w-4" /></a>
-        </div>
-        <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {availableProducts.map((product) => (
-            <article key={product.slug} className="group">
-              <div className="relative aspect-square overflow-hidden bg-muted">
-                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical serum`} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></Link>
-                <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
-              </div>
-              <div className="mt-4 flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-display text-xl font-bold"><Link to={`/products/${product.slug}`} className="hover:text-accent-strong">{product.name}</Link></h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{product.ingredients}</p>
-                </div>
-                <p className="font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-2"><Button asChild variant="outline" className="rounded-sm border-foreground bg-transparent font-bold hover:bg-foreground hover:text-background"><Link to={`/products/${product.slug}`}>Details <ArrowRight /></Link></Button><Button className="rounded-sm font-bold" onClick={() => addToCart(product.slug)}><ShoppingBag /> Add to bag</Button></div>
-            </article>
-          ))}
         </div>
       </section>
 
