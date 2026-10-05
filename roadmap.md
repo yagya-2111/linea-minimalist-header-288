@@ -8,5 +8,6 @@
 - [x] Keep each customer's saved bag separate by account and scope customer order history to the signed-in user; preserve admin access to all orders.
 - [x] Refresh the storefront with a selectable serum ritual finder, shopping-flow overview, linked FAQs, and a more balanced first-screen layout.
 - [x] Bring products directly below the opening image, show prominent price and dual Add to bag / Buy now actions, and let Buy now purchase one serum without changing the customer's saved bag.
+- [x] Add a contextual mobile purchase bar throughout the store and lightweight dimensional product-image motion with accessible gallery navigation.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
