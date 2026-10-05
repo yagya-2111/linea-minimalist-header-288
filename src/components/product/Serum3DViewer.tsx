@@ -124,11 +124,11 @@ export default function Serum3DViewer({ slug, className = "" }: { slug: string; 
     <div ref={container} className={`relative overflow-hidden bg-secondary ${className}`} aria-label={`Interactive 3D view of Sanjivani ${product?.name ?? "serum"}`}>
       {visible && supported ? (
         <div className="absolute inset-0 touch-pan-y cursor-grab active:cursor-grabbing" onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); pointerX.current = event.clientX; interactive.current = true; }} onPointerMove={(event) => { if (pointerX.current !== null) { angle.current += (event.clientX - pointerX.current) * 0.012; pointerX.current = event.clientX; } }} onPointerUp={() => { pointerX.current = null; }} onPointerCancel={() => { pointerX.current = null; }}>
-          <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 0.7, 7.6], fov: 35 }} gl={{ antialias: true, powerPreference: "low-power" }}>
+          <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 0.9, 8.8], fov: 35 }} gl={{ antialias: true, powerPreference: "low-power" }}>
             <ambientLight intensity={1.25} />
             <directionalLight position={[3, 6, 5]} intensity={2.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} shadow-camera-left={-5} shadow-camera-right={5} shadow-camera-top={6} shadow-camera-bottom={-5} />
             <Environment><Lightformer intensity={2} position={[0, 5, 5]} scale={[5, 9, 1]} /><Lightformer intensity={1} position={[-5, 2, -2]} scale={[3, 8, 1]} /></Environment>
-            <mesh position={[0, -1.37, 0]} rotation-x={-Math.PI / 2} receiveShadow><circleGeometry args={[2.8, 64]} /><meshStandardMaterial color={color("--secondary")} roughness={0.95} /></mesh>
+            <mesh position={[0, -1.37, 0]} rotation-x={-Math.PI / 2} receiveShadow><circleGeometry args={[1.65, 64]} /><meshStandardMaterial color={color("--muted")} roughness={0.95} /></mesh>
             <Bottle slug={slug} angle={angle} interactive={interactive} />
           </Canvas>
         </div>
