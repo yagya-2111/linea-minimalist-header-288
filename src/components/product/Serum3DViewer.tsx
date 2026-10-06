@@ -1,71 +1,36 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { findSanjivaniProduct } from "./sanjivaniCatalog";
+import vitalityLabel from "@/assets/labels/daily-vitality.jpg";
+import gutLabel from "@/assets/labels/gut-glow.jpg";
+import greensLabel from "@/assets/labels/daily-greens.jpg";
+import cacaoLabel from "@/assets/labels/calm-cacao.jpg";
 
 const color = (name: string) => {
   const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   return `hsl(${value.replace(/\s+/g, ", ")})`;
 };
 
-const blendColors: Record<string, string> = {
-  "daily-vitality": "--serum-vitality",
-  "daily-greens": "--serum-greens",
-  "gut-glow": "--serum-gut",
-  "calm-cacao": "--serum-cacao",
+const bottleArtwork: Record<string, { label: string; glass: string }> = {
+  "daily-vitality": { label: vitalityLabel, glass: "--serum-vitality-glass" },
+  "daily-greens": { label: greensLabel, glass: "--serum-greens-glass" },
+  "gut-glow": { label: gutLabel, glass: "--serum-gut-glass" },
+  "calm-cacao": { label: cacaoLabel, glass: "--serum-cacao-glass" },
 };
 
-function makeLabel(name: string, ingredients: string, accent: string) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 768;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
-  ctx.clearRect(0, 0, 1024, 768);
-  ctx.fillStyle = color("--serum-label");
-  ctx.fillRect(294, 54, 436, 660);
-  ctx.strokeStyle = accent;
-  ctx.lineWidth = 3;
-  ctx.strokeRect(314, 74, 396, 620);
-  ctx.textAlign = "center";
-  ctx.fillStyle = color("--foreground");
-  ctx.font = "bold 52px Georgia, serif";
-  ctx.fillText("SANJIVANI", 512, 210);
-  ctx.fillStyle = accent;
-  ctx.fillRect(425, 252, 174, 4);
-  ctx.font = "bold 31px Arial, sans-serif";
-  ctx.fillText(name.toUpperCase(), 512, 350);
-  ctx.font = "22px Arial, sans-serif";
-  ctx.fillStyle = color("--foreground");
-  ctx.fillText("BOTANICAL SERUM", 512, 397);
-  ctx.strokeStyle = accent;
-  ctx.lineWidth = 5;
-  for (let i = -2; i <= 2; i++) {
-    const x = 512 + i * 29;
-    ctx.beginPath();
-    ctx.ellipse(x, 520 - Math.abs(i) * 18, 13, 30, i * 0.3, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.font = "19px Arial, sans-serif";
-  ctx.fillText(ingredients.toUpperCase(), 512, 635);
-  const texture = new THREE.CanvasTexture(canvas);
+function Bottle({ slug, angle, interactive }: { slug: string; angle: React.MutableRefObject<number>; interactive: React.MutableRefObject<boolean> }) {
+  const group = useRef<THREE.Group>(null);
+  const artwork = bottleArtwork[slug] ?? bottleArtwork["daily-vitality"];
+  const texture = useTexture(artwork.label);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
-  return texture;
-}
-
-function Bottle({ slug, angle, interactive }: { slug: string; angle: React.MutableRefObject<number>; interactive: React.MutableRefObject<boolean> }) {
-  const product = findSanjivaniProduct(slug);
-  const group = useRef<THREE.Group>(null);
-  const accent = color(blendColors[slug] ?? "--serum-vitality");
-  const glass = color("--serum-glass");
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  const glass = color(artwork.glass);
   const cap = color("--serum-cap");
-  const texture = useMemo(() => makeLabel(product?.name ?? "Sanjivani", product?.ingredients ?? "Botanical blend", accent), [product?.name, product?.ingredients, accent]);
-
-  useEffect(() => () => texture?.dispose(), [texture]);
 
   useFrame((_, rawDelta) => {
     if (!group.current) return;
@@ -75,21 +40,22 @@ function Bottle({ slug, angle, interactive }: { slug: string; angle: React.Mutab
   });
 
   return (
-    <group ref={group} position={[0, -0.05, 0]}>
-      <mesh position={[0, 0.15, 0]} castShadow>
-        <cylinderGeometry args={[0.68, 0.68, 2.5, 48]} />
-        <meshPhysicalMaterial color={glass} metalness={0.12} roughness={0.21} clearcoat={1} clearcoatRoughness={0.12} />
+    <group ref={group} position={[0, -0.1, 0]}>
+      <mesh position={[0, 0.04, 0]} castShadow>
+        <cylinderGeometry args={[0.72, 0.72, 2.38, 64]} />
+        <meshPhysicalMaterial color={glass} metalness={0.05} roughness={0.14} transmission={0.03} thickness={0.4} clearcoat={1} clearcoatRoughness={0.08} />
       </mesh>
-      <mesh position={[0, -1.1, 0]} castShadow><cylinderGeometry args={[0.68, 0.62, 0.2, 48]} /><meshPhysicalMaterial color={glass} roughness={0.25} clearcoat={1} /></mesh>
-      <mesh position={[0, 1.53, 0]} castShadow><cylinderGeometry args={[0.33, 0.68, 0.32, 48]} /><meshPhysicalMaterial color={glass} roughness={0.18} clearcoat={1} /></mesh>
-      <mesh position={[0, 1.79, 0]} castShadow><cylinderGeometry args={[0.32, 0.32, 0.3, 48]} /><meshPhysicalMaterial color={glass} roughness={0.2} clearcoat={1} /></mesh>
-      <mesh position={[0, 2.02, 0]} castShadow><cylinderGeometry args={[0.48, 0.48, 0.36, 48]} /><meshStandardMaterial color={cap} roughness={0.74} /></mesh>
-      <mesh position={[0, 2.38, 0]} castShadow><sphereGeometry args={[0.35, 32, 24, 0, Math.PI * 2, 0, Math.PI / 2]} /><meshStandardMaterial color={cap} roughness={0.68} /></mesh>
-      <mesh position={[0, 2.19, 0]} castShadow><cylinderGeometry args={[0.35, 0.35, 0.28, 32]} /><meshStandardMaterial color={cap} roughness={0.68} /></mesh>
-      {texture && <mesh position={[0, 0.06, 0]} rotation-y={Math.PI}>
-        <cylinderGeometry args={[0.688, 0.688, 1.45, 64, 1, true]} />
-        <meshStandardMaterial map={texture} transparent roughness={0.85} depthWrite={false} />
-      </mesh>}
+      <mesh position={[0, -1.18, 0]} castShadow><cylinderGeometry args={[0.7, 0.64, 0.18, 64]} /><meshPhysicalMaterial color={glass} roughness={0.18} clearcoat={1} /></mesh>
+      <mesh position={[0, 1.24, 0]} castShadow><sphereGeometry args={[0.72, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2]} /><meshPhysicalMaterial color={glass} roughness={0.13} clearcoat={1} /></mesh>
+      <mesh position={[0, 1.46, 0]} castShadow><cylinderGeometry args={[0.34, 0.34, 0.42, 48]} /><meshPhysicalMaterial color={glass} roughness={0.15} clearcoat={1} /></mesh>
+      <mesh position={[0, 1.7, 0]} castShadow><cylinderGeometry args={[0.52, 0.52, 0.46, 64]} /><meshStandardMaterial color={cap} roughness={0.68} /></mesh>
+      {Array.from({ length: 16 }, (_, index) => <mesh key={index} position={[Math.sin((index / 16) * Math.PI * 2) * 0.525, 1.7, Math.cos((index / 16) * Math.PI * 2) * 0.525]} rotation-y={(index / 16) * Math.PI * 2}><boxGeometry args={[0.025, 0.38, 0.03]} /><meshStandardMaterial color={cap} roughness={0.76} /></mesh>)}
+      <mesh position={[0, 2.15, 0]} castShadow scale={[1, 1.38, 1]}><sphereGeometry args={[0.36, 40, 28]} /><meshStandardMaterial color={cap} roughness={0.62} /></mesh>
+      <mesh position={[0, 0.01, 0]} rotation-y={Math.PI}>
+        <cylinderGeometry args={[0.728, 0.728, 1.48, 64, 1, true]} />
+        <meshStandardMaterial map={texture} roughness={0.82} polygonOffset polygonOffsetFactor={-1} />
+      </mesh>
+      <mesh position={[0, 0.45, 0]}><cylinderGeometry args={[0.035, 0.035, 2.55, 16]} /><meshPhysicalMaterial color={color("--serum-dropper")} transparent opacity={0.55} roughness={0.2} /></mesh>
     </group>
   );
 }
@@ -129,12 +95,12 @@ export default function Serum3DViewer({ slug, className = "" }: { slug: string; 
             <directionalLight position={[3, 6, 5]} intensity={2.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} shadow-camera-left={-5} shadow-camera-right={5} shadow-camera-top={6} shadow-camera-bottom={-5} />
             <Environment><Lightformer intensity={2} position={[0, 5, 5]} scale={[5, 9, 1]} /><Lightformer intensity={1} position={[-5, 2, -2]} scale={[3, 8, 1]} /></Environment>
             <mesh position={[0, -1.37, 0]} rotation-x={-Math.PI / 2} receiveShadow><circleGeometry args={[1.65, 64]} /><meshStandardMaterial color={color("--muted")} roughness={0.95} /></mesh>
-            <Bottle slug={slug} angle={angle} interactive={interactive} />
+            <Suspense fallback={null}><Bottle slug={slug} angle={angle} interactive={interactive} /></Suspense>
           </Canvas>
         </div>
       ) : <img src={product?.image} alt={`Sanjivani ${product?.name ?? "serum"} bottle`} className="absolute inset-0 h-full w-full object-cover" />}
-      <div className="pointer-events-none absolute left-4 top-4 bg-background/90 px-3 py-2 text-xs font-bold uppercase text-foreground">360° bottle view</div>
-      <Button type="button" size="icon" variant="secondary" className="absolute bottom-4 right-4 h-10 w-10 rounded-sm" title="Rotate bottle" aria-label="Rotate bottle" onClick={() => { angle.current += Math.PI / 2; interactive.current = true; }}><RotateCcw className="h-4 w-4" /></Button>
+      <div className="pointer-events-none absolute left-4 top-4 bg-background/90 px-3 py-2 text-xs font-bold uppercase text-foreground">Original artwork · 360°</div>
+      <Button type="button" size="icon" variant="secondary" className="absolute bottom-4 right-4 h-10 w-10 rounded-sm" title="Reset bottle view" aria-label="Reset bottle view" onClick={() => { angle.current = 0; interactive.current = reducedMotion; }}><RotateCcw className="h-4 w-4" /></Button>
     </div>
   );
 }

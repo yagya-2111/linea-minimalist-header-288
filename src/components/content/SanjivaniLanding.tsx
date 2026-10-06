@@ -91,7 +91,7 @@ const SanjivaniLanding = () => {
         <div className="mx-auto max-w-[1440px]">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
             <div><p className="text-xs font-bold uppercase text-accent-strong">The collection, up close</p><h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">Meet your next ritual.</h2></div>
-            <p className="max-w-sm text-sm text-muted-foreground">Explore the bottles from every side. Actual product details are on each serum page.</p>
+            <p className="max-w-sm text-sm text-muted-foreground">Rotate every bottle with its original Sanjivani label artwork, then open the serum page for full-size photos.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {availableProducts.map((product) => <article key={product.slug} className="min-w-0">
