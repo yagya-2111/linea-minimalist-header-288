@@ -41,6 +41,11 @@
     --serum-gut: 24 79% 48%;
     --serum-greens: 110 38% 29%;
     --serum-cacao: 20 50% 31%;
+    --serum-vitality-glass: 28 91% 28%;
+    --serum-gut-glass: 35 93% 35%;
+    --serum-greens-glass: 104 48% 16%;
+    --serum-cacao-glass: 21 69% 15%;
+    --serum-dropper: 33 73% 55%;
     
     --border: 25 28% 77%;
     --input: 25 28% 72%;
@@ -109,6 +114,11 @@
     --serum-gut: 24 79% 48%;
     --serum-greens: 110 38% 29%;
     --serum-cacao: 20 50% 31%;
+    --serum-vitality-glass: 28 91% 28%;
+    --serum-gut-glass: 35 93% 35%;
+    --serum-greens-glass: 104 48% 16%;
+    --serum-cacao-glass: 21 69% 15%;
+    --serum-dropper: 33 73% 55%;
     
     --border: 0 0% 20%;
     --input: 0 0% 20%;
