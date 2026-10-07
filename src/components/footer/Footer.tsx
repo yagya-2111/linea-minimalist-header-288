@@ -22,8 +22,8 @@ const Footer = () => {
               <ul className="space-y-2">{[{ label: "Ingredients", href: "/#ingredients" }, { label: "Why Sanjivani", href: "/#why" }, { label: "My account", href: "/account" }, { label: "My bag", href: "/bag" }].map((item) => <li key={item.label}><Link to={item.href} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.label}</Link></li>)}</ul>
             </div>
             <div>
-              <h4 className="mb-4 text-sm font-bold text-accent">Your orders</h4>
-              <ul className="space-y-2"><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
+              <h4 className="mb-4 text-sm font-bold text-accent">Customer support</h4>
+              <ul className="space-y-2"><li><a href="tel:+919131338236" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Call 9131338236</a></li><li><a href="https://wa.me/919131338236" target="_blank" rel="noreferrer" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">WhatsApp support</a></li><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
             </div>
           </div>
         </div>
