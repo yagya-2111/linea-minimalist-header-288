@@ -1,8 +1,8 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const SUPPORT_NUMBER = "9131338236";
-const SUPPORT_NUMBER_E164 = "919131338236";
+const SUPPORT_NUMBER = "7566827922";
+const SUPPORT_NUMBER_E164 = "917566827922";
 
 const SupportDock = () => (
   <aside aria-label="Customer support" className="fixed bottom-[calc(6.75rem+env(safe-area-inset-bottom))] right-3 z-50 flex flex-col items-end gap-2 md:bottom-6 md:right-6">

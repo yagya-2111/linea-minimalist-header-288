@@ -23,7 +23,7 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Customer support</h4>
-              <ul className="space-y-2"><li><a href="tel:+919131338236" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Call 9131338236</a></li><li><a href="https://wa.me/919131338236" target="_blank" rel="noreferrer" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">WhatsApp support</a></li><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
+              <ul className="space-y-2"><li><a href="tel:+917566827922" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Call 7566827922</a></li><li><a href="https://wa.me/917566827922" target="_blank" rel="noreferrer" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">WhatsApp support</a></li><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
             </div>
           </div>
         </div>
