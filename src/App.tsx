@@ -15,6 +15,7 @@ import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import { StoreProvider } from "./context/StoreContext";
 import MobileBuyBar from "./components/MobileBuyBar";
+import SupportDock from "./components/SupportDock";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="*" element={<NotFound />} />
           </Routes></div>
+          <SupportDock />
           <MobileBuyBar />
         </StoreProvider>
       </BrowserRouter>

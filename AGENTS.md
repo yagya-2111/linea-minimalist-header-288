@@ -11,3 +11,4 @@
 - Payment proofs and the store QR image stay in private storage with owner/admin access policies.
 - Product reviews must be genuine and verified before being displayed; never create fictional customer statements or ratings.
 - Storefront policies describe the active account, order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
+- Global customer support actions live in one fixed dock and use the verified store phone number so contact details stay consistent across routes.
