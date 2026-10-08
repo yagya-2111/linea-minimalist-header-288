@@ -12,3 +12,5 @@
 - Product reviews must be genuine and verified before being displayed; never create fictional customer statements or ratings.
 - Storefront policies describe the active account, order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
 - Global customer support actions live in one fixed dock and use the verified store phone number so contact details stay consistent across routes.
+- Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
+- Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.

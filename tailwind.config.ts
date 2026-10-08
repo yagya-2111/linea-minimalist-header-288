@@ -39,6 +39,7 @@ export default {
         },
         support: {
           DEFAULT: "hsl(var(--support))",
+          call: "hsl(var(--support-call))",
           foreground: "hsl(var(--support-foreground))",
         },
         muted: {
