@@ -47,6 +47,7 @@
     --serum-cacao-glass: 21 69% 15%;
     --serum-dropper: 33 73% 55%;
     --support: 142 70% 35%;
+    --support-call: 215 85% 48%;
     --support-foreground: 0 0% 100%;
     
     --border: 25 28% 77%;
@@ -122,6 +123,7 @@
     --serum-cacao-glass: 21 69% 15%;
     --serum-dropper: 33 73% 55%;
     --support: 142 64% 42%;
+    --support-call: 215 85% 55%;
     --support-foreground: 0 0% 100%;
     
     --border: 0 0% 20%;
@@ -197,6 +199,7 @@
   }
 
   html { scroll-behavior: smooth; }
+  section[id] { scroll-margin-top: 8rem; }
 
   ::selection { @apply bg-accent text-accent-foreground; }
 }
