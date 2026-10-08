@@ -12,5 +12,6 @@
 - [x] Add interactive 3D serum bottle previews to the collection and each product page while keeping real product photos visible and purchase actions immediate.
 - [x] Match every interactive bottle to its original generated label artwork, bottle colour, dropper shape, and smooth resettable rotation.
 - [x] Update SM Trading payment details and QR, explain the manual verification process, and add fixed call and WhatsApp customer support.
+- [ ] Fix all homepage section navigation, replace the favicon, enlarge and stack support actions with a popup, and update the owner-provided support number, UPI and QR.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
