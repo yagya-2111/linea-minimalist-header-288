@@ -5,10 +5,9 @@ import * as THREE from "three";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { findSanjivaniProduct } from "./sanjivaniCatalog";
-import vitalityLabel from "@/assets/labels/daily-vitality.jpg";
-import gutLabel from "@/assets/labels/gut-glow.jpg";
-import greensLabel from "@/assets/labels/daily-greens.jpg";
-import cacaoLabel from "@/assets/labels/calm-cacao.jpg";
+import vitalityLabel from "@/assets/labels/drop-1.jpg";
+import gutLabel from "@/assets/labels/drop-2.jpg";
+import greensLabel from "@/assets/labels/drop-3.jpg";
 
 const color = (name: string) => {
   const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -19,7 +18,6 @@ const bottleArtwork: Record<string, { label: string; glass: string }> = {
   "daily-vitality": { label: vitalityLabel, glass: "--serum-vitality-glass" },
   "daily-greens": { label: greensLabel, glass: "--serum-greens-glass" },
   "gut-glow": { label: gutLabel, glass: "--serum-gut-glass" },
-  "calm-cacao": { label: cacaoLabel, glass: "--serum-cacao-glass" },
 };
 
 function Bottle({ slug, angle, interactive }: { slug: string; angle: React.MutableRefObject<number>; interactive: React.MutableRefObject<boolean> }) {
@@ -87,7 +85,7 @@ export default function Serum3DViewer({ slug, className = "" }: { slug: string; 
   useEffect(() => { angle.current = 0; interactive.current = reducedMotion; }, [slug, reducedMotion]);
 
   return (
-    <div ref={container} className={`relative overflow-hidden bg-secondary ${className}`} aria-label={`Interactive 3D view of Sanjivani ${product?.name ?? "serum"}`}>
+    <div ref={container} className={`relative overflow-hidden bg-secondary ${className}`} aria-label={`Interactive 3D view of Sanjivani ${product?.name ?? "drop"}`}>
       {visible && supported ? (
         <div className="absolute inset-0 touch-pan-y cursor-grab active:cursor-grabbing" onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); pointerX.current = event.clientX; interactive.current = true; }} onPointerMove={(event) => { if (pointerX.current !== null) { angle.current += (event.clientX - pointerX.current) * 0.012; pointerX.current = event.clientX; } }} onPointerUp={() => { pointerX.current = null; }} onPointerCancel={() => { pointerX.current = null; }}>
           <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 0.9, 8.8], fov: 35 }} gl={{ antialias: true, powerPreference: "low-power" }}>
@@ -98,8 +96,8 @@ export default function Serum3DViewer({ slug, className = "" }: { slug: string; 
             <Suspense fallback={null}><Bottle slug={slug} angle={angle} interactive={interactive} /></Suspense>
           </Canvas>
         </div>
-      ) : <img src={product?.image} alt={`Sanjivani ${product?.name ?? "serum"} bottle`} className="absolute inset-0 h-full w-full object-cover" />}
-      <div className="pointer-events-none absolute left-4 top-4 bg-background/90 px-3 py-2 text-xs font-bold uppercase text-foreground">Original artwork · 360°</div>
+      ) : <img src={product?.image} alt={`Sanjivani ${product?.name ?? "drop"} bottle`} className="absolute inset-0 h-full w-full object-cover" />}
+      <div className="pointer-events-none absolute left-4 top-4 bg-background/90 px-3 py-2 text-xs font-bold uppercase text-foreground">Packaging concept · 360°</div>
       <Button type="button" size="icon" variant="secondary" className="absolute bottom-4 right-4 h-10 w-10 rounded-sm" title="Reset bottle view" aria-label="Reset bottle view" onClick={() => { angle.current = 0; interactive.current = reducedMotion; }}><RotateCcw className="h-4 w-4" /></Button>
     </div>
   );

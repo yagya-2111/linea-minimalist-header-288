@@ -15,7 +15,7 @@ const SupportDock = () => (
         <PopoverTrigger asChild><Button size="icon" className="h-14 w-14 rounded-full bg-support text-support-foreground shadow-lg hover:bg-support/90 sm:h-16 sm:w-16" title="WhatsApp customer support" aria-label="Open WhatsApp support"><WhatsAppIcon /></Button></PopoverTrigger>
         <PopoverContent side="left" align="end" sideOffset={12} className="w-64 max-w-[calc(100vw-6rem)]">
           <p className="font-display text-lg font-bold">Sanjivani support</p>
-          <p className="mt-2 text-sm text-muted-foreground">Questions about a serum, payment or your order?</p>
+          <p className="mt-2 text-sm text-muted-foreground">Questions about a drop, payment or your order?</p>
           <p className="mt-3 text-sm font-bold">{storeContact.display}</p>
           <Button asChild className="mt-4 w-full bg-support text-support-foreground hover:bg-support/90"><a href={storeContact.whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a></Button>
         </PopoverContent>

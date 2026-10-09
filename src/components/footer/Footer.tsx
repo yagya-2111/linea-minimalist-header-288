@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 import { storeContact } from "@/lib/storeContact";
 
 const Footer = () => {
@@ -9,14 +10,14 @@ const Footer = () => {
           <div>
             <p className="font-display text-4xl font-extrabold uppercase text-accent">Sanjivani.</p>
             <p className="mb-6 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
-              Plant-powered daily nutrition, rooted in tradition and made for modern life.
+              Three numbered drops. Vitality, Stamina and Recovery.
             </p>
-            <p className="text-sm text-primary-foreground/70">Thoughtful botanical blends for everyday wellness.</p>
+            <p className="text-sm text-primary-foreground/70">Explore the collection. Make an informed choice.</p>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Shop</h4>
-              <ul className="space-y-2">{[{ name: "Daily Vitality", slug: "daily-vitality" }, { name: "Gut Glow", slug: "gut-glow" }, { name: "Daily Greens", slug: "daily-greens" }, { name: "Calm Cacao", slug: "calm-cacao" }].map((item) => <li key={item.slug}><Link to={`/products/${item.slug}`} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.name}</Link></li>)}</ul>
+              <ul className="space-y-2">{sanjivaniProducts.map((item) => <li key={item.slug}><Link to={`/products/${item.slug}`} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">{item.name}</Link></li>)}</ul>
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Help</h4>

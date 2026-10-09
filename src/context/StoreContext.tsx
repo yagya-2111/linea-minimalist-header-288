@@ -130,7 +130,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [productPrices, setProductPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
   const cartScope = authLoading ? null : user ? `user:${user.id}` : "guest";
-  const activeCart = loadedCartScope === cartScope ? cart : [];
+  const activeCart = loadedCartScope === cartScope ? cart.filter((line) => sanjivaniProducts.some((product) => product.slug === line.slug)) : [];
   const reloadSequence = useRef(0);
 
   const reloadStoreData = useCallback(async () => {
@@ -258,9 +258,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const submitOrder = useCallback(async (proof: File, buySlug?: string) => {
     if (!user || !profile) throw new Error("Complete your account details before checkout.");
-    const purchaseLines = buySlug ? [{ slug: buySlug, quantity: 1 }] : activeCart;
+    const purchaseLines = buySlug ? [{ slug: buySlug, quantity: 1 }] : activeCart.filter((line) => sanjivaniProducts.some((product) => product.slug === line.slug));
     if (!purchaseLines.length) throw new Error("Your bag is empty.");
-    if (buySlug && !sanjivaniProducts.some((item) => item.slug === buySlug)) throw new Error("This serum is unavailable.");
+    if (buySlug && !sanjivaniProducts.some((item) => item.slug === buySlug)) throw new Error("This drop is unavailable.");
     if (!paymentSettings || !paymentSettings.checkout_enabled || paymentSettings.shipping_paise == null || (!paymentSettings.upi_id.trim() && !paymentSettings.account_number.trim())) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
     if (!proof.type.startsWith("image/") || proof.size > 5 * 1024 * 1024) throw new Error("Upload a payment screenshot as an image, up to 5 MB.");
     const ids = purchaseLines.map((line) => line.slug);
