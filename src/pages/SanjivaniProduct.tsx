@@ -79,21 +79,21 @@ const SanjivaniProduct = () => {
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">{productName}</h1>
               <p className="mt-3 text-lg text-muted-foreground">{product.tagline}</p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
-                <span className="text-sm font-semibold text-muted-foreground">Botanical nutritional serum</span>
+                <span className="text-sm font-semibold text-muted-foreground">Numbered wellness drop</span>
               </div>
               <div className="mt-7 flex items-end justify-between border-y border-border py-5">
                 <div>
                   <p className="text-3xl font-extrabold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
                   <p className="mt-1 text-xs text-muted-foreground">Price in Indian rupees</p>
                 </div>
-                <span className="text-sm font-bold text-muted-foreground">{product.ingredients}</span>
+                <span className="max-w-40 text-right text-xs font-bold text-muted-foreground">{product.ingredients}</span>
               </div>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground">{productDescription}</p>
               <div className="mt-7 space-y-3">
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
-              {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This serum is currently unavailable.</p>}
-              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">For ingredients, serving size, and directions, refer to the product label.</p>
+              {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This drop is currently unavailable.</p>}
+              <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">Packaging images are concepts. Formula, serving size and benefit claims require confirmation against the actual product label.</p>
             </section>
           </div>
         </div>
@@ -102,10 +102,11 @@ const SanjivaniProduct = () => {
           <div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-16 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:px-12 lg:py-24">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-strong">A closer look</p>
-              <h2 className="mt-4 font-display text-4xl font-extrabold">A serum, thoughtfully chosen.</h2>
+              <h2 className="mt-4 font-display text-4xl font-extrabold">A drop, thoughtfully chosen.</h2>
               <p className="mt-5 text-base leading-relaxed text-muted-foreground">{productDescription}</p>
-              <h3 className="mt-9 font-display text-2xl font-bold">Ingredients at a glance</h3>
+              <h3 className="mt-9 font-display text-2xl font-bold">Formula & ingredient information</h3>
               <div className="mt-4 divide-y divide-border border-y border-border">
+                {product.ingredientsList.length === 0 && <p className="py-5 text-sm leading-relaxed text-muted-foreground">The complete ingredient list and amounts have not yet been confirmed. Contact Sanjivani for the actual product label before purchasing or using this drop.</p>}
                 {product.ingredientsList.map((ingredient, index) => (
                   <div key={ingredient.name} className="flex gap-5 py-4">
                     <span className="font-display text-xl font-bold text-accent-strong">0{index + 1}</span>
