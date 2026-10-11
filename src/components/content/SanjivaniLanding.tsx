@@ -42,20 +42,20 @@ const SanjivaniLanding = () => {
 
   return (
     <main>
-      <section className="relative overflow-hidden bg-muted md:min-h-[580px]" aria-label="Shop Sanjivani drops">
+      <section className="relative flex min-h-[calc(100svh-12rem)] flex-col justify-center overflow-hidden bg-muted pb-3 md:block md:min-h-[580px] md:pb-0" aria-label="Shop Sanjivani drops">
         <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="absolute inset-0 hidden h-full w-full object-cover object-right md:block" />
-        <div className="relative mx-auto max-w-[1440px] px-5 pt-8 text-center sm:px-10 md:py-20 md:text-left lg:px-16">
-          <p className="text-xs font-extrabold uppercase text-accent-strong">The Sanjivani collection</p>
-          <h1 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-6xl">Sanjivani drops.<span className="mt-1 block">A ritual of your own.</span></h1>
-          <p className="mx-auto mt-3 max-w-[420px] text-base leading-relaxed text-muted-foreground md:mx-0">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</p>
-          <p className="mt-4 text-3xl font-extrabold">From {formatPrice(startingPrice)}</p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
-            <Button asChild size="lg" className="h-12 rounded-sm px-5 font-bold"><a href="#shop">Shop the drops <ArrowRight className="h-4 w-4" /></a></Button>
-            {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-12 rounded-sm border-primary bg-background/80 px-5 font-bold"><Link to="/checkout?buy=daily-vitality">Buy Vitalis</Link></Button>}
+        <div className="relative mx-auto w-full max-w-[1440px] px-5 pt-5 text-center sm:px-10 md:py-20 md:text-left lg:px-16">
+          <p className="text-[0.68rem] font-extrabold uppercase text-accent-strong md:text-xs">The Sanjivani collection</p>
+          <h1 className="mt-2 font-display text-3xl font-extrabold leading-tight sm:text-6xl md:mt-3 md:max-w-xl md:text-6xl">Sanjivani drops.<span className="block">A ritual of your own.</span></h1>
+          <p className="mx-auto mt-2 max-w-[420px] text-sm leading-snug text-muted-foreground md:mx-0 md:mt-3 md:text-base md:leading-relaxed">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</p>
+          <p className="mt-2 text-2xl font-extrabold md:mt-4 md:text-3xl">From {formatPrice(startingPrice)}</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2 md:mt-5 md:justify-start">
+            <Button asChild size="lg" className="h-11 rounded-sm px-4 font-bold md:h-12 md:px-5"><a href="#shop">Shop the drops <ArrowRight className="h-4 w-4" /></a></Button>
+            {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-11 rounded-sm border-primary bg-background/80 px-4 font-bold md:h-12 md:px-5"><Link to="/checkout?buy=daily-vitality">Buy Vitalis</Link></Button>}
           </div>
-          <p className="mt-4 text-xs font-semibold text-muted-foreground">Online payment · Personal order tracking</p>
+          <p className="mt-2 text-[0.68rem] font-semibold text-muted-foreground md:mt-4 md:text-xs">Online payment · Personal order tracking</p>
         </div>
-        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-7 block aspect-square max-h-[390px] w-full bg-muted object-contain object-center sm:mx-auto sm:max-w-2xl md:hidden" />
+        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-2 block h-[230px] w-full object-contain object-center sm:mx-auto sm:h-[250px] sm:max-w-2xl md:hidden" />
       </section>
 
       <section id="shop" className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
