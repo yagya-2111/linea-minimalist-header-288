@@ -157,11 +157,9 @@
     transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 500ms ease;
   }
 
-  .product-card { perspective: 1000px; }
-
   @media (hover: hover) {
     .product-card:hover .product-card-image {
-      transform: scale(1.06) rotateY(-3deg) rotateX(2deg);
+      transform: scale(1.04);
       filter: saturate(1.08);
     }
   }
@@ -172,7 +170,7 @@
   }
 
   @media (hover: hover) {
-    .product-gallery-image:hover { transform: scale(1.035) rotateY(-2deg); }
+    .product-gallery-image:hover { transform: scale(1.025); }
   }
 
   @keyframes product-reveal {
