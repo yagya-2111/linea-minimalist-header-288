@@ -14,5 +14,6 @@
 - [x] Update SM Trading payment details and QR, explain the manual verification process, and add fixed call and WhatsApp customer support.
 - [x] Fix all homepage section navigation, replace the favicon, enlarge and stack support actions with a popup, and update the owner-provided support number, UPI and QR.
 - [x] Convert the catalogue to three numbered drops, match imagery and 3D labels, update shopping copy, retire the fourth product and verify galleries, bag readback and theme selection.
+- [ ] Give the three drops distinct names and premium galleries, add the ₹1,999 trio, remove all 360° views, improve mobile prices and link privacy, shipping and return policies.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.
