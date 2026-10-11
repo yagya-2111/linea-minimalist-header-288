@@ -29,10 +29,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <section aria-labelledby="certifications-heading" className="mb-8 border-y border-primary-foreground/15 py-5 text-center">
-          <h2 id="certifications-heading" className="font-display text-lg font-bold text-accent">Certified by</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/70">Licence and certification details will be displayed here after the current documents have been verified. No certification claims are being made at this time.</p>
-        </section>
         <div className="flex flex-col items-center justify-between gap-3 border-t border-primary-foreground/15 pt-5 md:flex-row">
           <p className="text-sm text-primary-foreground/60">© 2026 Sanjivani. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
@@ -42,6 +38,10 @@ const Footer = () => {
             <Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms</Link>
           </div>
         </div>
+        <section aria-labelledby="certifications-heading" className="mt-8 border-t border-primary-foreground/15 pt-5 text-center">
+          <h2 id="certifications-heading" className="font-display text-lg font-bold text-accent">Certified by</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/70">Licence and certification details will be displayed here after the current documents have been verified. No certification claims are being made at this time.</p>
+        </section>
       </div>
     </footer>
   );
