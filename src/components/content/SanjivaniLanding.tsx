@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import heroImage from "@/assets/vitalis-hero.jpg";
+import mobileHeroImage from "@/assets/vitalis-hero-mobile.jpg";
 import dailyGreensImage from "@/assets/reviva-1.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 import { useStore, formatPrice } from "@/context/StoreContext";
@@ -54,7 +55,7 @@ const SanjivaniLanding = () => {
           </div>
           <p className="mt-4 text-xs font-semibold text-muted-foreground">Online payment · Personal order tracking</p>
         </div>
-        <img src={heroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={1600} height={900} className="relative mt-7 block aspect-[4/3] max-h-[340px] w-full object-cover object-[78%_center] sm:mx-auto sm:max-w-2xl md:hidden" />
+        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-7 block aspect-[4/3] max-h-[340px] w-full object-cover object-center sm:mx-auto sm:max-w-2xl md:hidden" />
       </section>
 
       <section id="shop" className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
