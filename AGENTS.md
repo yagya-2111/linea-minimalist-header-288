@@ -2,7 +2,9 @@
 
 - The homepage uses a single `SanjivaniLanding` composition so the brand story and live catalogue remain cohesive.
 - Product imagery is imported from local generated assets so storefront media does not depend on external image hosts.
-- Interactive bottle previews use label textures cropped from the original generated product artwork and are paired with the full product photographs, preserving each bottle’s identity without remote model dependencies.
+- Storefront product visuals use static, locally generated photo galleries, not interactive 3D viewers, to keep mobile shopping lightweight.
+- Combo products use the same catalogue, database pricing and order validation as single products, preserving one commerce flow.
+- Shipping and return information uses a shared policy-page layout with explicit routes and support links so unconfirmed business terms remain clearly distinguished.
 - Keep mobile purchase actions in one route-aware bar so product, bag, and checkout pages offer the right action without duplicating commerce logic.
 - Product details use one slug-driven page and shared catalogue data for product copy and image galleries; database prices and availability are authoritative.
 - Catalogue rebranding retains existing product slugs and historical order snapshots, deactivates retired products, and excludes them from current bags to preserve commerce continuity.

@@ -28,7 +28,7 @@ const MobileBuyBar = () => {
   return <aside aria-label="Mobile buy bar" className="mobile-buy-bar px-3">
     <div className="mx-auto flex max-w-lg items-center gap-2.5">
       <Link to={`/products/${product.slug}`} className="h-12 w-12 shrink-0 overflow-hidden bg-secondary" aria-label={`View ${name}`}><img src={product.image} alt="" className="h-full w-full object-cover" /></Link>
-      <div className="min-w-0 flex-1"><p className="truncate font-display text-sm font-extrabold">{name}</p><p className="text-sm font-bold text-accent-strong">{formatPrice(productPrices[product.slug] ?? 69900)}</p></div>
+      <div className="min-w-0 flex-1"><p className="truncate font-display text-sm font-extrabold">{name}</p><p className="text-xl font-extrabold text-accent-strong">{formatPrice(productPrices[product.slug] ?? product.defaultPricePaise)}</p></div>
       <Button variant="outline" size="icon" className="h-11 w-11 shrink-0 rounded-sm border-primary" aria-label={`Add ${name} to bag`} onClick={() => { addToCart(product.slug); toast.success(`${name} added to your bag`); }}><ShoppingBag /></Button>
       <Button asChild className="h-11 shrink-0 rounded-sm px-3 font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight /></Link></Button>
     </div>

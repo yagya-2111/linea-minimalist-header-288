@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
-import Serum3DViewer from "@/components/product/Serum3DViewer";
 import { useStore, formatPrice } from "@/context/StoreContext";
 import { toast } from "sonner";
 
@@ -17,7 +16,6 @@ const SanjivaniProduct = () => {
   const productName = storeProduct?.name ?? product?.name;
   const productDescription = storeProduct?.description || product?.description;
   const [activeImage, setActiveImage] = useState(0);
-  const [view3D, setView3D] = useState(false);
 
   useEffect(() => {
     document.title = productName ? `${productName} | Sanjivani` : "Sanjivani Product Catalogue";
@@ -25,7 +23,6 @@ const SanjivaniProduct = () => {
 
   useEffect(() => {
     setActiveImage(0);
-    setView3D(false);
   }, [slug]);
 
   if (!product) {
@@ -53,21 +50,17 @@ const SanjivaniProduct = () => {
           <Link to="/#shop" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="h-4 w-4" /> All blends</Link>
           <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <section aria-label={`${product.name} product images`}>
-              <div className="mb-3 flex items-center gap-2" role="group" aria-label="Product view">
-                <Button type="button" size="sm" variant={!view3D ? "default" : "outline"} aria-pressed={!view3D} onClick={() => setView3D(false)} className="rounded-sm font-bold">Photos</Button>
-                <Button type="button" size="sm" variant={view3D ? "default" : "outline"} aria-pressed={view3D} onClick={() => setView3D(true)} className="rounded-sm font-bold">3D view</Button>
-              </div>
               <div className="group relative aspect-square overflow-hidden bg-muted">
-                {view3D ? <Serum3DViewer slug={product.slug} className="h-full w-full" /> : <img key={product.gallery[activeImage].src} src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="product-gallery-image h-full w-full object-cover" />}
-                {!view3D && <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+                <img key={product.gallery[activeImage].src} src={product.gallery[activeImage].src} alt={product.gallery[activeImage].alt} width={1024} height={1024} className="product-gallery-image h-full w-full object-cover" />
+                <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
                   <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Previous product image" onClick={() => setActiveImage((index) => (index + product.gallery.length - 1) % product.gallery.length)}><ChevronLeft /></Button>
                   <span className="bg-background/95 px-3 py-2 text-xs font-bold tabular-nums text-foreground">{activeImage + 1} / {product.gallery.length}</span>
                   <Button type="button" variant="secondary" size="icon" className="h-11 w-11 rounded-sm shadow-sm" aria-label="Next product image" onClick={() => setActiveImage((index) => (index + 1) % product.gallery.length)}><ChevronRight /></Button>
-                </div>}
+                </div>
               </div>
               <div className="mt-3 grid grid-cols-4 gap-3">
                 {product.gallery.map((image, index) => (
-                  <Button key={image.src} type="button" variant="ghost" onClick={() => { setActiveImage(index); setView3D(false); }} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={!view3D && activeImage === index} className={`aspect-square h-auto w-full overflow-hidden rounded-none border-2 p-0 transition-colors hover:bg-transparent ${!view3D && activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
+                  <Button key={image.src} type="button" variant="ghost" onClick={() => setActiveImage(index)} aria-label={`Show image ${index + 1} of ${product.name}`} aria-pressed={activeImage === index} className={`aspect-square h-auto w-full overflow-hidden rounded-none border-2 p-0 transition-colors hover:bg-transparent ${activeImage === index ? "border-accent-strong" : "border-transparent"}`}>
                     <img src={image.src} alt={image.alt} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover" />
                   </Button>
                 ))}
@@ -79,11 +72,11 @@ const SanjivaniProduct = () => {
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">{productName}</h1>
               <p className="mt-3 text-lg text-muted-foreground">{product.tagline}</p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
-                <span className="text-sm font-semibold text-muted-foreground">Numbered wellness drop</span>
+                <span className="text-sm font-semibold text-muted-foreground">{product.isCombo ? "Three-drop collection" : "Wellness drops"}</span>
               </div>
               <div className="mt-7 flex items-end justify-between border-y border-border py-5">
                 <div>
-                  <p className="text-3xl font-extrabold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
+                  <p className="text-4xl font-extrabold">{formatPrice(productPrices[product.slug] ?? product.defaultPricePaise)}</p>
                   <p className="mt-1 text-xs text-muted-foreground">Price in Indian rupees</p>
                 </div>
                 <span className="max-w-40 text-right text-xs font-bold text-muted-foreground">{product.ingredients}</span>
@@ -93,6 +86,7 @@ const SanjivaniProduct = () => {
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
               {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This drop is currently unavailable.</p>}
+              <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs font-semibold"><Link to="/shipping-policy" className="underline underline-offset-4">Shipping policy</Link><Link to="/return-policy" className="underline underline-offset-4">Returns & refunds</Link></div>
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">Packaging images are concepts. Formula, serving size and benefit claims require confirmation against the actual product label.</p>
             </section>
           </div>
