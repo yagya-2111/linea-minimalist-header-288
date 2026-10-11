@@ -15,5 +15,7 @@
 - [x] Fix all homepage section navigation, replace the favicon, enlarge and stack support actions with a popup, and update the owner-provided support number, UPI and QR.
 - [x] Convert the catalogue to three numbered drops, match imagery and 3D labels, update shopping copy, retire the fourth product and verify galleries, bag readback and theme selection.
 - [x] Give the three drops distinct names and premium four-photo galleries, add the ₹1,999 trio, remove all 360° views, improve mobile prices and link privacy, shipping and return policies; verify galleries, bag totals and signed-in trio checkout.
+- [x] Keep bag actions within the app, prevent transient price loading from appearing as an unavailable cart, center the mobile opening layout with its product image, and verify bag routes and responsive pages.
+- [ ] Republish the updated shop through the configured host: the preview bag works, but the live sanjivani.shop/bag still returns a host-level 404.
 - [ ] Create and verify the store-owner account with the configured administrator email to access the admin order queue.
 - [ ] Confirm final product labels, ingredients, usage directions, delivery, cancellation, return, and refund terms before accepting customer orders.

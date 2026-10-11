@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 const SanjivaniProduct = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { products, productPrices, addToCart } = useStore();
   const product = findSanjivaniProduct(slug);
   const storeProduct = products.find((item) => item.slug === slug);
@@ -85,7 +86,7 @@ const SanjivaniProduct = () => {
               <div className="mt-7 space-y-3">
                 {product.highlights.map((highlight) => <p key={highlight} className="flex items-start gap-3 text-sm font-semibold"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong" />{highlight}</p>)}
               </div>
-              {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This drop is currently unavailable.</p>}
+              {storeProduct?.active !== false ? <div className="mt-8 grid grid-cols-2 gap-3"><Button size="lg" variant="outline" className="h-14 rounded-sm border-primary font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => navigate("/bag") } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild size="lg" className="h-14 rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div> : <p className="mt-8 border border-border p-4 text-sm font-semibold text-muted-foreground">This drop is currently unavailable.</p>}
               <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs font-semibold"><Link to="/shipping-policy" className="underline underline-offset-4">Shipping policy</Link><Link to="/return-policy" className="underline underline-offset-4">Returns & refunds</Link></div>
               <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">Packaging images are concepts. Formula, serving size and benefit claims require confirmation against the actual product label.</p>
             </section>

@@ -8,8 +8,8 @@ import { useStore, formatPrice } from "@/context/StoreContext";
 const ShoppingBag = () => {
   const { cart, setQuantity, products, productPrices, authLoading, paymentSettings } = useStore();
   const lines = cart.flatMap((line) => {
-    const product = products.find((item) => item.slug === line.slug);
-    const price = productPrices[line.slug];
+    const product = products.find((item) => item.slug === line.slug && item.active !== false);
+    const price = productPrices[line.slug] ?? product?.defaultPricePaise;
     return product && price !== undefined ? [{ ...line, product, price }] : [];
   });
   const subtotal = lines.reduce((sum, line) => sum + line.price * line.quantity, 0);

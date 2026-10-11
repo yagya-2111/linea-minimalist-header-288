@@ -2,9 +2,10 @@ import { useState } from "react";
 import { ArrowRight, BadgeCheck, CreditCard, Leaf, PackageCheck, ShieldCheck, ShoppingBag, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import heroImage from "@/assets/vitalis-hero.jpg";
+import mobileHeroImage from "@/assets/vitalis-hero-mobile.jpg";
 import dailyGreensImage from "@/assets/reviva-1.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 import { useStore, formatPrice } from "@/context/StoreContext";
@@ -29,6 +30,7 @@ const shoppingSteps = [
 
 const SanjivaniLanding = () => {
   const { products, productPrices, addToCart } = useStore();
+  const navigate = useNavigate();
   const [selectedRitual, setSelectedRitual] = useState(ritualChoices[0].slug);
   const availableProducts = products.flatMap((item) => {
     if (item.active === false) return [];
@@ -40,19 +42,20 @@ const SanjivaniLanding = () => {
 
   return (
     <main>
-      <section className="relative min-h-[660px] overflow-hidden bg-muted sm:min-h-[580px]" aria-label="Shop Sanjivani drops">
-        <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="absolute inset-x-0 bottom-0 h-[360px] w-full object-cover object-right sm:inset-0 sm:h-full" />
-        <div className="relative mx-auto max-w-[1440px] px-5 pt-8 sm:px-10 sm:py-20 lg:px-16">
+      <section className="relative overflow-hidden bg-muted md:min-h-[580px]" aria-label="Shop Sanjivani drops">
+        <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="absolute inset-0 hidden h-full w-full object-cover object-right md:block" />
+        <div className="relative mx-auto max-w-[1440px] px-5 pt-8 text-center sm:px-10 md:py-20 md:text-left lg:px-16">
           <p className="text-xs font-extrabold uppercase text-accent-strong">The Sanjivani collection</p>
           <h1 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-6xl">Sanjivani drops.<span className="mt-1 block">A ritual of your own.</span></h1>
-          <p className="mt-3 max-w-[420px] text-base leading-relaxed text-muted-foreground">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</p>
+          <p className="mx-auto mt-3 max-w-[420px] text-base leading-relaxed text-muted-foreground md:mx-0">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</p>
           <p className="mt-4 text-3xl font-extrabold">From {formatPrice(startingPrice)}</p>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
             <Button asChild size="lg" className="h-12 rounded-sm px-5 font-bold"><a href="#shop">Shop the drops <ArrowRight className="h-4 w-4" /></a></Button>
             {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-12 rounded-sm border-primary bg-background/80 px-5 font-bold"><Link to="/checkout?buy=daily-vitality">Buy Vitalis</Link></Button>}
           </div>
           <p className="mt-4 text-xs font-semibold text-muted-foreground">Online payment · Personal order tracking</p>
         </div>
+        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-7 block aspect-square max-h-[390px] w-full bg-muted object-contain object-center sm:mx-auto sm:max-w-2xl md:hidden" />
       </section>
 
       <section id="shop" className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -78,7 +81,7 @@ const SanjivaniLanding = () => {
                 <p className="text-3xl font-extrabold">{formatPrice(productPrices[product.slug] ?? product.defaultPricePaise)}</p>
               </div>
               <p className="mt-2 line-clamp-2 min-h-10 text-sm text-muted-foreground">{product.tagline}</p>
-              <div className="mt-4 grid grid-cols-2 gap-2"><Button variant="outline" className="rounded-sm border-primary px-2 font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild className="rounded-sm px-2 font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div>
+              <div className="mt-4 grid grid-cols-2 gap-2"><Button variant="outline" className="rounded-sm border-primary px-2 font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => navigate("/bag") } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild className="rounded-sm px-2 font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div>
               <Link to={`/products/${product.slug}`} className="mt-3 inline-block text-sm font-semibold underline underline-offset-4">View ingredients & details</Link>
             </article>
           ))}

@@ -17,3 +17,4 @@
 - Global customer support actions live in one fixed dock and use the verified store phone number so contact details stay consistent across routes.
 - Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
 - Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.
+- Internal page transitions use router links or navigation rather than full-page location changes, preserving SPA routing on shopping flows.
