@@ -55,7 +55,7 @@ const SanjivaniLanding = () => {
           </div>
           <p className="mt-4 text-xs font-semibold text-muted-foreground">Online payment · Personal order tracking</p>
         </div>
-        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-7 block aspect-[4/3] max-h-[340px] w-full object-cover object-center sm:mx-auto sm:max-w-2xl md:hidden" />
+        <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} className="relative mt-7 block aspect-square max-h-[390px] w-full bg-muted object-contain object-center sm:mx-auto sm:max-w-2xl md:hidden" />
       </section>
 
       <section id="shop" className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
