@@ -38,6 +38,10 @@ const Footer = () => {
             <Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms</Link>
           </div>
         </div>
+        <section aria-labelledby="certifications-heading" className="mt-8 border-t border-primary-foreground/15 pt-5 text-center">
+          <h2 id="certifications-heading" className="font-display text-lg font-bold text-accent">Certified by</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-primary-foreground/70">Licence and certification details will be displayed here after the current documents have been verified. No certification claims are being made at this time.</p>
+        </section>
       </div>
     </footer>
   );
