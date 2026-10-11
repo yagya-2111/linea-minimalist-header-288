@@ -69,7 +69,7 @@ const Navigation = () => {
               {filteredProducts.length ? filteredProducts.map((product) => (
                 <Link key={product.slug} to={`/products/${product.slug}`} onClick={() => { setSearchOpen(false); setSearchTerm(""); }} className="flex items-center justify-between gap-4 py-3 hover:text-accent-strong">
                   <span><span className="block font-bold">{products.find((available) => available.slug === product.slug)?.name ?? product.name}</span><span className="text-sm text-muted-foreground">{product.ingredients}</span></span>
-                  <span className="shrink-0 font-bold">₹{Math.round((productPrices[product.slug] ?? 69900) / 100).toLocaleString("en-IN")}</span>
+                  <span className="shrink-0 font-bold">₹{Math.round((productPrices[product.slug] ?? product.defaultPricePaise) / 100).toLocaleString("en-IN")}</span>
                 </Link>
               )) : <p className="py-4 text-sm text-muted-foreground">No blends found. Try a product or ingredient name.</p>}
             </div>

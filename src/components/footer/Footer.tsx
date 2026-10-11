@@ -10,7 +10,7 @@ const Footer = () => {
           <div>
             <p className="font-display text-4xl font-extrabold uppercase text-accent">Sanjivani.</p>
             <p className="mb-6 mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
-              Three numbered drops. Vitality, Stamina and Recovery.
+              Vitalis. Endura. Reviva. Discover your Sanjivani ritual.
             </p>
             <p className="text-sm text-primary-foreground/70">Explore the collection. Make an informed choice.</p>
           </div>
@@ -25,14 +25,16 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="mb-4 text-sm font-bold text-accent">Customer support</h4>
-              <ul className="space-y-2"><li><a href={storeContact.phoneHref} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Call {storeContact.display}</a></li><li><a href={storeContact.whatsappHref} target="_blank" rel="noreferrer" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">WhatsApp support</a></li><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms & delivery</Link></li></ul>
+              <ul className="space-y-2"><li><a href={storeContact.phoneHref} className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Call {storeContact.display}</a></li><li><a href={storeContact.whatsappHref} target="_blank" rel="noreferrer" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">WhatsApp support</a></li><li><Link to="/account" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Order history</Link></li><li><Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms of use</Link></li></ul>
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-3 border-t border-primary-foreground/15 pt-5 md:flex-row">
           <p className="text-sm text-primary-foreground/60">© 2026 Sanjivani. All rights reserved.</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
             <Link to="/privacy-policy" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Privacy</Link>
+            <Link to="/shipping-policy" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Shipping policy</Link>
+            <Link to="/return-policy" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Returns & refunds</Link>
             <Link to="/terms-of-service" className="text-sm text-primary-foreground/70 transition-colors hover:text-accent">Terms</Link>
           </div>
         </div>

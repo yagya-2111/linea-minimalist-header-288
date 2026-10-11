@@ -4,22 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import heroImage from "@/assets/drop-1-1.jpg";
-import dailyGreensImage from "@/assets/drop-3-1.jpg";
+import heroImage from "@/assets/vitalis-hero.jpg";
+import dailyGreensImage from "@/assets/reviva-1.jpg";
 import { sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
-import Serum3DViewer from "@/components/product/Serum3DViewer";
 import { useStore, formatPrice } from "@/context/StoreContext";
 
 const benefits = [
-  { icon: Leaf, title: "Three clear choices", copy: "A numbered collection with Vitality, Stamina and Recovery themes." },
+  { icon: Leaf, title: "Three clear choices", copy: "Vitalis, Endura and Reviva — individually or as the Wellness Trio." },
   { icon: ShieldCheck, title: "Know what you choose", copy: "Check the actual label and confirmed formula before purchase or use." },
   { icon: Sun, title: "Your routine, your pace", copy: "Wellness is personal. Make informed choices without miracle promises." },
 ];
 
 const ritualChoices = [
-  { slug: "daily-vitality", label: "01 · Vitality", note: "Drop 1" },
-  { slug: "gut-glow", label: "02 · Stamina", note: "Drop 2" },
-  { slug: "daily-greens", label: "03 · Recovery", note: "Drop 3" },
+  { slug: "daily-vitality", label: "Vitalis · Vitality", note: "Vitalis" },
+  { slug: "gut-glow", label: "Endura · Stamina", note: "Endura" },
+  { slug: "daily-greens", label: "Reviva · Recovery", note: "Reviva" },
 ];
 
 const shoppingSteps = [
@@ -37,22 +36,22 @@ const SanjivaniLanding = () => {
     return catalogueItem ? [{ ...catalogueItem, ...item }] : [];
   });
   const selectedProduct = availableProducts.find((product) => product.slug === selectedRitual);
-  const startingPrice = availableProducts.length ? Math.min(...availableProducts.map((product) => productPrices[product.slug] ?? 69900)) : 69900;
+  const startingPrice = availableProducts.length ? Math.min(...availableProducts.map((product) => productPrices[product.slug] ?? product.defaultPricePaise)) : 69900;
 
   return (
     <main>
-      <section className="relative min-h-[570px] overflow-hidden bg-primary text-primary-foreground sm:min-h-[620px]" aria-label="Shop Sanjivani drops">
-        <img src={heroImage} alt="Sanjivani Drop 1 Vitality packaging concept" width={1024} height={1024} className="absolute inset-0 h-full w-full object-cover object-[66%_center] sm:object-center" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/10 sm:to-transparent" />
-        <div className="relative mx-auto flex min-h-[570px] max-w-[1440px] flex-col justify-center px-6 py-14 sm:min-h-[620px] sm:px-10 lg:px-16">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-accent">Sanjivani drops · From {formatPrice(startingPrice)}</p>
-          <h1 className="mt-5 max-w-2xl font-display text-5xl font-extrabold leading-tight sm:text-7xl">Sanjivani.<span className="mt-1 block text-accent">Your daily ritual, bottled.</span></h1>
-          <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-primary-foreground/90 sm:text-lg">Three numbered drops. Vitality, Stamina and Recovery — explore the collection and make an informed choice.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="h-14 rounded-sm bg-accent px-7 text-base font-extrabold text-accent-foreground hover:bg-accent/90"><a href="#shop">Shop the drops <ArrowRight className="h-5 w-5" /></a></Button>
-            {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-14 rounded-sm border-primary-foreground bg-transparent px-6 font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"><Link to="/checkout?buy=daily-vitality">Buy Drop 1</Link></Button>}
+      <section className="relative min-h-[660px] overflow-hidden bg-muted sm:min-h-[580px]" aria-label="Shop Sanjivani drops">
+        <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="absolute inset-x-0 bottom-0 h-[360px] w-full object-cover object-right sm:inset-0 sm:h-full" />
+        <div className="relative mx-auto max-w-[1440px] px-5 pt-8 sm:px-10 sm:py-20 lg:px-16">
+          <p className="text-xs font-extrabold uppercase text-accent-strong">The Sanjivani collection</p>
+          <h1 className="mt-3 max-w-xl font-display text-4xl font-extrabold leading-tight sm:text-6xl">Sanjivani drops.<span className="mt-1 block">A ritual of your own.</span></h1>
+          <p className="mt-3 max-w-[420px] text-base leading-relaxed text-muted-foreground">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</p>
+          <p className="mt-4 text-3xl font-extrabold">From {formatPrice(startingPrice)}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Button asChild size="lg" className="h-12 rounded-sm px-5 font-bold"><a href="#shop">Shop the drops <ArrowRight className="h-4 w-4" /></a></Button>
+            {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-12 rounded-sm border-primary bg-background/80 px-5 font-bold"><Link to="/checkout?buy=daily-vitality">Buy Vitalis</Link></Button>}
           </div>
-          <p className="mt-8 text-sm font-semibold text-primary-foreground/80">Online payment only · Order updates in your account</p>
+          <p className="mt-4 text-xs font-semibold text-muted-foreground">Online payment · Personal order tracking</p>
         </div>
       </section>
 
@@ -64,19 +63,19 @@ const SanjivaniLanding = () => {
           </div>
           <p className="text-sm font-semibold text-muted-foreground">Find the blend for your routine.</p>
         </div>
-        <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {availableProducts.map((product) => (
             <article key={product.slug} className="product-card group">
               <div className="relative aspect-square overflow-hidden bg-muted">
-                <Link to={`/products/${product.slug}`} aria-label={`View Sanjivani ${product.name}`}><img src={product.image} alt={`Sanjivani ${product.name} botanical drop`} width={1024} height={1024} loading="lazy" className="product-card-image h-full w-full object-cover" /></Link>
+                <Link to={`/products/${product.slug}`} aria-label={`View ${product.name}`}><img src={product.image} alt={`${product.name} botanical drop`} width={1024} height={1024} loading="lazy" className="product-card-image h-full w-full object-cover" /></Link>
                 <span className="absolute left-3 top-3 bg-background px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-foreground">{product.label}</span>
               </div>
-              <div className="mt-4 flex items-start justify-between gap-4">
+              <div className="mt-4 flex flex-col gap-2">
                 <div>
                   <h3 className="font-display text-xl font-bold"><Link to={`/products/${product.slug}`} className="hover:text-accent-strong">{product.name}</Link></h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{product.ingredients}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{product.isCombo ? "One of each drop" : product.label + " wellness drops"}</p>
                 </div>
-                <p className="font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</p>
+                <p className="text-3xl font-extrabold">{formatPrice(productPrices[product.slug] ?? product.defaultPricePaise)}</p>
               </div>
               <p className="mt-2 line-clamp-2 min-h-10 text-sm text-muted-foreground">{product.tagline}</p>
               <div className="mt-4 grid grid-cols-2 gap-2"><Button variant="outline" className="rounded-sm border-primary px-2 font-bold" onClick={() => { addToCart(product.slug); toast.success(`${product.name} added to your bag`, { action: { label: "View bag", onClick: () => { window.location.assign("/bag"); } } }); }}><ShoppingBag className="h-4 w-4" /> Add to bag</Button><Button asChild className="rounded-sm px-2 font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button></div>
@@ -86,19 +85,10 @@ const SanjivaniLanding = () => {
         </div>
       </section>
 
-      {availableProducts.length > 0 && <section className="border-y border-border bg-secondary px-4 py-14 sm:px-6 lg:px-8 lg:py-20" aria-label="Explore Sanjivani bottles in 3D">
-        <div className="mx-auto max-w-[1440px]">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
-            <div><p className="text-xs font-bold uppercase text-accent-strong">The collection, up close</p><h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">Meet your next ritual.</h2></div>
-            <p className="max-w-sm text-sm text-muted-foreground">Rotate every bottle with its numbered Sanjivani artwork, then explore the drop page for product details.</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {availableProducts.map((product) => <article key={product.slug} className="min-w-0">
-              <Serum3DViewer slug={product.slug} className="aspect-[4/5] w-full" />
-              <div className="mt-4 flex items-center justify-between gap-2"><Link to={`/products/${product.slug}`} className="font-display text-lg font-bold hover:text-accent-strong">{product.name}</Link><span className="shrink-0 font-bold">{formatPrice(productPrices[product.slug] ?? 69900)}</span></div>
-              <Button asChild className="mt-3 w-full rounded-sm font-bold"><Link to={`/checkout?buy=${product.slug}`}>Buy now <ArrowRight className="h-4 w-4" /></Link></Button>
-            </article>)}
-          </div>
+      {availableProducts.find((product) => product.isCombo) && <section className="border-y border-border bg-secondary px-5 py-12 sm:px-10">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-8 md:grid-cols-2">
+          <Link to="/products/wellness-trio" className="aspect-square overflow-hidden"><img src={sanjivaniProducts.find((product) => product.isCombo)?.image} alt="Vitalis, Endura and Reviva Wellness Trio" width={768} height={768} loading="lazy" className="h-full w-full object-cover" /></Link>
+          <div><p className="text-xs font-bold uppercase text-accent-strong">The complete collection</p><h2 className="mt-3 font-display text-4xl font-extrabold">Three drops.<br />One beautiful trio.</h2><p className="mt-4 leading-relaxed text-muted-foreground">One Vitalis, one Endura and one Reviva. Discover all three Sanjivani drops in a single purchase.</p><p className="mt-5 text-4xl font-extrabold">{formatPrice(productPrices["wellness-trio"] ?? 199900)}</p><Button asChild size="lg" className="mt-6 h-14 rounded-sm font-bold"><Link to="/checkout?buy=wellness-trio">Buy the trio <ArrowRight /></Link></Button><Link to="/products/wellness-trio" className="ml-4 inline-block py-4 text-sm font-bold underline underline-offset-4">Explore the set</Link></div>
         </div>
       </section>}
 
@@ -139,7 +129,7 @@ const SanjivaniLanding = () => {
       <section id="ingredients" className="bg-primary text-primary-foreground">
         <div className="mx-auto grid max-w-[1440px] lg:grid-cols-2">
           <div className="relative min-h-[500px] overflow-hidden lg:min-h-[720px]">
-            <img src={dailyGreensImage} alt="Sanjivani Drop 3 Recovery packaging concept" width={1024} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+            <img src={dailyGreensImage} alt="Sanjivani Reviva packaging concept" width={1024} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
           </div>
           <div className="flex flex-col justify-center px-6 py-16 sm:px-12 lg:px-20">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">What’s inside matters</p>
