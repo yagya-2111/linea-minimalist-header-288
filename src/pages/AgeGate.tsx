@@ -28,18 +28,18 @@ const AgeGate = () => {
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
             <Button
               size="lg"
-              className="h-14 rounded-sm text-base font-bold"
+              className="h-14 rounded-md border-2 border-accent bg-accent text-base font-bold text-primary"
               onClick={() => navigate("/products/daily-vitality")}
             >
-              Yes, I am 18 or older
+              Yes, I am 18+
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-14 rounded-sm border-primary-foreground/40 bg-transparent text-base font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+              className="h-14 rounded-md border-2 border-primary-foreground/60 bg-transparent text-base font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"
               onClick={() => setDenied(true)}
             >
-              No, I am under 18
+              No
             </Button>
           </div>
         </div>
