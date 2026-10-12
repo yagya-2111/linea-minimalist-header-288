@@ -36,7 +36,8 @@ const App = () => (
             <Route path="/account" element={<Account />} />
             <Route path="/bag" element={<ShoppingBag />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/admin" element={<Admin />} />
+<Route path="/admin" element={<Admin />} />
+            <Route path="/access" element={<AgeGate />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/shipping-policy" element={<ShippingPolicy />} />
             <Route path="/return-policy" element={<ReturnPolicy />} />
