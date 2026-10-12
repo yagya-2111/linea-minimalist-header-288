@@ -135,18 +135,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const reloadStoreData = useCallback(async () => {
     const sequence = ++reloadSequence.current;
-    const productResult = await supabase.from("products").select("slug,name,description,price_paise,active").order("slug");
+    // Run catalogue, payment settings and auth lookups in parallel so
+    // checkout and other pages render without waiting on a serial chain.
+    const [productResult, settingsResult, authData] = await Promise.all([
+      supabase.from("products").select("slug,name,description,price_paise,active").order("slug"),
+      supabase.from("store_payment_settings").select("upi_id,payee_name,bank_name,account_name,account_number,ifsc,qr_image_path,shipping_paise,checkout_enabled").eq("singleton", true).maybeSingle(),
+      supabase.auth.getUser(),
+    ]);
+    if (sequence !== reloadSequence.current) return;
     if (!productResult.error && productResult.data) {
       const rows = productResult.data as ProductRow[];
       setProducts(mapProducts(rows));
       setProductPrices(Object.fromEntries(rows.filter((row) => row.active).map((row) => [row.slug, row.price_paise])));
     }
-    const settingsResult = await supabase.from("store_payment_settings").select("upi_id,payee_name,bank_name,account_name,account_number,ifsc,qr_image_path,shipping_paise,checkout_enabled").eq("singleton", true).maybeSingle();
     if (!settingsResult.error && settingsResult.data) setPaymentSettings(settingsResult.data as PaymentSettings);
-
-    const { data: authData } = await supabase.auth.getUser();
-    if (sequence !== reloadSequence.current) return;
-    const authUser = authData.user;
+    const authUser = authData.data.user;
     if (!authUser?.email) {
       setUser(null); setProfile(null); setIsAdmin(false); setOrders([]); setProfileLoading(false);
       return;
