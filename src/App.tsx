@@ -15,6 +15,7 @@ import Account from "./pages/Account";
 import ShoppingBag from "./pages/ShoppingBag";
 import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
+import AgeGate from "./pages/AgeGate";
 import { StoreProvider } from "./context/StoreContext";
 import MobileBuyBar from "./components/MobileBuyBar";
 import SupportDock from "./components/SupportDock";
