@@ -16,9 +16,9 @@ const AgeGate = () => {
           <p className="leading-relaxed text-primary-foreground/75">
             Sanjivani products are intended for adults aged 18 and over. You must be 18 or older to view this store.
           </p>
-          <Button asChild variant="secondary" className="mt-2 rounded-sm font-bold">
-            <Link to="/">Back to home</Link>
-          </Button>
+          <p className="mt-2 max-w-sm text-sm text-primary-foreground/60">
+            Close this page or re-open sanjivani.shop to try again.
+          </p>
         </div>
       ) : (
         <div className="hero-fade-up flex max-w-md flex-col items-center gap-5">
@@ -28,21 +28,21 @@ const AgeGate = () => {
           <p className="leading-relaxed text-primary-foreground/75">
             Sanjivani wellness drops are intended for adults. Please confirm your age to continue.
           </p>
-          <div className="mt-3 grid w-full grid-cols-2 gap-3">
+          <div className="mt-3 flex w-full flex-col gap-3">
             <Button
               size="lg"
-              className="h-14 rounded-sm text-base font-bold"
+              className="h-14 w-full rounded-sm text-base font-bold"
               onClick={() => navigate("/products/daily-vitality")}
             >
-              Yes, I am 18+
+              Yes, I am 18 or older
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-14 rounded-sm border-primary-foreground/40 bg-transparent text-base font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+              className="h-14 w-full rounded-sm border-primary-foreground/40 bg-transparent text-base font-bold text-primary-foreground hover:bg-primary-foreground hover:text-primary"
               onClick={() => setDenied(true)}
             >
-              No
+              No, I am under 18
             </Button>
           </div>
         </div>
