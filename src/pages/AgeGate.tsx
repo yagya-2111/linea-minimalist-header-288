@@ -28,7 +28,7 @@ const AgeGate = () => {
           <div className="mt-3 grid w-full grid-cols-2 gap-3">
             <Button
               size="lg"
-              className="h-14 rounded-md border-2 border-accent bg-accent text-base font-bold text-primary"
+              className="h-14 rounded-md border-2 border-accent bg-accent text-base font-bold text-primary hover:bg-accent hover:text-primary focus-visible:text-primary"
               onClick={() => navigate("/products/daily-vitality")}
             >
               Yes, I am 18+
