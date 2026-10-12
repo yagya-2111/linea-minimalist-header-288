@@ -14,7 +14,7 @@ const MobileBuyBar = () => {
     : sanjivaniProducts.find((item) => products.some((available) => available.slug === item.slug && available.active !== false));
   const bagCount = cart.reduce((total, line) => total + line.quantity, 0);
 
-  if (pathname === "/checkout") return <aside aria-label="Mobile checkout bar" className="mobile-buy-bar">
+  if (pathname === "/access" || pathname === "/checkout") return <aside aria-label="Mobile checkout bar" className="mobile-buy-bar">
     <div className="mx-auto flex max-w-lg items-center justify-between gap-4"><div><p className="font-display text-base font-extrabold">Checkout</p><p className="text-xs text-muted-foreground">Confirm details and pay online</p></div><Button className="h-11 shrink-0 rounded-sm font-bold" onClick={() => document.querySelector("form")?.scrollIntoView({ behavior: "smooth" })}>Continue <ArrowRight /></Button></div>
   </aside>;
 
