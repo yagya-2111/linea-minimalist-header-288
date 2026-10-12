@@ -43,20 +43,20 @@ const SanjivaniLanding = () => {
   return (
     <main>
       <section className="relative flex min-h-[calc(100svh-4rem)] flex-col md:min-h-[580px]" aria-label="Shop Sanjivani drops">
-        <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="absolute inset-0 hidden h-full w-full object-cover object-right md:block" />
+        <img src={heroImage} alt="Sanjivani Vitalis drop and its gold botanical carton" width={1600} height={900} className="hero-image-reveal absolute inset-0 hidden h-full w-full object-cover object-right md:block" />
         <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-5 pt-8 text-center sm:px-10 md:py-20 md:text-left lg:px-16">
-          <p className="font-extrabold uppercase text-accent-strong md:text-xs">The Sanjivani collection</p>
-          <h1 className="font-display text-3xl font-extrabold leading-tight md:mt-3 md:max-w-xl md:text-6xl">Sanjivani drops.<br />A ritual of your own.</h1>
-          <p className="mx-auto mt-2 max-w-[420px] text-sm leading-snug text-muted-foreground md:mx-0 md:mt-3 md:text-base md:leading-relaxed"><span className="md:hidden">Vitalis, Endura & Reviva. Find your drop.</span><span className="hidden md:inline">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</span></p>
+          <p className="hero-fade-up font-extrabold uppercase text-accent-strong md:text-xs">The Sanjivani collection</p>
+          <h1 className="hero-fade-up font-display text-3xl font-extrabold leading-tight [animation-delay:90ms] md:mt-3 md:max-w-xl md:text-6xl">Sanjivani drops.<br />A ritual of your own.</h1>
+          <p className="hero-fade-up mx-auto mt-2 max-w-[420px] text-sm leading-snug text-muted-foreground [animation-delay:180ms] md:mx-0 md:mt-3 md:text-base md:leading-relaxed"><span className="md:hidden">Vitalis, Endura & Reviva. Find your drop.</span><span className="hidden md:inline">Meet Vitalis, Endura and Reviva. Three distinct drops. One thoughtfully chosen routine.</span></p>
           <p className="hidden font-extrabold md:mt-4 md:block md:text-3xl">From {formatPrice(startingPrice)}</p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2 md:mt-5 md:justify-start">
+          <div className="hero-fade-up mt-4 flex flex-wrap justify-center gap-2 [animation-delay:300ms] md:mt-5 md:justify-start">
             <Button asChild size="lg" className="h-11 rounded-sm px-4 font-bold md:h-12 md:px-5"><a href="#shop">Shop the drops <ArrowRight className="h-4 w-4" /></a></Button>
             {availableProducts.some((product) => product.slug === "daily-vitality") && <Button asChild size="lg" variant="outline" className="h-11 rounded-sm border-primary bg-background/80 px-4 font-bold md:h-12 md:px-5"><Link to="/checkout?buy=daily-vitality">Buy Vitalis</Link></Button>}
           </div>
-          <p className="font-semibold text-muted-foreground mt-3 text-xs md:mt-4 md:text-xs">Online payment · Personal order tracking</p>
+          <p className="hero-fade-up mt-3 text-xs font-semibold text-muted-foreground [animation-delay:380ms] md:mt-4">Online payment · Personal order tracking</p>
         </div>
         <Link to="/products/daily-vitality" aria-label="View Sanjivani Vitalis" className="relative block w-full flex-1 overflow-hidden md:hidden">
-          <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} fetchPriority="high" className="hero-image-reveal absolute inset-0 h-full w-full object-cover object-center" />
         </Link>
       </section>
 
