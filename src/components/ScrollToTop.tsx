@@ -1,10 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
   const { pathname, hash, key } = useLocation();
+  const isFirstLoad = useRef(true);
 
   useEffect(() => {
+    // On the very first load (or a refresh), always open at the top of the
+    // page — never restore a stale #section hash from the address bar.
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      window.scrollTo(0, 0);
+      if (hash && window.history.replaceState) {
+        window.history.replaceState(null, "", pathname);
+      }
+      return;
+    }
     if (!hash) {
       window.scrollTo(0, 0);
       return;
