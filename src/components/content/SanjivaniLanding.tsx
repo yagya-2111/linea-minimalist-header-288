@@ -55,8 +55,8 @@ const SanjivaniLanding = () => {
           </div>
           <p className="font-semibold text-muted-foreground mt-3 text-xs md:mt-4 md:text-xs">Online payment · Personal order tracking</p>
         </div>
-        <Link to="/products/daily-vitality" aria-label="View Sanjivani Vitalis" className="block w-full flex-1 md:hidden">
-          <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} fetchPriority="high" className="block h-full min-h-[320px] w-full object-cover object-center" />
+        <Link to="/products/daily-vitality" aria-label="View Sanjivani Vitalis" className="relative block w-full flex-1 overflow-hidden md:hidden">
+          <img src={mobileHeroImage} alt="Sanjivani Vitalis bottle and botanical carton" width={900} height={900} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-center" />
         </Link>
       </section>
 
