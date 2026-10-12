@@ -24,7 +24,7 @@ const Checkout = () => {
 
   const lines = useMemo(() => (buySlug ? [{ slug: buySlug, quantity: 1 }] : cart).flatMap((line) => {
     const product = products.find((item) => item.slug === line.slug);
-    const price = productPrices[line.slug];
+    const price = productPrices[line.slug] ?? product?.defaultPricePaise;
     return product && product.active !== false && price !== undefined ? [{ ...line, product, price }] : [];
   }), [buySlug, cart, productPrices, products]);
   const subtotal = lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
