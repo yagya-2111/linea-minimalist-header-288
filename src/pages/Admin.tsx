@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowUpRight, Check, ChevronRight, ExternalLink, PackageCheck, Save, Settings2, ShieldCheck, UploadCloud } from "lucide-react";
+import { ArrowUpRight, Check, ChevronRight, ClipboardList, CreditCard, ExternalLink, Package, PackageCheck, RefreshCw, Save, Settings2, ShieldCheck, UploadCloud, Users } from "lucide-react";
 import { toast } from "sonner";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
@@ -12,12 +12,20 @@ import { useStore, formatPrice, type StoreOrder } from "@/context/StoreContext";
 import { supabase } from "@/integrations/supabase/client";
 
 type SettingsForm = { upi_id: string; payee_name: string; bank_name: string; account_name: string; account_number: string; ifsc: string; qr_image_path: string; shipping_paise: string; checkout_enabled: boolean };
+type AdminCustomer = { user_id: string; email: string; full_name: string; phone: string; alternate_phone: string | null; address_line1: string; address_line2: string | null; landmark: string | null; city: string; state: string; postal_code: string; country: string; created_at: string; updated_at: string };
+type AdminSection = "review" | "orders" | "customers" | "payments" | "products";
+type CustomerDraft = Omit<AdminCustomer, "created_at" | "updated_at">;
 
 const DELIVERY: StoreOrder["status"][] = ["ordered", "packed", "shipped", "delivered"];
 const deliveryLabel: Record<StoreOrder["status"], string> = { ordered: "Ordered", packed: "Packed", shipped: "Shipped", delivered: "Delivered" };
 
 const Admin = () => {
   const { user, isAdmin, authLoading, profileLoading, orders, productPrices, products, paymentSettings, reloadStoreData, updateOrder, updatePaymentSettings, updateProduct, getProofUrl } = useStore();
+  const [activeSection, setActiveSection] = useState<AdminSection>("review");
+  const [customers, setCustomers] = useState<AdminCustomer[]>([]);
+  const [customerDrafts, setCustomerDrafts] = useState<Record<string, CustomerDraft>>({});
+  const [customersLoading, setCustomersLoading] = useState(true);
+  const [savingCustomer, setSavingCustomer] = useState<string | null>(null);
   const [settings, setSettings] = useState<SettingsForm>({ upi_id: "", payee_name: "", bank_name: "", account_name: "", account_number: "", ifsc: "", qr_image_path: "", shipping_paise: "", checkout_enabled: false });
   const [savingSettings, setSavingSettings] = useState(false);
   const [savingProduct, setSavingProduct] = useState<string | null>(null);
@@ -29,6 +37,23 @@ const Admin = () => {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [tracking, setTracking] = useState<Record<string, string>>({});
   const [productDrafts, setProductDrafts] = useState<Record<string, { name: string; description: string; price: string; active: boolean }>>({});
+
+  useEffect(() => {
+    if (!user || !isAdmin) return;
+    let current = true;
+    setCustomersLoading(true);
+    void supabase.from("profiles").select("user_id,email,full_name,phone,alternate_phone,address_line1,address_line2,landmark,city,state,postal_code,country,created_at,updated_at").order("created_at", { ascending: false }).then(({ data, error }) => {
+      if (!current) return;
+      if (error) toast.error("Customer records could not be loaded.");
+      else {
+        const rows = (data ?? []) as AdminCustomer[];
+        setCustomers(rows);
+        setCustomerDrafts(Object.fromEntries(rows.map(({ created_at: _createdAt, updated_at: _updatedAt, ...draft }) => [draft.user_id, draft])));
+      }
+      setCustomersLoading(false);
+    });
+    return () => { current = false; };
+  }, [user?.id, isAdmin]);
 
   useEffect(() => {
     if (!paymentSettings) return;
@@ -44,6 +69,36 @@ const Admin = () => {
   const showError = (error: unknown) => toast.error(error instanceof Error ? error.message : "Could not save these changes.");
   const pending = orders.filter((order) => order.payment_status === "pending");
   const activeOrders = orders.filter((order) => order.payment_status === "approved" && order.status !== "delivered");
+  const approvedOrders = orders.filter((order) => order.payment_status === "approved");
+  const recentCustomerCount = customers.filter((customer) => Date.now() - new Date(customer.created_at).getTime() < 7 * 24 * 60 * 60 * 1000).length;
+  const refreshWorkspace = async () => {
+    await reloadStoreData();
+    if (!user || !isAdmin) return;
+    const { data, error } = await supabase.from("profiles").select("user_id,email,full_name,phone,alternate_phone,address_line1,address_line2,landmark,city,state,postal_code,country,created_at,updated_at").order("created_at", { ascending: false });
+    if (error) toast.error("Customer records could not be refreshed.");
+    else {
+      const rows = (data ?? []) as AdminCustomer[];
+      setCustomers(rows);
+      setCustomerDrafts(Object.fromEntries(rows.map(({ created_at: _createdAt, updated_at: _updatedAt, ...draft }) => [draft.user_id, draft])));
+    }
+  };
+
+  const saveCustomer = async (userId: string) => {
+    const draft = customerDrafts[userId];
+    if (!draft) return;
+    if (!draft.full_name.trim() || !draft.phone.trim() || !draft.address_line1.trim() || !draft.city.trim() || !draft.state.trim() || !draft.postal_code.trim() || !draft.country.trim()) {
+      toast.error("Complete all required customer and delivery details.");
+      return;
+    }
+    setSavingCustomer(userId);
+    try {
+      const { user_id: _userId, email: _email, ...details } = draft;
+      const { error } = await supabase.from("profiles").update({ ...details, full_name: details.full_name.trim(), phone: details.phone.trim(), address_line1: details.address_line1.trim(), city: details.city.trim(), state: details.state.trim(), postal_code: details.postal_code.trim(), country: details.country.trim() }).eq("user_id", userId);
+      if (error) throw error;
+      toast.success("Customer details saved");
+      await refreshWorkspace();
+    } catch (error) { showError(error); } finally { setSavingCustomer(null); }
+  };
 
   const openProof = async (order: StoreOrder) => {
     setProofBusy(order.id);
@@ -103,35 +158,59 @@ const Admin = () => {
   if (!user) return <Navigate to="/account" replace />;
   if (!isAdmin) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-3xl px-5 py-24 text-center"><ShieldCheck className="mx-auto h-10 w-10 text-muted-foreground" /><h1 className="mt-5 font-display text-3xl font-extrabold">Administrator access only</h1><p className="mt-3 text-muted-foreground">This area is only available to the store administrator.</p><Button asChild className="mt-6"><Link to="/">Back to Sanjivani</Link></Button></main><Footer /></div>;
 
-  return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 lg:py-16">
-    <div className="flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-end"><div><p className="text-xs font-extrabold uppercase text-accent-strong">Store controls</p><h1 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">Orders & settings</h1><p className="mt-2 text-muted-foreground">Payment checks, delivery progress, and product pricing.</p></div><Button asChild variant="outline"><Link to="/account">My account</Link></Button></div>
-    <section className="grid gap-6 border-b border-border py-8 sm:grid-cols-3"><Stat label="Orders to review" count={pending.length} /><Stat label="In delivery" count={activeOrders.length} /><Stat label="All orders" count={orders.length} /></section>
+  return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-[1440px] px-5 py-8 sm:px-8 lg:py-12">
+    <div className="flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-end"><div><p className="text-xs font-extrabold uppercase text-accent-strong">Private store workspace</p><h1 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">Store management</h1><p className="mt-2 text-muted-foreground">Orders, customer records, payment instructions and catalogue—all together.</p></div><div className="flex flex-wrap gap-2"><Button type="button" variant="outline" onClick={() => void refreshWorkspace()}><RefreshCw className="mr-2 h-4 w-4" />Refresh records</Button><Button asChild variant="outline"><Link to="/account">My account</Link></Button></div></div>
+    <section className="grid gap-6 border-b border-border py-8 sm:grid-cols-2 xl:grid-cols-4"><Stat label="Payments to review" count={pending.length} /><Stat label="Orders in delivery" count={activeOrders.length} /><Stat label="Customer accounts" count={customers.length} /><Stat label="New this week" count={recentCustomerCount} /></section>
+    <nav aria-label="Store management sections" className="flex gap-2 overflow-x-auto border-b border-border py-4">
+      {([ ["review", "Payment review", CreditCard, pending.length], ["orders", "Orders & delivery", ClipboardList, orders.length], ["customers", "Customers", Users, customers.length], ["payments", "Payment settings", Settings2, undefined], ["products", "Products", Package, products.length] ] as const).map(([section, label, Icon, count]) => <Button key={section} type="button" variant={activeSection === section ? "default" : "outline"} onClick={() => setActiveSection(section)} className="shrink-0"><Icon className="mr-2 h-4 w-4" />{label}{count !== undefined && <span className="ml-2 tabular-nums">{count}</span>}</Button>)}
+    </nav>
 
-      <section id="payment-settings" className="grid gap-8 border-b border-border py-10 lg:grid-cols-[0.8fr_1.2fr]"><div><div className="flex h-10 w-10 items-center justify-center bg-secondary"><Settings2 className="h-5 w-5" /></div><h2 className="mt-4 font-display text-2xl font-extrabold">Payment & delivery</h2><p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">Customers can scan the configured SM Trading QR or use the UPI and bank details, then upload a transfer screenshot. Submitted addresses, contact details, items, totals, and private screenshots appear below for administrator review. The current delivery fee is ₹0.</p></div>
+    {activeSection === "payments" && <section id="payment-settings" className="grid gap-8 border-b border-border py-10 lg:grid-cols-[0.8fr_1.2fr]"><div><div className="flex h-10 w-10 items-center justify-center bg-secondary"><Settings2 className="h-5 w-5" /></div><h2 className="mt-4 font-display text-2xl font-extrabold">Payment & delivery</h2><p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">Edit the payment details, QR image, delivery fee and checkout availability shown to customers.</p></div>
       <form onSubmit={saveSettings} className="grid gap-x-5 gap-y-4 sm:grid-cols-2"><div><Label htmlFor="upi">UPI ID</Label><Input id="upi" autoComplete="off" maxLength={120} value={settings.upi_id} onChange={(event) => setSettings({ ...settings, upi_id: event.target.value })} className="mt-2 h-11" /></div><div><Label htmlFor="payee">Payee name</Label><Input id="payee" maxLength={120} value={settings.payee_name} onChange={(event) => setSettings({ ...settings, payee_name: event.target.value })} className="mt-2 h-11" /></div><div><Label htmlFor="bank-name">Bank name</Label><Input id="bank-name" maxLength={120} value={settings.bank_name} onChange={(event) => setSettings({ ...settings, bank_name: event.target.value })} className="mt-2 h-11" /></div><div><Label htmlFor="account-name">Account name</Label><Input id="account-name" maxLength={120} value={settings.account_name} onChange={(event) => setSettings({ ...settings, account_name: event.target.value })} className="mt-2 h-11" /></div><div><Label htmlFor="account-number">Account number</Label><Input id="account-number" inputMode="numeric" maxLength={40} value={settings.account_number} onChange={(event) => setSettings({ ...settings, account_number: event.target.value })} className="mt-2 h-11" /></div><div><Label htmlFor="ifsc">IFSC</Label><Input id="ifsc" maxLength={20} value={settings.ifsc} onChange={(event) => setSettings({ ...settings, ifsc: event.target.value.toUpperCase() })} className="mt-2 h-11" /></div><div><Label htmlFor="shipping-fee">Delivery fee (₹)</Label><Input id="shipping-fee" type="number" min="0" max="100000" step="0.01" required value={settings.shipping_paise} onChange={(event) => setSettings({ ...settings, shipping_paise: event.target.value })} className="mt-2 h-11" /></div>
         <div className="sm:col-span-2"><Label htmlFor="payment-qr">Store payment QR image</Label><div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start">{(qrUrl || settings.qr_image_path) && <button type="button" title="Refresh QR preview" onClick={() => { if (settings.qr_image_path) void getProofUrl(settings.qr_image_path).then(setQrUrl).catch(showError); }} className="flex h-36 w-36 shrink-0 items-center justify-center border border-border bg-secondary">{qrUrl ? <img src={qrUrl} alt="Store payment QR preview" className="h-full w-full object-contain" /> : <span className="text-xs text-muted-foreground">Saved QR image</span>}</button>}<div className="flex min-w-0 flex-1 flex-col gap-3"><Input id="payment-qr" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setQrFile(event.target.files?.[0] ?? null)} className="h-11" /><Button type="button" variant="outline" disabled={!qrFile || qrBusy} onClick={() => void uploadQr()}>{qrBusy ? "Uploading…" : <>Upload QR image <UploadCloud className="ml-2 h-4 w-4" /></>}</Button><p className="text-xs text-muted-foreground">Image only · maximum 5 MB. Upload first, then save settings.</p></div></div></div>
         <label className="flex items-start gap-3 border-y border-border py-4 text-sm sm:col-span-2"><input type="checkbox" checked={settings.checkout_enabled} onChange={(event) => setSettings({ ...settings, checkout_enabled: event.target.checked })} className="mt-1 h-4 w-4 accent-primary" /><span><strong>Open checkout</strong><span className="mt-1 block text-muted-foreground">Customers can pay by transfer and submit orders with payment screenshots.</span></span></label>
         <Button type="submit" disabled={savingSettings} className="sm:col-span-2">{savingSettings ? "Saving…" : <>Save payment & delivery settings <Save className="ml-2 h-4 w-4" /></>}</Button>
       </form>
-    </section>
+    </section>}
 
-    <section className="border-b border-border py-10"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase text-accent-strong">Needs attention</p><h2 className="mt-2 font-display text-3xl font-extrabold">Payment review <span className="text-muted-foreground">({pending.length})</span></h2></div></div>
+    {activeSection === "review" && <>
+    <section className="border-b border-border py-10"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase text-accent-strong">Needs attention</p><h2 className="mt-2 font-display text-3xl font-extrabold">Payment review <span className="text-muted-foreground">({pending.length})</span></h2><p className="mt-2 text-sm text-muted-foreground">Check customer details, order contents and the private payment screenshot before approving.</p></div></div>
       {pending.length ? <div className="mt-6 divide-y divide-border border-y border-border">{pending.map((order) => <OrderAdminCard key={order.id} order={order} notes={notes} setNotes={setNotes} tracking={tracking} setTracking={setTracking} proofUrl={proofUrls[order.id]} proofBusy={proofBusy === order.id} onProof={() => void openProof(order)} onUpdate={handleOrderUpdate} />)}</div> : <p className="border-y border-border py-9 text-sm text-muted-foreground">No payments waiting for review.</p>}
     </section>
 
-    <section className="border-b border-border py-10"><div><p className="text-xs font-bold uppercase text-accent-strong">After payment approval</p><h2 className="mt-2 font-display text-3xl font-extrabold">Delivery progress <span className="text-muted-foreground">({activeOrders.length})</span></h2><p className="mt-2 text-sm text-muted-foreground">Confirm each delivery stage to update the customer’s order history.</p></div>
-      {activeOrders.length ? <div className="mt-6 divide-y divide-border border-y border-border">{activeOrders.map((order) => <OrderAdminCard key={order.id} order={order} notes={notes} setNotes={setNotes} tracking={tracking} setTracking={setTracking} proofUrl={proofUrls[order.id]} proofBusy={proofBusy === order.id} onProof={() => void openProof(order)} onUpdate={handleOrderUpdate} />)}</div> : <p className="mt-5 border-y border-border py-9 text-sm text-muted-foreground">Approved, active orders will appear here.</p>}
-      {orders.filter((order) => order.status === "delivered").length > 0 && <p className="mt-5 text-sm text-muted-foreground">{orders.filter((order) => order.status === "delivered").length} delivered orders are in the order list above.</p>}
-    </section>
+      {orders.some((order) => order.payment_status === "rejected") && <div className="mt-8"><h3 className="font-display text-xl font-extrabold">Payment corrections needed <span className="text-muted-foreground">({orders.filter((order) => order.payment_status === "rejected").length})</span></h3><div className="mt-4 divide-y divide-border border-y border-border">{orders.filter((order) => order.payment_status === "rejected").map((order) => <OrderAdminCard key={order.id} order={order} notes={notes} setNotes={setNotes} tracking={tracking} setTracking={setTracking} proofUrl={proofUrls[order.id]} proofBusy={proofBusy === order.id} onProof={() => void openProof(order)} onUpdate={handleOrderUpdate} />)}</div></div>}
+    </>}
 
-    <section className="py-10"><div><p className="text-xs font-bold uppercase text-accent-strong">Catalogue</p><h2 className="mt-2 font-display text-3xl font-extrabold">Products & prices</h2></div><div className="mt-6 divide-y divide-border border-y border-border">{products.map((product) => { const draft = productDrafts[product.slug]; if (!draft) return null; return <article key={product.slug} className="grid gap-5 py-6 lg:grid-cols-[120px_1fr_160px]"><img src={product.image} alt={product.name} className="aspect-square w-28 bg-secondary object-cover" /><div className="grid gap-4 sm:grid-cols-2"><div><Label htmlFor={`product-name-${product.slug}`}>Product name</Label><Input id={`product-name-${product.slug}`} value={draft.name} maxLength={120} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, name: event.target.value } }))} className="mt-2 h-10" /></div><div><Label htmlFor={`product-price-${product.slug}`}>Price (₹)</Label><Input id={`product-price-${product.slug}`} type="number" min="1" max="100000" step="0.01" value={draft.price} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, price: event.target.value } }))} className="mt-2 h-10" /></div><div className="sm:col-span-2"><Label htmlFor={`product-description-${product.slug}`}>Description</Label><Textarea id={`product-description-${product.slug}`} value={draft.description} maxLength={2000} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, description: event.target.value } }))} className="mt-2 min-h-20" /></div><label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" checked={draft.active} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, active: event.target.checked } }))} className="h-4 w-4 accent-primary" />Visible in the shop</label></div><Button variant="outline" disabled={savingProduct === product.slug} onClick={() => void saveProduct(product.slug)}>{savingProduct === product.slug ? "Saving…" : <>Save product <Save className="ml-2 h-4 w-4" /></>}</Button></article>; })}</div>
-    </section>
+    {activeSection === "orders" && <section className="border-b border-border py-10"><div><p className="text-xs font-bold uppercase text-accent-strong">Fulfillment</p><h2 className="mt-2 font-display text-3xl font-extrabold">Orders & delivery <span className="text-muted-foreground">({approvedOrders.length})</span></h2><p className="mt-2 text-sm text-muted-foreground">View confirmed purchases, customer addresses, delivery steps and tracking details.</p></div>
+      {approvedOrders.length ? <div className="mt-6 divide-y divide-border border-y border-border">{approvedOrders.map((order) => <OrderAdminCard key={order.id} order={order} notes={notes} setNotes={setNotes} tracking={tracking} setTracking={setTracking} proofUrl={proofUrls[order.id]} proofBusy={proofBusy === order.id} onProof={() => void openProof(order)} onUpdate={handleOrderUpdate} />)}</div> : <p className="mt-5 border-y border-border py-9 text-sm text-muted-foreground">Approved orders will appear here.</p>}
+    </section>}
+
+    {activeSection === "customers" && <section className="py-10"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase text-accent-strong">Customer accounts</p><h2 className="mt-2 font-display text-3xl font-extrabold">Signups & customer details</h2><p className="mt-2 text-sm text-muted-foreground">Private account and delivery information, with each customer’s order totals.</p></div><p className="text-sm tabular-nums text-muted-foreground">{customers.length} accounts</p></div>
+      {customersLoading ? <p className="mt-6 border-y border-border py-8 text-sm text-muted-foreground">Loading customer records…</p> : customers.length ? <div className="mt-6 divide-y divide-border border-y border-border">{customers.map((customer) => {
+        const customerOrders = orders.filter((order) => order.user_id === customer.user_id);
+        const draft = customerDrafts[customer.user_id];
+        if (!draft) return null;
+        const spend = customerOrders.filter((order) => order.payment_status === "approved").reduce((sum, order) => sum + order.total_paise, 0);
+        const isNew = Date.now() - new Date(customer.created_at).getTime() < 7 * 24 * 60 * 60 * 1000;
+        return <details key={customer.user_id} className="group py-5"><summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-4"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-display text-lg font-extrabold">{customer.full_name}</h3>{isNew && <span className="border border-accent-strong px-2 py-0.5 text-[11px] font-bold uppercase text-accent-strong">New</span>}</div><p className="mt-1 break-all text-sm text-muted-foreground">{customer.email} · {customer.phone}</p></div><div className="flex flex-wrap gap-x-6 gap-y-1 text-sm"><span>{customerOrders.length} {customerOrders.length === 1 ? "order" : "orders"}</span><span className="font-bold">Paid {formatPrice(spend)}</span><span className="text-muted-foreground">Joined {new Date(customer.created_at).toLocaleDateString("en-IN", { dateStyle: "medium" })}</span><span className="text-muted-foreground group-open:rotate-90"><ChevronRight className="h-4 w-4" /></span></div></summary>
+          <div className="mt-5 grid gap-6 border-t border-border pt-5 sm:grid-cols-2"><div className="grid content-start gap-3"><p className="text-xs font-bold uppercase text-muted-foreground">Contact details</p><p className="break-all text-sm">{customer.email}</p><CustomerField label="Full name" value={draft.full_name} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, full_name: value } }))} required /><CustomerField label="Phone" value={draft.phone} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, phone: value } }))} required /><CustomerField label="Alternate phone" value={draft.alternate_phone ?? ""} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, alternate_phone: value || null } }))} /><p className="text-xs text-muted-foreground">Account created {new Date(customer.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</p></div><div className="grid content-start gap-3"><p className="text-xs font-bold uppercase text-muted-foreground">Saved delivery address</p><CustomerField label="Address line 1" value={draft.address_line1} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, address_line1: value } }))} required /><CustomerField label="Address line 2" value={draft.address_line2 ?? ""} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, address_line2: value || null } }))} /><CustomerField label="Landmark" value={draft.landmark ?? ""} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, landmark: value || null } }))} /><div className="grid grid-cols-2 gap-3"><CustomerField label="City" value={draft.city} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, city: value } }))} required /><CustomerField label="State" value={draft.state} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, state: value } }))} required /><CustomerField label="Postal code" value={draft.postal_code} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, postal_code: value } }))} required /><CustomerField label="Country" value={draft.country} onChange={(value) => setCustomerDrafts((current) => ({ ...current, [customer.user_id]: { ...draft, country: value } }))} required /></div><Button type="button" variant="outline" disabled={savingCustomer === customer.user_id} onClick={() => void saveCustomer(customer.user_id)}>{savingCustomer === customer.user_id ? "Saving details…" : <>Save customer details <Save className="ml-2 h-4 w-4" /></>}</Button></div><div className="sm:col-span-2"><p className="text-xs font-bold uppercase text-muted-foreground">Order history</p>{customerOrders.length ? <ul className="mt-2 divide-y divide-border">{customerOrders.map((order) => <li key={order.id} className="flex flex-wrap justify-between gap-2 py-3 text-sm"><span>#{order.id.slice(0, 8).toUpperCase()} · {new Date(order.created_at).toLocaleDateString("en-IN", { dateStyle: "medium" })} · {order.payment_status} / {order.status}</span><span className="font-bold">{formatPrice(order.total_paise)}</span></li>)}</ul> : <p className="mt-2 text-sm text-muted-foreground">No orders yet.</p>}</div></div>
+        </details>;
+      })}</div> : <p className="mt-6 border-y border-border py-8 text-sm text-muted-foreground">No customer profiles were found.</p>}
+    </section>}
+
+    {activeSection === "products" && <section className="py-10"><div><p className="text-xs font-bold uppercase text-accent-strong">Catalogue</p><h2 className="mt-2 font-display text-3xl font-extrabold">Products & prices</h2><p className="mt-2 text-sm text-muted-foreground">Update the name, price, description or shop visibility for each product.</p></div><div className="mt-6 divide-y divide-border border-y border-border">{products.map((product) => { const draft = productDrafts[product.slug]; if (!draft) return null; return <article key={product.slug} className="grid gap-5 py-6 lg:grid-cols-[120px_1fr_160px]"><img src={product.image} alt={product.name} className="aspect-square w-28 bg-secondary object-cover" /><div className="grid gap-4 sm:grid-cols-2"><div><Label htmlFor={`product-name-${product.slug}`}>Product name</Label><Input id={`product-name-${product.slug}`} value={draft.name} maxLength={120} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, name: event.target.value } }))} className="mt-2 h-10" /></div><div><Label htmlFor={`product-price-${product.slug}`}>Price (₹)</Label><Input id={`product-price-${product.slug}`} type="number" min="1" max="100000" step="0.01" value={draft.price} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, price: event.target.value } }))} className="mt-2 h-10" /></div><div className="sm:col-span-2"><Label htmlFor={`product-description-${product.slug}`}>Description</Label><Textarea id={`product-description-${product.slug}`} value={draft.description} maxLength={2000} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, description: event.target.value } }))} className="mt-2 min-h-20" /></div><label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" checked={draft.active} onChange={(event) => setProductDrafts((current) => ({ ...current, [product.slug]: { ...draft, active: event.target.checked } }))} className="h-4 w-4 accent-primary" />Visible in the shop</label></div><Button variant="outline" disabled={savingProduct === product.slug} onClick={() => void saveProduct(product.slug)}>{savingProduct === product.slug ? "Saving…" : <>Save product <Save className="ml-2 h-4 w-4" /></>}</Button></article>; })}</div>
+    </section>}
 
     <section className="border-t border-border py-8"><Button asChild variant="outline"><Link to="/"><ArrowUpRight className="mr-2 h-4 w-4" /> View storefront</Link></Button></section>
   </main><Footer /></div>;
 };
 
 function Stat({ label, count }: { label: string; count: number }) { return <div className="border-l-2 border-accent-strong pl-5"><p className="font-display text-4xl font-extrabold">{count}</p><p className="mt-1 text-sm text-muted-foreground">{label}</p></div>; }
+
+function CustomerField({ label, value, onChange, required = false }: { label: string; value: string; onChange: (value: string) => void; required?: boolean }) {
+  const id = useId();
+  return <div><Label htmlFor={id}>{label}{required ? " *" : ""}</Label><Input id={id} value={value} required={required} maxLength={label === "Address line 1" || label === "Address line 2" ? 200 : 120} onChange={(event) => onChange(event.target.value)} className="mt-1 h-10" /></div>;
+}
 
 function OrderAdminCard({ order, notes, setNotes, tracking, setTracking, proofUrl, proofBusy, onProof, onUpdate }: { order: StoreOrder; notes: Record<string, string>; setNotes: React.Dispatch<React.SetStateAction<Record<string, string>>>; tracking: Record<string, string>; setTracking: React.Dispatch<React.SetStateAction<Record<string, string>>>; proofUrl?: string; proofBusy: boolean; onProof: () => void; onUpdate: (order: StoreOrder, update: Parameters<ReturnType<typeof useStore>["updateOrder"]>[1], success: string) => Promise<void> }) {
   const stepIndex = DELIVERY.indexOf(order.status);
