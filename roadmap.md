@@ -4,6 +4,7 @@
 - [x] Protect order creation, payment review, delivery steps, admin assignment, customer profiles, and private proof access in the database.
 - [x] Replace preview-only legal copy and remove fictional customer reviews.
 - [x] Verify live serum page, bag interactions, route refresh, checkout access guard, and mobile layout.
+- [x] Organize the private admin workspace into payment review, fulfillment, editable customer signup/details, payment settings and catalogue sections; protect admin profile edits and verify saved values read back.
 - [x] Add checkout address confirmation before payment, show clearly marked non-payable demo QR, configure Yagya-provided UPI/bank transfers, and retain submitted order details and private screenshots for admin review.
 - [x] Keep each customer's saved bag separate by account and scope customer order history to the signed-in user; preserve admin access to all orders.
 - [x] Refresh the storefront with a selectable serum ritual finder, shopping-flow overview, linked FAQs, and a more balanced first-screen layout.

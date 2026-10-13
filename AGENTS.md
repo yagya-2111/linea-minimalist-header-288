@@ -11,6 +11,8 @@
 - Authentication and commerce state are shared through `StoreProvider`; persist each customer's bag under their authenticated user ID and scope customer order/profile reads to that ID, while admins may review all orders.
 - Direct-buy checkout passes a catalogue slug and orders a single validated active product without mutating the saved bag; this keeps immediate purchases separate from a customer's ongoing bag.
 - Store permissions live in the separate `user_roles` table and are enforced by database row policies and validation triggers; never treat client state as authorization.
+- Permit administrator profile edits only through an explicit admin-scoped database policy, while retaining customer self-service profile updates and immutable account ownership/email.
+- Keep the administrator workspace organized into dedicated review, fulfillment, customer, payment-settings and catalogue sections; preserve customer-owned profile editing and existing admin-only data permissions.
 - Payment proofs and the store QR image stay in private storage with owner/admin access policies.
 - Product reviews must be genuine and verified before being displayed; never create fictional customer statements or ratings.
 - Storefront policies describe the active account, order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
