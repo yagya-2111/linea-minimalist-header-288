@@ -17,9 +17,23 @@ export type StoreProfile = {
   country: string;
 };
 
+export type GuestOrderDetails = {
+  full_name: string;
+  email: string;
+  phone: string;
+  alternate_phone: string;
+  address_line1: string;
+  address_line2: string;
+  landmark: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+};
+
 export type StoreOrder = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   customer_name: string;
   email: string;
   phone: string;
@@ -63,24 +77,20 @@ type UserAccount = { id: string; email: string };
 
 type StoreContextValue = {
   user: UserAccount | null;
-  profile: StoreProfile | null;
   isAdmin: boolean;
   authLoading: boolean;
-  profileLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
   orders: StoreOrder[];
   cart: CartLine[];
   products: SanjivaniProduct[];
   productPrices: Record<string, number>;
   paymentSettings: PaymentSettings | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, details: Omit<StoreProfile, "user_id" | "email">) => Promise<void>;
-  signOut: () => Promise<void>;
-  saveProfile: (details: Omit<StoreProfile, "user_id" | "email">) => Promise<void>;
   addToCart: (slug: string, quantity?: number) => void;
   setQuantity: (slug: string, quantity: number) => void;
   clearCart: () => void;
   reloadStoreData: () => Promise<void>;
-  submitOrder: (proof: File, buySlug?: string) => Promise<string>;
+  submitOrder: (proof: File, details: GuestOrderDetails, buySlug?: string) => Promise<string>;
   updateOrder: (id: string, update: Partial<Pick<StoreOrder, "payment_status" | "status" | "tracking_number" | "admin_note">>) => Promise<void>;
   updatePaymentSettings: (settings: PaymentSettings) => Promise<void>;
   updateProduct: (slug: string, update: Pick<ProductRow, "name" | "description" | "price_paise" | "active">) => Promise<void>;
@@ -119,17 +129,16 @@ function mapProducts(rows: ProductRow[]): SanjivaniProduct[] {
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserAccount | null>(null);
-  const [profile, setProfile] = useState<StoreProfile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
-  const [profileLoading, setProfileLoading] = useState(false);
   const [orders, setOrders] = useState<StoreOrder[]>([]);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [loadedCartScope, setLoadedCartScope] = useState<string | null>(null);
   const [products, setProducts] = useState(sanjivaniProducts);
   const [productPrices, setProductPrices] = useState<Record<string, number>>({});
   const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
-  const cartScope = authLoading ? null : user ? `user:${user.id}` : "guest";
+  // Shopping is account-free: every bag lives in the shared guest scope on this device.
+  const cartScope = "guest";
   const activeCart = loadedCartScope === cartScope ? cart.filter((line) => sanjivaniProducts.some((product) => product.slug === line.slug)) : [];
   const reloadSequence = useRef(0);
 
@@ -151,25 +160,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!settingsResult.error && settingsResult.data) setPaymentSettings(settingsResult.data as PaymentSettings);
     const authUser = authData.data.user;
     if (!authUser?.email) {
-      setUser(null); setProfile(null); setIsAdmin(false); setOrders([]); setProfileLoading(false);
+      setUser(null); setIsAdmin(false); setOrders([]);
       return;
     }
     setUser({ id: authUser.id, email: authUser.email });
-    setProfileLoading(true);
-    const [profileResult, roleResult] = await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", authUser.id).maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", authUser.id).eq("role", "admin").maybeSingle(),
-    ]);
+    const roleResult = await supabase.from("user_roles").select("role").eq("user_id", authUser.id).eq("role", "admin").maybeSingle();
     if (sequence !== reloadSequence.current) return;
     const isStoreAdmin = roleResult.data?.role === "admin";
-    const orderRequest = supabase.from("orders").select("*");
-    const scopedOrderRequest = isStoreAdmin ? orderRequest : orderRequest.eq("user_id", authUser.id);
-    const orderResult = await scopedOrderRequest.order("created_at", { ascending: false });
-    if (sequence !== reloadSequence.current) return;
-    setProfile(profileResult.data as StoreProfile | null);
     setIsAdmin(isStoreAdmin);
-    setOrders((orderResult.data ?? []) as StoreOrder[]);
-    setProfileLoading(false);
+    if (isStoreAdmin) {
+      const orderResult = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+      if (sequence !== reloadSequence.current) return;
+      setOrders((orderResult.data ?? []) as StoreOrder[]);
+    }
   }, []);
 
   useEffect(() => {
@@ -186,10 +189,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (!active) return;
       reloadSequence.current += 1;
       setUser(session?.user?.email ? { id: session.user.id, email: session.user.email } : null);
-      setProfile(null);
       setOrders([]);
       setIsAdmin(false);
-      setProfileLoading(Boolean(session?.user));
       setAuthLoading(false);
       window.setTimeout(() => { if (active) void reloadStoreData(); }, 0);
     });
@@ -197,13 +198,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [reloadStoreData]);
 
   useEffect(() => {
-    if (!cartScope || loadedCartScope === cartScope) return;
+    if (loadedCartScope === cartScope) return;
     setCart(readStoredCart(cartScope));
     setLoadedCartScope(cartScope);
   }, [cartScope, loadedCartScope]);
 
   useEffect(() => {
-    if (!cartScope || loadedCartScope !== cartScope) return;
+    if (loadedCartScope !== cartScope) return;
     try { window.localStorage.setItem(`${CART_KEY}:${cartScope}`, JSON.stringify(cart)); } catch { /* Storage may be unavailable in private browsing. */ }
   }, [cart, cartScope, loadedCartScope]);
 
@@ -213,37 +214,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     await reloadStoreData();
   }, [reloadStoreData]);
 
-  const signUp = useCallback(async (email: string, password: string, details: Omit<StoreProfile, "user_id" | "email">) => {
-    const normalizedEmail = email.trim().toLowerCase();
-    const { data, error } = await supabase.auth.signUp({ email: normalizedEmail, password, options: { emailRedirectTo: window.location.origin, data: { full_name: details.full_name } } });
-    if (error) {
-      const message = error.message.toLowerCase();
-      if (message.includes("already registered") || message.includes("already been registered") || message.includes("user already exists") || data.user?.identities?.length === 0) throw new Error("This email is already registered. Sign in instead.");
-      throw error;
-    }
-    if (data.user?.identities?.length === 0) throw new Error("This email is already registered. Sign in instead.");
-    if (!data.user || !data.session) throw new Error("Your account could not be signed in. Please try again.");
-    const { error: profileError } = await supabase.from("profiles").insert({ ...details, user_id: data.user.id, email: normalizedEmail });
-    if (profileError) {
-      await supabase.auth.signOut();
-      if (profileError.code === "23505") throw new Error("This email is already registered. Sign in instead.");
-      throw profileError;
-    }
-    setProfile({ ...details, user_id: data.user.id, email: normalizedEmail });
-    await reloadStoreData();
-  }, [reloadStoreData]);
-
-  const saveProfile = useCallback(async (details: Omit<StoreProfile, "user_id" | "email">) => {
-    if (!user) throw new Error("Sign in to update your details.");
-    const { error } = await supabase.from("profiles").upsert({ ...details, user_id: user.id, email: user.email }, { onConflict: "user_id" });
-    if (error) throw error;
-    await reloadStoreData();
-  }, [reloadStoreData, user]);
-
   const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    setUser(null); setProfile(null); setIsAdmin(false); setOrders([]); setProfileLoading(false);
+    setUser(null); setIsAdmin(false); setOrders([]);
   }, []);
 
   const addToCart = useCallback((slug: string, quantity = 1) => setCart((current) => {
@@ -257,15 +231,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const scoped = loadedCartScope === cartScope ? current : [];
     return quantity <= 0 ? scoped.filter((line) => line.slug !== slug) : scoped.map((line) => line.slug === slug ? { ...line, quantity: Math.min(20, quantity) } : line);
   }), [cartScope, loadedCartScope]);
+
   const clearCart = useCallback(() => setCart([]), []);
 
-  const submitOrder = useCallback(async (proof: File, buySlug?: string) => {
-    if (!user || !profile) throw new Error("Complete your account details before checkout.");
+  const submitOrder = useCallback(async (proof: File, details: GuestOrderDetails, buySlug?: string) => {
     const purchaseLines = buySlug ? [{ slug: buySlug, quantity: 1 }] : activeCart.filter((line) => sanjivaniProducts.some((product) => product.slug === line.slug));
     if (!purchaseLines.length) throw new Error("Your bag is empty.");
     if (buySlug && !sanjivaniProducts.some((item) => item.slug === buySlug)) throw new Error("This drop is unavailable.");
     if (!paymentSettings || !paymentSettings.checkout_enabled || paymentSettings.shipping_paise == null || (!paymentSettings.upi_id.trim() && !paymentSettings.account_number.trim())) throw new Error("Online payment and delivery instructions are not available yet. Please contact the store.");
     if (!proof.type.startsWith("image/") || proof.size > 5 * 1024 * 1024) throw new Error("Upload a payment screenshot as an image, up to 5 MB.");
+    const name = details.full_name.trim();
+    const email = details.email.trim();
+    const phone = details.phone.trim();
+    if (name.length < 2 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || phone.replace(/\D/g, "").length < 10 || !details.address_line1.trim() || !details.city.trim() || !details.state.trim() || !/^[0-9]{4,10}$/.test(details.postal_code.trim())) throw new Error("Complete your name, contact number and delivery address before placing the order.");
     const ids = purchaseLines.map((line) => line.slug);
     const { data: currentRows, error: productError } = await supabase.from("products").select("slug,name,price_paise,active").in("slug", ids);
     if (productError || !currentRows) throw new Error("We could not confirm current product prices. Please try again.");
@@ -278,14 +256,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const subtotal = items.reduce((sum, line) => sum + line.price_paise * line.quantity, 0);
     const total = subtotal + paymentSettings.shipping_paise;
     const id = crypto.randomUUID();
-    const proofPath = `${user.id}/${id}/${crypto.randomUUID()}.${proof.type === "image/png" ? "png" : proof.type === "image/webp" ? "webp" : "jpg"}`;
+    const proofPath = `guest/${id}/${crypto.randomUUID()}.${proof.type === "image/png" ? "png" : proof.type === "image/webp" ? "webp" : "jpg"}`;
     const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(proofPath, proof, { contentType: proof.type, upsert: false });
     if (uploadError) throw uploadError;
     const { error: orderError } = await supabase.from("orders").insert({
-      id, user_id: user.id, customer_name: profile.full_name, email: user.email, phone: profile.phone,
-      alternate_phone: profile.alternate_phone, address_line1: profile.address_line1, address_line2: profile.address_line2,
-      landmark: profile.landmark, city: profile.city, state: profile.state, postal_code: profile.postal_code,
-      country: profile.country, items, subtotal_paise: subtotal, shipping_paise: paymentSettings.shipping_paise,
+      id, user_id: null, customer_name: name, email, phone,
+      alternate_phone: details.alternate_phone.trim() || null, address_line1: details.address_line1.trim(), address_line2: details.address_line2.trim() || null,
+      landmark: details.landmark.trim() || null, city: details.city.trim(), state: details.state.trim(), postal_code: details.postal_code.trim(),
+      country: details.country.trim() || "India", items, subtotal_paise: subtotal, shipping_paise: paymentSettings.shipping_paise,
       total_paise: total, proof_path: proofPath,
     });
     if (orderError) {
@@ -295,7 +273,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!buySlug) clearCart();
     await reloadStoreData();
     return id;
-  }, [activeCart, clearCart, paymentSettings, profile, reloadStoreData, user]);
+  }, [activeCart, clearCart, paymentSettings, reloadStoreData]);
 
   const updateOrder = useCallback(async (id: string, update: Partial<Pick<StoreOrder, "payment_status" | "status" | "tracking_number" | "admin_note">>) => {
     if (!isAdmin) throw new Error("Administrator access is required.");
@@ -319,13 +297,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [isAdmin, reloadStoreData]);
 
   const getProofUrl = useCallback(async (path: string) => {
-    if (!user) throw new Error("Sign in to view payment proof.");
     const { data, error } = await supabase.storage.from("payment-proofs").createSignedUrl(path, 60);
     if (error || !data) throw error ?? new Error("Payment image unavailable.");
     return data.signedUrl;
-  }, [user]);
+  }, []);
 
-  const value = useMemo(() => ({ user, profile, isAdmin, authLoading, profileLoading, orders, cart: activeCart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl }), [user, profile, isAdmin, authLoading, profileLoading, orders, activeCart, products, productPrices, paymentSettings, signIn, signUp, signOut, saveProfile, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl]);
+  const value = useMemo(() => ({ user, isAdmin, authLoading, signIn, signOut, orders, cart: activeCart, products, productPrices, paymentSettings, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl }), [user, isAdmin, authLoading, signIn, signOut, orders, activeCart, products, productPrices, paymentSettings, addToCart, setQuantity, clearCart, reloadStoreData, submitOrder, updateOrder, updatePaymentSettings, updateProduct, getProofUrl]);
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
 
