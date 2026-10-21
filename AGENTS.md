@@ -20,4 +20,4 @@
 - Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
 - Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.
 - Internal page transitions use router links or navigation rather than full-page location changes, preserving SPA routing on shopping flows.
-- The Meta pixel loads site-wide on every page but stays blocked in consent-required or unresolved regions unless an explicit advertising-consent flow is added; this preserves the store's no-banner tracking choice.
+- The Meta pixel base code lives in `index.html` <head> (owner-provided, pixel 1099448742947971) and loads for all visitors; `MetaPixel.tsx` only fires PageView on SPA route changes and never re-inits the pixel.
