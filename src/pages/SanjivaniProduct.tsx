@@ -126,7 +126,7 @@ const SanjivaniProduct = () => {
 
         <HowToUse />
 
-        <ProductEssentials />
+        <ProductEssentials slug={product.slug} />
 
         <section className="border-t border-border bg-primary px-6 py-14 text-primary-foreground sm:px-8 lg:px-12">
           <div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-6 sm:flex-row sm:items-center">

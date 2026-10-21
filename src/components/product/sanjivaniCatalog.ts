@@ -45,7 +45,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
   },
   {
     defaultPricePaise: 69900, slug: "gut-glow", name: "Sanjivani Endura", tagline: "Stamina. A focus for your wellness routine.",
-    ingredients: "Formula details awaiting confirmation", image: drop2View1, label: "Stamina",
+    ingredients: "Shilajit · Kaunch Beej · Gokshura", image: drop2View1, label: "Stamina",
     description: "The stamina-themed drop in the Sanjivani collection. Sexual performance and endurance benefits have not been verified; this product is not a treatment for sexual-health concerns.",
     ritual: "Use only according to the verified directions on the actual product label. Consult a qualified healthcare professional before use, particularly if you take medication or have a health condition.",
     ingredientsList: [],
@@ -54,7 +54,7 @@ export const sanjivaniProducts: SanjivaniProduct[] = [
   },
   {
     defaultPricePaise: 69900, slug: "daily-greens", name: "Sanjivani Reviva", tagline: "Recovery. A focus for your wellness routine.",
-    ingredients: "Formula details awaiting confirmation", image: drop3View1, label: "Recovery",
+    ingredients: "Shatavari · Guduchi · Arjuna", image: drop3View1, label: "Recovery",
     description: "The recovery-themed drop in the Sanjivani collection. Circulation, sperm count and fertility benefits have not been verified; this product is not a treatment for reproductive or circulatory conditions.",
     ritual: "Use only according to the verified directions on the actual product label. Consult a qualified healthcare professional before use, particularly if you take medication or have a health condition.",
     ingredientsList: [],
