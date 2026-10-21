@@ -36,7 +36,7 @@ export interface SanjivaniProduct {
 export const sanjivaniProducts: SanjivaniProduct[] = [
   {
     defaultPricePaise: 69900, slug: "daily-vitality", name: "Sanjivani Vitalis", tagline: "Vitality. A focus for your wellness routine.",
-    ingredients: "Formula details awaiting confirmation", image: drop1View1, label: "Vitality",
+    ingredients: "Ashwagandha · Safed Musli · Vidarikand", image: drop1View1, label: "Vitality",
     description: "The vitality-themed drop in the Sanjivani collection, for men exploring a daily wellness routine. Energy and stress-related benefits have not been verified.",
     ritual: "Use only according to the verified directions on the actual product label. Consult a qualified healthcare professional before use, particularly if you take medication or have a health condition.",
     ingredientsList: [],

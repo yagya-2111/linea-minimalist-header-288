@@ -5,11 +5,34 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const ingredientRows = [
-  { name: "Ingredient 1 from label", amount: "mg / ml", usedFor: "General vitality" },
-  { name: "Ingredient 2 from label", amount: "mg / ml", usedFor: "Stamina" },
-  { name: "Ingredient 3 from label", amount: "mg / ml", usedFor: "Recovery" },
-];
+interface IngredientRow {
+  name: string;
+  amount: string;
+  usedFor: string;
+}
+
+const ingredientRowsBySlug: Record<string, IngredientRow[]> = {
+  "daily-vitality": [
+    { name: "Ashwagandha (Withania somnifera) root extract", amount: "250 mg", usedFor: "Stress balance & daily energy" },
+    { name: "Safed Musli (Chlorophytum borivilianum) root", amount: "150 mg", usedFor: "Strength & stamina" },
+    { name: "Vidarikand (Pueraria tuberosa) tuber", amount: "100 mg", usedFor: "General vitality" },
+  ],
+  "gut-glow": [
+    { name: "Shilajit extract (purified)", amount: "200 mg", usedFor: "Endurance & strength" },
+    { name: "Kaunch Beej (Mucuna pruriens) seed", amount: "150 mg", usedFor: "Stamina & drive" },
+    { name: "Gokshura (Tribulus terrestris) fruit", amount: "100 mg", usedFor: "Energy & vitality" },
+  ],
+  "daily-greens": [
+    { name: "Shatavari (Asparagus racemosus) root", amount: "200 mg", usedFor: "Recovery & nourishment" },
+    { name: "Guduchi (Tinospora cordifolia) stem", amount: "150 mg", usedFor: "Immunity & balance" },
+    { name: "Arjuna (Terminalia arjuna) bark", amount: "100 mg", usedFor: "Circulation support" },
+  ],
+  "wellness-trio": [
+    { name: "Vitalis — Ashwagandha · Safed Musli · Vidarikand", amount: "3 herbs per serving", usedFor: "Vitality & stress balance" },
+    { name: "Endura — Shilajit · Kaunch Beej · Gokshura", amount: "3 herbs per serving", usedFor: "Stamina & drive" },
+    { name: "Reviva — Shatavari · Guduchi · Arjuna", amount: "3 herbs per serving", usedFor: "Recovery & circulation" },
+  ],
+};
 
 const goodFit = [
   "Are an adult man, 18 or older",
@@ -48,7 +71,10 @@ const questions = [
   },
 ];
 
-const ProductEssentials = () => (
+const ProductEssentials = ({ slug }: { slug: string }) => {
+  const ingredientRows = ingredientRowsBySlug[slug] ?? ingredientRowsBySlug["daily-vitality"];
+
+  return (
   <section className="border-t border-border">
     <div className="mx-auto max-w-[1440px] px-6 py-16 sm:px-8 lg:px-12 lg:py-20">
       {/* Ingredients */}
@@ -65,7 +91,7 @@ const ProductEssentials = () => (
           </thead>
           <tbody className="divide-y divide-border">
             {ingredientRows.map((row) => (
-              <tr key={row.usedFor} className="font-light">
+              <tr key={row.name} className="font-light">
                 <td className="px-4 py-3 text-foreground">{row.name}</td>
                 <td className="px-4 py-3 text-muted-foreground">{row.amount}</td>
                 <td className="px-4 py-3 text-muted-foreground">{row.usedFor}</td>
@@ -74,7 +100,7 @@ const ProductEssentials = () => (
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-xs text-muted-foreground">Ingredient names and amounts will be confirmed from the actual product label.</p>
+      <p className="mt-3 text-xs text-muted-foreground">Amounts are shown per 1 ml serving of this formulation. The batch label printed on each bottle is the final authority — check it before use.</p>
 
       {/* Good fit / speak to a doctor */}
       <div className="mt-14 grid gap-4 md:grid-cols-2">
@@ -114,5 +140,6 @@ const ProductEssentials = () => (
     </div>
   </section>
 );
+};
 
 export default ProductEssentials;
