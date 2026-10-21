@@ -1,24 +1,21 @@
 # Project Architecture
 
-- The homepage uses a single `SanjivaniLanding` composition so the brand story and live catalogue remain cohesive.
-- Product imagery is imported from local generated assets so storefront media does not depend on external image hosts.
-- Storefront product visuals use static, locally generated photo galleries, not interactive 3D viewers, to keep mobile shopping lightweight.
+- The homepage uses a single `SanjivaniLanding` composition so the brand story and live catalogue stay cohesive.
+- Product imagery comes from local generated assets; galleries are static photos, not 3D viewers, for lightweight mobile shopping.
 - Combo products use the same catalogue, database pricing and order validation as single products, preserving one commerce flow.
-- Shipping and return information uses a shared policy-page layout with explicit routes and support links so unconfirmed business terms remain clearly distinguished.
-- Keep mobile purchase actions in one route-aware bar so product, bag, and checkout pages offer the right action without duplicating commerce logic.
-- Product details use one slug-driven page and shared catalogue data for product copy and image galleries; database prices and availability are authoritative.
-- Catalogue rebranding retains existing product slugs and historical order snapshots, deactivates retired products, and excludes them from current bags to preserve commerce continuity.
-- Shopping is account-free: customers never sign up or sign in. Bags live in the shared guest localStorage scope, checkout collects name/contact/address in the order itself (`orders.user_id` stays NULL), and only the store owner signs in (via `/account` or `/admin`) to review and fulfil orders.
-- Guest order tracking goes through the `track_guest_order` database function, which requires both the full order number and the phone number used at checkout; never widen guest order reads beyond it.
-- Direct-buy checkout passes a catalogue slug and orders a single validated active product without mutating the saved bag; this keeps immediate purchases separate from a customer's ongoing bag.
-- Store permissions live in the separate `user_roles` table and are enforced by database row policies and validation triggers; never treat client state as authorization.
-- Profile editing is administrator-only through the admin-scoped database policy; customer sign-up and self-service profile editing were removed when accounts were removed, and legacy customer profiles remain read-only history for the admin workspace.
-- Keep the administrator workspace organized into dedicated review, fulfillment, customer, payment-settings and catalogue sections; preserve existing admin-only data permissions.
-- Payment proofs upload to the private `guest/<orderId>/` folder by an anon-insert storage policy; screenshots and the store QR image stay otherwise private with owner/admin access policies.
-- Product review cards are owner-directed editorial content: generated product-context photos with mild packaging/delivery copy, initials-only avatars (never fabricated people photos), no medical or outcome claims. Replace them with genuine collected reviews as real orders arrive.
-- Storefront policies describe the active order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
-- Global customer support actions live in one fixed dock and use the verified store phone number so contact details stay consistent across routes.
-- Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
-- Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.
-- Internal page transitions use router links or navigation rather than full-page location changes, preserving SPA routing on shopping flows.
-- The Meta pixel base code lives in `index.html` <head> (owner-provided, pixel 1099448742947971) and loads for all visitors; `MetaPixel.tsx` only fires PageView on SPA route changes and never re-inits the pixel.
+- Shipping and return information uses a shared policy-page layout with explicit routes so unconfirmed business terms stay clearly distinguished.
+- Keep mobile purchase actions in one route-aware bar across product, bag and checkout pages without duplicating commerce logic.
+- Product details use one slug-driven page and shared catalogue data; database prices and availability are authoritative.
+- Catalogue rebranding retains existing product slugs and historical order snapshots, deactivates retired products, and excludes them from current bags.
+- Shopping is account-free: customers never sign up or sign in. Bags live in the shared guest localStorage scope, checkout collects name/contact/address into the order itself (`orders.user_id` NULL), and only the store owner signs in (via `/account` or `/admin`) to review and fulfil orders.
+- Guest order tracking goes through the `track_guest_order` database function, which requires the full order number plus the phone used at checkout; never widen guest order reads beyond it.
+- Direct-buy checkout passes a catalogue slug and orders one validated active product without mutating the saved bag.
+- Store permissions live in `user_roles`, enforced by database policies and validation triggers; never treat client state as authorization.
+- Profile editing is administrator-only through the admin-scoped database policy; customer sign-up and self-service profile editing were removed with accounts, and legacy customer profiles remain read-only history in the admin workspace.
+- Keep the admin workspace organized into review, fulfillment, customer, payment-settings and catalogue sections.
+- Payment proofs upload to the private `guest/<orderId>/` folder through an anon-insert storage policy; screenshots and the store QR otherwise stay private with owner/admin access.
+- Product review cards are owner-directed editorial content: generated product-context photos, mild packaging/delivery copy, initials-only avatars (never fabricated people photos), no medical or outcome claims. Replace with genuine collected reviews as real orders arrive.
+- Storefront policies describe the active order, payment-review and delivery flows without inventing business contacts, product-label facts or return terms.
+- Support actions live in one fixed dock; contact details come only from `storeContact`, reused in checkout, footer and support dock.
+- Section navigation is handled centrally on pathname, hash and history-key changes; internal transitions use router links, preserving SPA routing.
+- The Meta pixel base code lives in `index.html` <head> (pixel 1099448742947971) and loads for all visitors; `MetaPixel.tsx` only fires PageView on SPA route changes and never re-inits the pixel.
