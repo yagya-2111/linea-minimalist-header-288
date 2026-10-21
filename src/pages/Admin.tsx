@@ -20,7 +20,7 @@ const DELIVERY: StoreOrder["status"][] = ["ordered", "packed", "shipped", "deliv
 const deliveryLabel: Record<StoreOrder["status"], string> = { ordered: "Ordered", packed: "Packed", shipped: "Shipped", delivered: "Delivered" };
 
 const Admin = () => {
-  const { user, isAdmin, authLoading, profileLoading, orders, productPrices, products, paymentSettings, reloadStoreData, updateOrder, updatePaymentSettings, updateProduct, getProofUrl } = useStore();
+  const { user, isAdmin, authLoading, orders, productPrices, products, paymentSettings, reloadStoreData, updateOrder, updatePaymentSettings, updateProduct, getProofUrl } = useStore();
   const [activeSection, setActiveSection] = useState<AdminSection>("review");
   const [customers, setCustomers] = useState<AdminCustomer[]>([]);
   const [customerDrafts, setCustomerDrafts] = useState<Record<string, CustomerDraft>>({});
@@ -154,7 +154,7 @@ const Admin = () => {
     } catch (error) { showError(error); } finally { setSavingProduct(null); }
   };
 
-  if (authLoading || profileLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-7xl px-5 py-20 text-muted-foreground">Loading store controls…</main><Footer /></div>;
+  if (authLoading) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-7xl px-5 py-20 text-muted-foreground">Loading store controls…</main><Footer /></div>;
   if (!user) return <Navigate to="/account" replace />;
   if (!isAdmin) return <div className="min-h-screen bg-background"><Header /><main className="mx-auto max-w-3xl px-5 py-24 text-center"><ShieldCheck className="mx-auto h-10 w-10 text-muted-foreground" /><h1 className="mt-5 font-display text-3xl font-extrabold">Administrator access only</h1><p className="mt-3 text-muted-foreground">This area is only available to the store administrator.</p><Button asChild className="mt-6"><Link to="/">Back to Sanjivani</Link></Button></main><Footer /></div>;
 
