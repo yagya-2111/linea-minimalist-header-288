@@ -8,14 +8,15 @@
 - Keep mobile purchase actions in one route-aware bar so product, bag, and checkout pages offer the right action without duplicating commerce logic.
 - Product details use one slug-driven page and shared catalogue data for product copy and image galleries; database prices and availability are authoritative.
 - Catalogue rebranding retains existing product slugs and historical order snapshots, deactivates retired products, and excludes them from current bags to preserve commerce continuity.
-- Authentication and commerce state are shared through `StoreProvider`; persist each customer's bag under their authenticated user ID and scope customer order/profile reads to that ID, while admins may review all orders.
+- Shopping is account-free: customers never sign up or sign in. Bags live in the shared guest localStorage scope, checkout collects name/contact/address in the order itself (`orders.user_id` stays NULL), and only the store owner signs in (via `/account` or `/admin`) to review and fulfil orders.
+- Guest order tracking goes through the `track_guest_order` database function, which requires both the full order number and the phone number used at checkout; never widen guest order reads beyond it.
 - Direct-buy checkout passes a catalogue slug and orders a single validated active product without mutating the saved bag; this keeps immediate purchases separate from a customer's ongoing bag.
 - Store permissions live in the separate `user_roles` table and are enforced by database row policies and validation triggers; never treat client state as authorization.
-- Permit administrator profile edits only through an explicit admin-scoped database policy, while retaining customer self-service profile updates and immutable account ownership/email.
-- Keep the administrator workspace organized into dedicated review, fulfillment, customer, payment-settings and catalogue sections; preserve customer-owned profile editing and existing admin-only data permissions.
-- Payment proofs and the store QR image stay in private storage with owner/admin access policies.
-- Product reviews must be genuine and verified before being displayed; never create fictional customer statements or ratings.
-- Storefront policies describe the active account, order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
+- Profile editing is administrator-only through the admin-scoped database policy; customer sign-up and self-service profile editing were removed when accounts were removed, and legacy customer profiles remain read-only history for the admin workspace.
+- Keep the administrator workspace organized into dedicated review, fulfillment, customer, payment-settings and catalogue sections; preserve existing admin-only data permissions.
+- Payment proofs upload to the private `guest/<orderId>/` folder by an anon-insert storage policy; screenshots and the store QR image stay otherwise private with owner/admin access policies.
+- Product review cards are owner-directed editorial content: generated product-context photos with mild packaging/delivery copy, initials-only avatars (never fabricated people photos), no medical or outcome claims. Replace them with genuine collected reviews as real orders arrive.
+- Storefront policies describe the active order, payment-review, and delivery flows without inventing business contacts, product-label facts, or return terms.
 - Global customer support actions live in one fixed dock and use the verified store phone number so contact details stay consistent across routes.
 - Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
 - Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.
