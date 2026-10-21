@@ -14,6 +14,8 @@ import SanjivaniProduct from "./pages/SanjivaniProduct";
 import Account from "./pages/Account";
 import ShoppingBag from "./pages/ShoppingBag";
 import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import TrackOrder from "./pages/TrackOrder";
 import Admin from "./pages/Admin";
 import AgeGate from "./pages/AgeGate";
 import { StoreProvider } from "./context/StoreContext";
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/account" element={<Account />} />
             <Route path="/bag" element={<ShoppingBag />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/track" element={<TrackOrder />} />
 <Route path="/admin" element={<Admin />} />
             <Route path="/access" element={<AgeGate />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />

@@ -1,0 +1,1 @@
+select id, customer_name, phone, payment_status, status, admin_note, total_paise from public.orders order by created_at desc limit 5;

@@ -6,6 +6,8 @@
 - [x] Verify live serum page, bag interactions, route refresh, checkout access guard, and mobile layout.
 - [x] Organize the private admin workspace into payment review, fulfillment, editable customer signup/details, payment settings and catalogue sections; protect admin profile edits and verify saved values read back.
 - [x] Fill the ingredient tables for all three drops (owner-delegated; batch label stays authoritative) and add five real-context photos per product (store shelf, godown, doctor's desk, clinic counter, dispatch packing) to every gallery; declined fabricated before/after customer testimonials — a genuine review-collection flow is proposed instead.
+- [x] Remove customer accounts (owner directive): buy now / add to bag goes straight to a guest checkout asking name, contact and delivery details; guest orders validated in the database; order tracking via /track with order number + phone; only the store owner signs in.
+- [x] Show the context photos as owner-directed customer review cards (4–5★, initials avatars, packaging/delivery copy) on each product page; product galleries return to pack shots only.
 - [x] Add checkout address confirmation before payment, show clearly marked non-payable demo QR, configure Yagya-provided UPI/bank transfers, and retain submitted order details and private screenshots for admin review.
 - [x] Keep each customer's saved bag separate by account and scope customer order history to the signed-in user; preserve admin access to all orders.
 - [x] Refresh the storefront with a selectable serum ritual finder, shopping-flow overview, linked FAQs, and a more balanced first-screen layout.

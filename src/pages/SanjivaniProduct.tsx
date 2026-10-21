@@ -7,6 +7,7 @@ import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 import HowToUse from "@/components/product/HowToUse";
 import ProductEssentials from "@/components/product/ProductEssentials";
+import ProductReviews from "@/components/product/ProductReviews";
 import { useStore, formatPrice } from "@/context/StoreContext";
 import { toast } from "sonner";
 
@@ -127,6 +128,8 @@ const SanjivaniProduct = () => {
         <HowToUse />
 
         <ProductEssentials slug={product.slug} />
+
+        <ProductReviews slug={product.slug} />
 
         <section className="border-t border-border bg-primary px-6 py-14 text-primary-foreground sm:px-8 lg:px-12">
           <div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-6 sm:flex-row sm:items-center">
