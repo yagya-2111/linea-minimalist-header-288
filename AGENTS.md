@@ -20,4 +20,4 @@
 - Contact destinations are defined once in `storeContact` and reused in checkout, footer and support dock to prevent inconsistent updates.
 - Section navigation is handled centrally on pathname, hash and history-key changes, including same-page links and delayed section rendering.
 - Internal page transitions use router links or navigation rather than full-page location changes, preserving SPA routing on shopping flows.
-- Keep advertising pixels route-scoped and block them in consent-required or unresolved regions unless an explicit advertising-consent flow is added; this preserves the store's no-banner tracking choice.
+- The Meta pixel loads site-wide on every page but stays blocked in consent-required or unresolved regions unless an explicit advertising-consent flow is added; this preserves the store's no-banner tracking choice.
