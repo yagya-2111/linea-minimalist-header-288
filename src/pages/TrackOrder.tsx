@@ -40,7 +40,7 @@ const TrackOrder = () => {
     setRecent(readRecent());
   }, []);
 
-  const track = async (entries: RecentOrder[]) => {
+  const track = useCallback(async (entries: RecentOrder[]) => {
     if (!entries.length) { setTracked([]); return; }
     setLoading(true);
     const results = await Promise.all(entries.map(async (entry) => {
@@ -57,9 +57,9 @@ const TrackOrder = () => {
     }));
     setTracked(results.filter((entry): entry is TrackedOrder => entry !== null));
     setLoading(false);
-  };
+  }, []);
 
-  useMemo(() => { void track(recent); }, [recent]);
+  useEffect(() => { void track(recent); }, [recent, track]);
 
   const handleLookup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
