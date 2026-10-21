@@ -49,7 +49,7 @@ export const sanjivaniReviewsBySlug: Record<string, SanjivaniReview[]> = {
   ],
   "wellness-trio": [
     { name: "Aditya", city: "Gorakhpur", rating: 5, date: "October 2026", text: "All three bottles arrived together with their own boxes — Vitalis, Endura and Reviva. Great way to try the full range.", image: trioGodown, imageAlt: "The three Sanjivani bottles in the storage godown" },
-    { name: "Shubham", city: "Dehradun", rating: 5, date: "October 2026", text: "The trio costs less than buying bottles separately and makes a neat gift box. Presentation is excellent.", text: undefined as never },
-    { name: "Mayank", city: "Jodhpur", rating: 4, date: "September 2026", text: "Everything arrived sealed and labelled. Four stars only because I would like a printed guide with the trio box.", image: undefined },
+    { name: "Shubham", city: "Dehradun", rating: 5, date: "October 2026", text: "The trio costs less than buying bottles separately and makes a neat gift box. Presentation is excellent." },
+    { name: "Mayank", city: "Jodhpur", rating: 4, date: "September 2026", text: "Everything arrived sealed and labelled. Four stars only because I would like a printed guide with the trio box." },
   ],
 };
