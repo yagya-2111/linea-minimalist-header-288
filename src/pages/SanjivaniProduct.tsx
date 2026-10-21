@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
+import HowToUse from "@/components/product/HowToUse";
 import { useStore, formatPrice } from "@/context/StoreContext";
 import { toast } from "sonner";
 
@@ -121,6 +122,8 @@ const SanjivaniProduct = () => {
             </div>
           </div>
         </section>
+
+        <HowToUse />
 
         <section className="border-t border-border bg-primary px-6 py-14 text-primary-foreground sm:px-8 lg:px-12">
           <div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-6 sm:flex-row sm:items-center">

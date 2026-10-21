@@ -19,7 +19,7 @@ import AgeGate from "./pages/AgeGate";
 import { StoreProvider } from "./context/StoreContext";
 import MobileBuyBar from "./components/MobileBuyBar";
 import SupportDock from "./components/SupportDock";
-import MetaAccessPixel from "./components/MetaAccessPixel";
+import MetaPixel from "./components/MetaPixel";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +30,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <StoreProvider>
-          <MetaAccessPixel />
+          <MetaPixel />
           <ScrollToTop />
           <div className="pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:pb-0"><Routes>
             <Route path="/" element={<Index />} />

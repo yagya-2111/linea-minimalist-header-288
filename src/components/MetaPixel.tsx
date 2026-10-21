@@ -53,11 +53,8 @@ const canLoadPixel = async () => {
   }
 };
 
-const installMetaPixel = () => {
-  if (window.fbq) {
-    window.fbq("track", "PageView");
-    return;
-  }
+const ensureMetaPixel = () => {
+  if (window.fbq) return;
 
   const pixel = ((...args: unknown[]) => {
     if (pixel.callMethod) pixel.callMethod(...args);
@@ -76,19 +73,20 @@ const installMetaPixel = () => {
   script.dataset.metaPixel = META_PIXEL_ID;
   document.head.appendChild(script);
 
-  pixel("init", META_PIXEL_ID);
-  pixel("track", "PageView");
+  pixel("init", META_PIXEL_ID, {}, { agent: "lovable" });
 };
 
-const MetaAccessPixel = () => {
+const MetaPixel = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (pathname !== "/access") return;
     let active = true;
 
     void canLoadPixel().then((allowed) => {
-      if (active && allowed) installMetaPixel();
+      if (active && allowed) {
+        ensureMetaPixel();
+        window.fbq?.("track", "PageView");
+      }
     });
 
     return () => {
@@ -99,4 +97,4 @@ const MetaAccessPixel = () => {
   return null;
 };
 
-export default MetaAccessPixel;
+export default MetaPixel;
