@@ -25,7 +25,7 @@ const ritualChoices = [
 const shoppingSteps = [
   { icon: Leaf, title: "Choose your blend", copy: "Explore the three Sanjivani drops." },
   { icon: CreditCard, title: "Confirm and pay online", copy: "Add delivery details, then follow the payment instructions at checkout." },
-  { icon: PackageCheck, title: "Follow your order", copy: "Sign in to see payment review and delivery progress in your account." },
+  { icon: PackageCheck, title: "Follow your order", copy: "Track payment review and delivery progress anytime with your order number — no account needed." },
 ];
 
 const SanjivaniLanding = () => {
@@ -211,11 +211,11 @@ const SanjivaniLanding = () => {
           </AccordionItem>
           <AccordionItem value="order-tracking">
             <AccordionTrigger className="text-left font-display text-lg font-bold">Where can I see my order updates?</AccordionTrigger>
-            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Sign in and open your account to view your order history, payment review, and delivery progress.</AccordionContent>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Open the Track your order page and enter your order number and phone to see your order history, payment review, and delivery progress.</AccordionContent>
           </AccordionItem>
           <AccordionItem value="payment-review">
             <AccordionTrigger className="text-left font-display text-lg font-bold">What happens after I place an order?</AccordionTrigger>
-            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Your order and payment proof are available for store review. You can check the latest payment and delivery status in your account.</AccordionContent>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">Your order and payment proof are available for store review. Track the latest payment and delivery status on the Track your order page with your order number and phone.</AccordionContent>
           </AccordionItem>
         </Accordion>
       </section>
