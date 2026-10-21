@@ -126,6 +126,8 @@ const SanjivaniProduct = () => {
 
         <HowToUse />
 
+        <ProductEssentials />
+
         <section className="border-t border-border bg-primary px-6 py-14 text-primary-foreground sm:px-8 lg:px-12">
           <div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-6 sm:flex-row sm:items-center">
             <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Find another favourite</p><h2 className="mt-2 font-display text-3xl font-extrabold">Meet the other blends.</h2></div>
