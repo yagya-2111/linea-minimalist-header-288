@@ -6,6 +6,7 @@ import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { findSanjivaniProduct, sanjivaniProducts } from "@/components/product/sanjivaniCatalog";
 import HowToUse from "@/components/product/HowToUse";
+import ProductEssentials from "@/components/product/ProductEssentials";
 import { useStore, formatPrice } from "@/context/StoreContext";
 import { toast } from "sonner";
 
