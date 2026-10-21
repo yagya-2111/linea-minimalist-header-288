@@ -43,6 +43,13 @@
       "when": 1791905107629,
       "tag": "0005_admin_update_customer_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792599488952,
+      "tag": "0006_guest_checkout_no_accounts",
+      "breakpoints": true
     }
   ]
 }

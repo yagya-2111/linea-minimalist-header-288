@@ -40,7 +40,7 @@ export type Database = {
           total_paise: number
           tracking_number: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           address_line1: string
@@ -67,7 +67,7 @@ export type Database = {
           total_paise: number
           tracking_number?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           address_line1?: string
@@ -94,7 +94,7 @@ export type Database = {
           total_paise?: number
           tracking_number?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -266,6 +266,21 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      track_guest_order: {
+        Args: { p_order_id: string; p_phone: string }
+        Returns: {
+          result_city: string
+          result_created: string
+          result_id: string
+          result_items: Json
+          result_name: string
+          result_note: string
+          result_payment_status: string
+          result_status: string
+          result_total: number
+          result_tracking: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "customer"
